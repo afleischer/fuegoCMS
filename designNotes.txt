@@ -1,0 +1,16 @@
+
+
+Idea: Have "App" be the whole page.
+
+Question 1: Is a WYSIWYG unrealistic?
+	 An alternative design: have a page with;
+	    --
+
+Design of components within the App:
+
+VisualEdit:
+	--iFrame tool pointing to a page
+	--
+
+
+?? Should I use iFrame for visual editor ??

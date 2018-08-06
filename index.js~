@@ -1,0 +1,3 @@
+var firebase = require('firebase');
+k
+var database = firebase.database();
