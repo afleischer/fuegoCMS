@@ -1,0 +1,56 @@
+{
+  "name": "fuegocms",
+  "version": "1.0.0",
+  "description": "Visual CMS for Creatives",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/afleischer/fuegoCMS.git"
+  },
+  "keywords": [
+    "cms",
+    "creative",
+    "visual"
+  ],
+  "author": "afleischer",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/afleischer/fuegoCMS/issues"
+  },
+  "homepage": "https://github.com/afleischer/fuegoCMS#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.12.2",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-1": "^6.1.18",
+    "lodash": "^3.10.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "babel": {
+    "presets": [
+      "react",
+      "stage-0"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  }
+}
