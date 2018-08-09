@@ -31,6 +31,63 @@ export default class App extends React.component{
     
 }
 
+
+/*
+BASIC ASCII MOCKUP OF BASIC CMS FUNCTIONALITY:
+
+
+//
+
+
+*/
+
+
+/*============
+Basic CMS functionality 
+============*/
+
+export default class CMSContainer extends React.component{
+
+    state = {
+
+    }
+
+    UpdateBlog = () => {
+	//Get the content within the necessary fields
+	let blogEntryCopy = document.getElementById("blog-copy");
+	let blogEntryNonCopyContent = document.getElementById("blog-nc-cnt");
+	//Format to send to Firebase
+	
+	
+	//Send to Firebase
+
+	//Clear fields
+	
+    }
+
+    
+    
+
+    render(){
+	return(
+	    
+	    
+	    
+		<h2>Blog Copy Update </h2>
+		//Todo: Add upload button to get file from computer
+	    //This will be called "content_upload" 
+		<input id = "blog-copy" type = "longtext">/* >> TD: set type to  */ </input>
+		<button onClick = {this.UpdateBlog} id = "submission">SUBMIT POST</button>
+	);
+    }
+    
+}
+
+/*=============
+End Basic CMS Functionality
+=============*/
+
+
 const EditorWindow = () => {
     //Version 1: Lets you add a Div
     
