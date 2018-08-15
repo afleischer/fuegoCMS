@@ -22,7 +22,7 @@ export default class App extends React.component{
 
     render(){
 	return(
-	    
+	    <CMSContainerTextPost />
 
 	);
     }
@@ -65,31 +65,23 @@ export default class CMSContainerTextPost extends React.component{
     //To review: Events in ReactJS
 	
     updateBlogTextState = () => {
-	let updateText = {event.target.value};
-	
-	//Will having updateText in brackets recognize it as a variable? 
-	//Review bracket syntax in JSX 
-	this.setState({blogText : updateText});
-	
-
-	//Send to Firebase (will be stored in ref called 'blogs')
-	
-
-	 
+		let updateText = {event.target.value};
+		this.setState({blogText : updateText});
     }
 
     sendBlogTextToDB = () = {
-	let blogEntryCopy = this.state.blogText;
-	let currentDateTime = /* get the current date/time! */ ;
-	database.ref('blogs/' + currentDateTime).set({
-	    //If current date time, no need to have folder selection
+		let blogEntryCopy = this.state.blogText;
+		let currentDateTimeDate = new Date();
+		let currentDateTime = currentDateTimeDate.now();
+		database.ref('blogs/' + currentDateTime).set({
+		    //If current date time, no need to have folder selection
 
-	    //Double-check syntax for how to add blog syntax!
-	    blogEntryCopy;
+		    //Double-check syntax for how to add blog syntax!
+		    blogEntryCopy;
 	});
 
 	database.ref('copy-folders/' + copyFolder).set({
-
+		blogText : updateText
 	)};
     }
     
