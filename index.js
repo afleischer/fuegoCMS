@@ -18,7 +18,7 @@ export default class App extends React.component{
 
 
 
-    //In render, pass the state of the div  down as props to the
+    //In render, pass the state of the div down as props to the
 
     render(){
 	return(
@@ -51,40 +51,56 @@ Basic CMS functionality
 //
 
 
-const TextField = () => {
-    
-}
-
-
-export default class CMSContainerTextPost extends React.component{
-    
+export class CMSContainerTextPost extends React.component{
+    constructor(props){
+    	super(props);
+    	this.updateBlogTextState = this.updateBlogTextState.bind(this);
+    	this.sendBlogTextToDB = this.sendBlogTextToDB.bind(this);
+    }
     state = {
 	blogText : "Enter Text Here"
     }
 
     //To review: Events in ReactJS
 	
-    updateBlogTextState = () => {
-		let updateText = {event.target.value};
+	updateBlogTextState() {
+		let updateText = event.target.value;
+		this.setState({blogText : updateText});
+	}
+/* 
+    updateBlogTextState = (event) => {
+		let updateText = event.target.value;
 		this.setState({blogText : updateText});
     }
 
+*/ 
+
+	sendBlogTextToDB() {
+			let blogEntryCopy = this.state.blogText;
+			let currentDateTimeDate = new Date();
+		let currentDateTime = currentDateTimeDate.now();
+
+		//Future State: Add what user made the update
+		
+			database.ref('blogs/' + currentDateTime).set({
+			    copy : blogEntryCopy
+		});
+
+	}
+	/*
     sendBlogTextToDB = () = {
 		let blogEntryCopy = this.state.blogText;
 		let currentDateTimeDate = new Date();
-		let currentDateTime = currentDateTimeDate.now();
-		database.ref('blogs/' + currentDateTime).set({
-		    //If current date time, no need to have folder selection
+	let currentDateTime = currentDateTimeDate.now();
 
-		    //Double-check syntax for how to add blog syntax!
-		    blogEntryCopy;
+	//Future State: Add what user made the update
+	
+		database.ref('blogs/' + currentDateTime).set({
+		    copy : blogEntryCopy
 	});
 
-	database.ref('copy-folders/' + copyFolder).set({
-		blogText : updateText
-	)};
     }
-    
+    */
 
 	/*  OLD "UpdateBlog" code
     //Will be triggered onClick 
@@ -116,12 +132,14 @@ export default class CMSContainerTextPost extends React.component{
     
 
     render(){
-	return(    
-		<h2>Blog Copy Update </h2>
-		//Todo: Add upload button to get file from computer
-	    //This will be called "content_upload" 
-		<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText}>/* >> TD: set type to  */ </input>
-		<button onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
+	return(   
+		<div> 
+			<h2 className = "header">Blog Copy Update </h2>
+			//Todo: Add upload button to get file from computer
+		    //This will be called "content_upload" 
+			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText}>/* >> TD: set type to  */ </input>
+			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
+		</div>
 	);
     }
     
@@ -133,9 +151,21 @@ export default class CMSContainerTextPost extends React.component{
 End Basic CMS Functionality
 =============*/
 
+const NavButton = ({onClick}) => {
+      <button className = "sidebar-toggler sidebar-toggler-right" style ={{backgroundColor: 'blue',  position: "absolute", margin: "30px"}}type="button" data-toggle="collapse" data-target="#collapsingNavbar" onClick={onClick}>
+    <div id="nav-icon1">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+      </button>
+}
+
+const SidebarMenu = ({show}) => <div style = {{visibility : show ? "visible" : "hidden" , backgroundColor : "#565151" , position : "absolute", height : "100vh" , width : "200px"}}> </div>
 
 
-export default class VisualEditor extends React.component{
+export class VisualEditor extends React.component{
 
     //for now, just have new items pop in when selecting from the sidebar. 
 
@@ -145,27 +175,19 @@ export default class VisualEditor extends React.component{
 	    <EditorWindow />
 	);
     
+	}
 }
 
 //code apeing: https://stackoverflow.com/questions/46818687/react-changing-css-property-on-click-arrow-function
 
 
-//NOTE: Can I do a multi-line for an ES6 arrow function???
-const NavButton = ({onClick}) =>
-      <button className = "sidebar-toggler sidebar-toggler-right" style ={{backgroundColor: 'blue',  position: "absolute", margin: "30px"}}type="button" data-toggle="collapse" data-target="#collapsingNavbar" onClick={onClick}>
-    <div id="nav-icon1">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+//Issue: I'm trying to create a statelss functional component within a class.  Don't. 
 
-      </button>
 
-const SidebarMenu = ({show}) => <div style = {{visibility : show ? "visible" : "hidden" , backgroundColor : "#565151" , position : "absolute", height : "100vh" , width : "200px"}}> </div>
 
 
     
-    export default class InnerMenu extends React.component{
+    export class InnerMenu extends React.component{
 	//Can I have a class nested within another class?
 	state = {
 	    
@@ -179,10 +201,10 @@ const SidebarMenu = ({show}) => <div style = {{visibility : show ? "visible" : "
 	    //Pass up the state to App to pass to the VisualEditor
 	    //Previously I binded this downwards, so in App I'll need to bind this to this class
 	    
-	}
+		}
     }  
     
-export default class Sidebar extends React.component{
+export class Sidebar extends React.component{
 
  state = { 
      sidebarVisible : false,
@@ -206,20 +228,6 @@ export default class Sidebar extends React.component{
 
 }
 
-    
-
-
-export default class SidebarMenu extends React.component{
-
-
-    render(){
-	return(){
-		<div>
-		
-	}
-    }
-
-}
 
 ReadDOM.render(
 	<App />,
