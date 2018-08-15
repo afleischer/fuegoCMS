@@ -46,53 +46,102 @@ BASIC ASCII MOCKUP OF BASIC CMS FUNCTIONALITY:
 Basic CMS functionality 
 ============*/
 
-export default class CMSContainer extends React.component{
+//
+//  Container for updating a text post within the CMS
+//
 
+
+const TextField = () => {
+    
+}
+
+
+export default class CMSContainerTextPost extends React.component{
+    
     state = {
-
+	blogText : "Enter Text Here"
     }
 
+    //To review: Events in ReactJS
+	
+    updateBlogTextState = () => {
+	let updateText = {event.target.value};
+	
+	//Will having updateText in brackets recognize it as a variable? 
+	//Review bracket syntax in JSX 
+	this.setState({blogText : updateText});
+	
+
+	//Send to Firebase (will be stored in ref called 'blogs')
+	
+
+	 
+    }
+
+    sendBlogTextToDB = () = {
+	let blogEntryCopy = this.state.blogText;
+	let currentDateTime = /* get the current date/time! */ ;
+	database.ref('blogs/' + currentDateTime).set({
+	    //If current date time, no need to have folder selection
+
+	    //Double-check syntax for how to add blog syntax!
+	    blogEntryCopy;
+	});
+
+	database.ref('copy-folders/' + copyFolder).set({
+
+	)};
+    }
+    
+
+	/*  OLD "UpdateBlog" code
+    //Will be triggered onClick 
     UpdateBlog = () => {
-	//Get the content within the necessary fields
-	let blogEntryCopy = document.getElementById("blog-copy");
-	let blogEntryNonCopyContent = document.getElementById("blog-nc-cnt");
+	
+	//Get the content within the textfield
+	
+	
+	
 	//Format to send to Firebase
 	
 	
-	//Send to Firebase
+	//Send to Firebase (will be stored in ref called 'blogs')
+	database.ref('blogs/' + blogEntryCopy).set({
+	    //Need to fetch last instance of 
+	    
+	});
 
+	database.ref('copy-folders/' + copyFolder).set({
+
+	)};
+
+	
 	//Clear fields
 	
     }
-
+*/
     
     
 
     render(){
-	return(
-	    
-	    
-	    
+	return(    
 		<h2>Blog Copy Update </h2>
 		//Todo: Add upload button to get file from computer
 	    //This will be called "content_upload" 
-		<input id = "blog-copy" type = "longtext">/* >> TD: set type to  */ </input>
-		<button onClick = {this.UpdateBlog} id = "submission">SUBMIT POST</button>
+		<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText}>/* >> TD: set type to  */ </input>
+		<button onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
 	);
     }
     
 }
+
+
 
 /*=============
 End Basic CMS Functionality
 =============*/
 
 
-const EditorWindow = () => {
-    //Version 1: Lets you add a Div
-    
-
-};
 
 export default class VisualEditor extends React.component{
 

@@ -1,20 +1,17 @@
 
+/* Notes about cms schema:
 
-Idea: Have "App" be the whole page.
+1. "users", "groups", and "cms" may go into different Firebase buckets
 
-Question 1: Is a WYSIWYG unrealistic?
-	 An alternative design: have a page with:
-	    -Ability to Add text to a "CMS Item"
-	    -Add the "CMS Item" to a page
+*/
 
-	    -Styling can be later, just get it to work now
-	    	     Which means that I should focus on 
+/**
 
-Design of components within the App:
+BASIC CMS SHIZ:
 
-VisualEdit:
-	--iFrame tool pointing to a page
-	--
+      On the CMS page, people cn 
+
+[Submit button]
 
 
-?? Should I use iFrame for visual editor ??
+
