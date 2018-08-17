@@ -1,0 +1,17 @@
+
+
+.hiddenBoxImg{
+	height: 100px;
+	width: 400px;
+	top: 100vh;
+}
+
+.shownBoxImg{
+	height: 100px;
+	width: 400px;
+	top: calc(100vh - 100px);
+}
+
+.noticeText{
+	
+}

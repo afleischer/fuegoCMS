@@ -1,5 +1,5 @@
 //var firebase = require('firebase');
-import firebase from 'firebase';
+//import firebase from 'firebase';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 var database = firebase.database();
 
 
-export default class App extends React.component{
+export default class App extends React.Component{
     state = {
 
 	
@@ -22,8 +22,10 @@ export default class App extends React.component{
 
     render(){
 	return(
-	    <CMSContainerTextPost />
-
+		<div>
+	    	<CMSContainerTextPost />
+	    	<CMSContainerImageUpload /> 
+	    </div>
 	);
     }
 
@@ -32,14 +34,6 @@ export default class App extends React.component{
 }
 
 
-/*
-BASIC ASCII MOCKUP OF BASIC CMS FUNCTIONALITY:
-
-
-//
-
-
-*/
 
 
 /*============
@@ -51,7 +45,7 @@ Basic CMS functionality
 //
 
 
-export class CMSContainerTextPost extends React.component{
+export class CMSContainerTextPost extends React.Component{
     constructor(props){
     	super(props);
     	this.updateBlogTextState = this.updateBlogTextState.bind(this);
@@ -78,7 +72,7 @@ export class CMSContainerTextPost extends React.component{
 	sendBlogTextToDB() {
 			let blogEntryCopy = this.state.blogText;
 			let currentDateTimeDate = new Date();
-		let currentDateTime = currentDateTimeDate.now();
+		let currentDateTime = Date.now();
 
 		//Future State: Add what user made the update
 		
@@ -87,48 +81,7 @@ export class CMSContainerTextPost extends React.component{
 		});
 
 	}
-	/*
-    sendBlogTextToDB = () = {
-		let blogEntryCopy = this.state.blogText;
-		let currentDateTimeDate = new Date();
-	let currentDateTime = currentDateTimeDate.now();
 
-	//Future State: Add what user made the update
-	
-		database.ref('blogs/' + currentDateTime).set({
-		    copy : blogEntryCopy
-	});
-
-    }
-    */
-
-	/*  OLD "UpdateBlog" code
-    //Will be triggered onClick 
-    UpdateBlog = () => {
-	
-	//Get the content within the textfield
-	
-	
-	
-	//Format to send to Firebase
-	
-	
-	//Send to Firebase (will be stored in ref called 'blogs')
-	database.ref('blogs/' + blogEntryCopy).set({
-	    //Need to fetch last instance of 
-	    
-	});
-
-	database.ref('copy-folders/' + copyFolder).set({
-
-	)};
-
-	
-	//Clear fields
-	
-    }
-*/
-    
     
 
     render(){
@@ -137,7 +90,7 @@ export class CMSContainerTextPost extends React.component{
 			<h2 className = "header">Blog Copy Update </h2>
 			//Todo: Add upload button to get file from computer
 		    //This will be called "content_upload" 
-			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText}>/* >> TD: set type to  */ </input>
+			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText} />
 			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
 		</div>
 	);
@@ -145,6 +98,54 @@ export class CMSContainerTextPost extends React.component{
     
 }
 
+
+function NoticeBox(props){
+	return <h2 className = "noticeText">Image Uploaded!</h2>;
+}
+	
+
+export class CMSContainerImageUpload extends React.Component{
+
+	state = {
+		noticeVisible : "hiddenBoxImg"
+	}
+
+
+/*==========
+Handle image upload
+==========*/
+
+	handleUploadImage(ev){
+
+		ev.preventDefault();
+
+		var currentDateTime = Date.now();
+		var storageRef = firebase.storage().ref();
+		var imageRef = storageRef.child(currentDateTime);
+
+	/*==========
+	Upload file to Firebase
+	===========*/
+		//File as retrieved from the file API 
+		var file = this.refs.image_form.value;
+		imageRef.put(file).then(function(snapshot){
+			//Pop up element that says "file uploaded!"
+		this.setState({noticeVisible : "shownBoxImg"});
+		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
+		});
+
+	}
+
+	render(){
+		return(
+		<div>
+			<input type="file" refs="image_form" />
+			<NoticeBox className = {this.state.noticeVisible} />
+		</div>
+
+		);
+	}
+}
 
 
 /*=============
@@ -165,7 +166,7 @@ const NavButton = ({onClick}) => {
 const SidebarMenu = ({show}) => <div style = {{visibility : show ? "visible" : "hidden" , backgroundColor : "#565151" , position : "absolute", height : "100vh" , width : "200px"}}> </div>
 
 
-export class VisualEditor extends React.component{
+export class VisualEditor extends React.Component{
 
     //for now, just have new items pop in when selecting from the sidebar. 
 
@@ -187,7 +188,7 @@ export class VisualEditor extends React.component{
 
 
     
-    export class InnerMenu extends React.component{
+    export class InnerMenu extends React.Component{
 	//Can I have a class nested within another class?
 	state = {
 	    
@@ -204,7 +205,7 @@ export class VisualEditor extends React.component{
 		}
     }  
     
-export class Sidebar extends React.component{
+export class Sidebar extends React.Component{
 
  state = { 
      sidebarVisible : false,
@@ -217,7 +218,7 @@ export class Sidebar extends React.component{
 
     render(){
 	return(
-	    <div class = "SidebarDiv">
+	    <div className = "SidebarDiv">
 		<SidebarMenu show = {this.state.sidebarVisible}>
 		<InnerMenu />
 	    </SidebarMenu>
@@ -229,7 +230,7 @@ export class Sidebar extends React.component{
 }
 
 
-ReadDOM.render(
+ReactDOM.render(
 	<App />,
-    document.getElementbyId('root')
+    document.getElementById('root')
 );
