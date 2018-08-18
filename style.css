@@ -1,17 +1,27 @@
 
+.container{
+	border: 4px black;
+	border-radius: 5px;
+	
+}
 
 .hiddenBoxImg{
+	background-color: aqua;
+	position: absolute;
 	height: 100px;
 	width: 400px;
 	top: 100vh;
+	left: 100vw;
 }
 
 .shownBoxImg{
+	background-color: aqua;
 	height: 100px;
 	width: 400px;
 	top: calc(100vh - 100px);
+	left: calc(100vw - 400px);
 }
 
 .noticeText{
-	
+	font-family: 'Baloo Bhai';
 }

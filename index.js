@@ -6,6 +6,16 @@ import ReactDOM from 'react-dom';
 
 var database = firebase.database();
 
+/*============
+Firebase authentication
+============*/
+
+ui.start('#firebaseui-auth-container', {
+	signInOptions: [
+	  firebase.auth.EmailAuthProvider.PROVIDER_ID
+	],
+	// Other config options...
+  });
 
 export default class App extends React.Component{
     state = {
@@ -45,6 +55,13 @@ Basic CMS functionality
 //
 
 
+function NoticeBoxText(props){
+	return <div className = {props.class_name}><h2 className = "noticeText">Text Copy Uploaded!</h2></div>;
+}
+
+
+	
+
 export class CMSContainerTextPost extends React.Component{
     constructor(props){
     	super(props);
@@ -52,22 +69,14 @@ export class CMSContainerTextPost extends React.Component{
     	this.sendBlogTextToDB = this.sendBlogTextToDB.bind(this);
     }
     state = {
-	blogText : "Enter Text Here"
+	blogText : "Enter Text Here",
+	noticeVisible : "hiddenBoxImg"
     }
-
-    //To review: Events in ReactJS
 	
 	updateBlogTextState() {
 		let updateText = event.target.value;
 		this.setState({blogText : updateText});
 	}
-/* 
-    updateBlogTextState = (event) => {
-		let updateText = event.target.value;
-		this.setState({blogText : updateText});
-    }
-
-*/ 
 
 	sendBlogTextToDB() {
 			let blogEntryCopy = this.state.blogText;
@@ -79,6 +88,8 @@ export class CMSContainerTextPost extends React.Component{
 			database.ref('blogs/' + currentDateTime).set({
 			    copy : blogEntryCopy
 		});
+		this.setState({noticeVisible : "shownBoxImg"});
+		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
 
 	}
 
@@ -86,12 +97,11 @@ export class CMSContainerTextPost extends React.Component{
 
     render(){
 	return(   
-		<div> 
+		<div className = "container"> 
 			<h2 className = "header">Blog Copy Update </h2>
-			//Todo: Add upload button to get file from computer
-		    //This will be called "content_upload" 
 			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText} />
 			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
+			<NoticeBoxText class_name = {this.state.noticeBoxText} />
 		</div>
 	);
     }
@@ -100,9 +110,8 @@ export class CMSContainerTextPost extends React.Component{
 
 
 function NoticeBox(props){
-	return <h2 className = "noticeText">Image Uploaded!</h2>;
+	return <div className = {props.class_name}><h2 className = "noticeText">Image Uploaded!</h2></div>;
 }
-	
 
 export class CMSContainerImageUpload extends React.Component{
 
@@ -138,9 +147,10 @@ Handle image upload
 
 	render(){
 		return(
-		<div>
+		<div className = "container">
+			<h2>Upload Image </h2>
 			<input type="file" refs="image_form" />
-			<NoticeBox className = {this.state.noticeVisible} />
+			<NoticeBox class_name = {this.state.noticeVisible} />
 		</div>
 
 		);
