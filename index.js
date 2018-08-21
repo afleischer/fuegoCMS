@@ -176,15 +176,30 @@ export class CMSContainerImageUpload extends React.Component{
 		super(props);
 		this.handleUploadImage = this.handleUploadImage.bind(this);
 		this.sendImageToDB = this.sendImageToDB.bind(this);
+		this.setFile = this.setFile.bind(this);
 	}
 	state = {
-		noticeVisible : "hiddenBoxImg"
+		noticeVisible : "hiddenBoxImg",
+		toUpload : "null"
 	}
 
+	/********
+	Update state to reflect the file to upload 
+	********/
+	setFile(ev){
 
-/*==========
-Handle image upload
-==========*/
+		var file = ev.target.files[0];
+		console.log("File is:" +file);
+		this.setState({
+			toUpload : {file}
+		},
+		function () {console.log("Updated state is:" + this.state.toUpload); } );
+
+	}
+
+	/*==========
+	Handle image upload
+	==========*/
 
 	handleUploadImage(ev){
 
@@ -199,15 +214,45 @@ Handle image upload
 	/*==========
 	Upload file to Firebase
 	===========*/
-		//File as retrieved from the file API 
-		var file = this.refs.image_form.value;
+
+
+//Alternate code
+	const ref = firebase.storage().ref();
+
+	const file = document.querySelector('#image_field').files[0];
+		console.log("file sent is:" + file);
+
+	var dateVar = new Date;
+	//const name = (+new Date()) + '-' + file.name;
+	const name = dateVar.toDateString() + '-' + file.name;
+	const metadata = {
+	  contentType: file.type
+	};
+
+	const task = ref.child(name).put(file, metadata);
+task
+  .then(snapshot => snapshot.ref.getDownloadURL())
+  .then((url) => {
+    console.log(url);
+    document.querySelector('#someImageTagID').src = url;
+  })
+  .catch(console.error);
+//End alternate code
+
+		//Create reference to file 
+
+		/* Old code
+		var file = this.state.toUpload;
 		console.log("File received is:"+ file);
-		imageRef.put(file).then(function(snapshot){
+
+		let imageUploadRef = imageRef.child(file);
+		imageUploadRef.put(file).then(function(snapshot){
 			//Pop up element that says "file uploaded!"
 		this.setState({noticeVisible : "shownBoxImg"});
 		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
 		});
-
+		
+		*/ 
 	}
 
 	sendImageToDB(ev){
@@ -218,7 +263,7 @@ Handle image upload
 		return(
 		<div className = "container">
 			<h2>Upload Image </h2>
-			<input type="file" refs="image_form" />
+			<input id = "image_field" type="file" refs="image_form" onInput = {this.setFile} />
 			<button type = "button" onClick = {this.handleUploadImage} id = "img_submission">SUBMIT</button>
 			<NoticeBox class_name = {this.state.noticeVisible} />
 		</div>
