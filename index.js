@@ -3,12 +3,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+//import firebase from 'firebase';
 
-var database = firebase.database();
+var firebase = require("firebase/app");
+//var database = firebase.database();
+
+require("firebase/auth");
+require("firebase/database");
+require("firebase/firestore");
+require("firebase/messaging");
+require("firebase/functions");
+
 
 /*============
 Firebase authentication
 ============*/
+
+/********
+ Initialize Firebase
+********/
+
+var config = {
+    apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
+    authDomain: "fuegocms.firebaseapp.com",
+    databaseURL: "https://fuegocms.firebaseio.com",
+    projectId: "fuegocms",
+    storageBucket: "fuegocms.appspot.com",
+    messagingSenderId: "283527892810"
+  };
+
+firebase.initializeApp(config);
+
+/* I'm using Cloud Firestore instead, not this
+Firebase realtime DB
 
 ui.start('#firebaseui-auth-container', {
 	signInOptions: [
@@ -16,6 +43,8 @@ ui.start('#firebaseui-auth-container', {
 	],
 	// Other config options...
   });
+
+*/
 
 export default class App extends React.Component{
     state = {
@@ -84,12 +113,33 @@ export class CMSContainerTextPost extends React.Component{
 		let currentDateTime = Date.now();
 
 		//Future State: Add what user made the update
-		
-			database.ref('blogs/' + currentDateTime).set({
+
+			/*****
+			Old: Firebase Realtime database update
+			*****/		
+
+			
+			firebase.database().ref('blogs/' + currentDateTime).set({
 			    copy : blogEntryCopy
 		});
+					this.setState({noticeVisible : "shownBoxImg"});
+		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
+			
+
+			/*****
+			New: Cloud Firestore update
+			*****/
+			/*
+			db.collection("blogs").add({
+				copy : blogEntryCopy
+			})
+			.then(function() {
 		this.setState({noticeVisible : "shownBoxImg"});
 		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
+
+			})
+
+			*/
 
 	}
 
