@@ -6,13 +6,14 @@ import ReactDOM from 'react-dom';
 //import firebase from 'firebase';
 
 var firebase = require("firebase/app");
-//var pwd= firebase.database();
 
 require("firebase/auth");
 require("firebase/database");
 require("firebase/firestore");
 require("firebase/messaging");
 require("firebase/functions");
+require("firebase/storage");
+
 
 
 /*============
@@ -157,7 +158,7 @@ export class CMSContainerTextPost extends React.Component{
 		<div className = "container"> 
 			<h2 className = "header">Blog Copy Update </h2>
 			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onBlur = {this.updateBlogTextState} />
-			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
+			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT</button>
 			<NoticeBoxText class_name = {this.state.noticeVisible} />
 		</div>
 	);
@@ -171,7 +172,11 @@ function NoticeBox(props){
 }
 
 export class CMSContainerImageUpload extends React.Component{
-
+	constructor(props){
+		super(props);
+		this.handleUploadImage = this.handleUploadImage.bind(this);
+		this.sendImageToDB = this.sendImageToDB.bind(this);
+	}
 	state = {
 		noticeVisible : "hiddenBoxImg"
 	}
@@ -185,7 +190,9 @@ Handle image upload
 
 		ev.preventDefault();
 
-		var currentDateTime = Date.now();
+		var currentDateTimeDate = new Date();
+		var currentDateTime = currentDateTimeDate.toDateString();
+
 		var storageRef = firebase.storage().ref();
 		var imageRef = storageRef.child(currentDateTime);
 
@@ -194,6 +201,7 @@ Handle image upload
 	===========*/
 		//File as retrieved from the file API 
 		var file = this.refs.image_form.value;
+		console.log("File received is:"+ file);
 		imageRef.put(file).then(function(snapshot){
 			//Pop up element that says "file uploaded!"
 		this.setState({noticeVisible : "shownBoxImg"});
@@ -202,11 +210,16 @@ Handle image upload
 
 	}
 
+	sendImageToDB(ev){
+
+	}
+
 	render(){
 		return(
 		<div className = "container">
 			<h2>Upload Image </h2>
 			<input type="file" refs="image_form" />
+			<button type = "button" onClick = {this.handleUploadImage} id = "img_submission">SUBMIT</button>
 			<NoticeBox class_name = {this.state.noticeVisible} />
 		</div>
 
