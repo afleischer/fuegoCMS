@@ -64,10 +64,19 @@ export default class App extends React.Component{
 	return(
 		<div>
 			<div className = "content_bar">
-				<h1>Add Content </h1>
+				<h1>Upload Content </h1>
 		    	<CMSContainerTextPost />
 		    	<CMSContainerImageUpload /> 
-		    	<button className = "collapse">X</button>
+
+		    	<h1>Add to Page</h1>
+		    	
+
+
+			    <button className = "collapse">X</button>
+			    
+		    </div>
+		    <div className = "visual_section">
+
 		    </div>
 	    </div>
 	);
