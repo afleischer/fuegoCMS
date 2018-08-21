@@ -63,8 +63,12 @@ export default class App extends React.Component{
     render(){
 	return(
 		<div>
-	    	<CMSContainerTextPost />
-	    	<CMSContainerImageUpload /> 
+			<div className = "content_bar">
+				<h1>Add Content </h1>
+		    	<CMSContainerTextPost />
+		    	<CMSContainerImageUpload /> 
+		    	<button className = "collapse">X</button>
+		    </div>
 	    </div>
 	);
     }
@@ -156,8 +160,9 @@ export class CMSContainerTextPost extends React.Component{
     render(){
 	return(   
 		<div className = "container"> 
-			<h2 className = "header">Blog Copy Update </h2>
-			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onBlur = {this.updateBlogTextState} />
+			<h2 className = "header">ADD TEXT</h2>
+			<textarea id = "blog-copy" rows = "4" cols = "50" type = "longtext" placeholder = "Enter Text Here" onBlur = {this.updateBlogTextState} />
+			<br />
 			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT</button>
 			<NoticeBoxText class_name = {this.state.noticeVisible} />
 		</div>
@@ -237,6 +242,12 @@ task
     document.querySelector('#someImageTagID').src = url;
   })
   .catch(console.error);
+
+	/*=========
+	
+	==========*/
+	this.setState({noticeVisible : "shownBoxImg"});
+		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
 //End alternate code
 
 		//Create reference to file 
@@ -262,7 +273,7 @@ task
 	render(){
 		return(
 		<div className = "container">
-			<h2>Upload Image </h2>
+			<h2>UPLOAD IMAGE</h2>
 			<input id = "image_field" type="file" refs="image_form" onInput = {this.setFile} />
 			<button type = "button" onClick = {this.handleUploadImage} id = "img_submission">SUBMIT</button>
 			<NoticeBox class_name = {this.state.noticeVisible} />
@@ -291,18 +302,6 @@ const NavButton = ({onClick}) => {
 const SidebarMenu = ({show}) => <div style = {{visibility : show ? "visible" : "hidden" , backgroundColor : "#565151" , position : "absolute", height : "100vh" , width : "200px"}}> </div>
 
 
-export class VisualEditor extends React.Component{
-
-    //for now, just have new items pop in when selecting from the sidebar. 
-
-    
-    render(){
-	return(
-	    <EditorWindow />
-	);
-    
-	}
-}
 
 //code apeing: https://stackoverflow.com/questions/46818687/react-changing-css-property-on-click-arrow-function
 

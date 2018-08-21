@@ -1,4 +1,3 @@
-
 @keyframes animateInNotice {
 	from {	
 		top: 100vh;
@@ -11,10 +10,32 @@
 	}
 }
 
+button{
+	border-radius: 20px;
+}
+
+h1{
+	font-family: roboto;
+}
+
+h2{
+	font-family: roboto;
+}
+
+.collapse{
+	background-color: #BDB1AA;
+
+}
+
 .container{
 	border: 4px black;
 	border-radius: 5px;
 	
+}
+
+.content_bar{
+	width: 350px;
+	background-color: #E8D9D1;
 }
 
 .hiddenBoxImg{
