@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 //import firebase from 'firebase';
 
 var firebase = require("firebase/app");
-//var database = firebase.database();
+//var pwd= firebase.database();
 
 require("firebase/auth");
 require("firebase/database");
@@ -102,15 +102,19 @@ export class CMSContainerTextPost extends React.Component{
 	noticeVisible : "hiddenBoxImg"
     }
 	
-	updateBlogTextState() {
-		let updateText = event.target.value;
+	updateBlogTextState(ev) {
+		
+		//let updateText = event.target.value;
+		let updateText = ev.target.value;
 		this.setState({blogText : updateText});
+		console.log(event);
 	}
 
 	sendBlogTextToDB() {
 			let blogEntryCopy = this.state.blogText;
 			let currentDateTimeDate = new Date();
-		let currentDateTime = Date.now();
+		let currentDateTimeRaw = Date.now();
+		let currentDateTime = currentDateTimeDate.toDateString();
 
 		//Future State: Add what user made the update
 
@@ -122,7 +126,10 @@ export class CMSContainerTextPost extends React.Component{
 			firebase.database().ref('blogs/' + currentDateTime).set({
 			    copy : blogEntryCopy
 		});
-					this.setState({noticeVisible : "shownBoxImg"});
+			/****
+			Hide and show the "Text Copy Updated!"" NoticeBox
+			****/
+		this.setState({noticeVisible : "shownBoxImg"});
 		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
 			
 
@@ -149,9 +156,9 @@ export class CMSContainerTextPost extends React.Component{
 	return(   
 		<div className = "container"> 
 			<h2 className = "header">Blog Copy Update </h2>
-			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onChange = {this.updateBlogText} />
+			<input id = "blog-copy" type = "longtext" placeholder = "Enter Text Here" onBlur = {this.updateBlogTextState} />
 			<button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT POST</button>
-			<NoticeBoxText class_name = {this.state.noticeBoxText} />
+			<NoticeBoxText class_name = {this.state.noticeVisible} />
 		</div>
 	);
     }

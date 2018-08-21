@@ -1,4 +1,16 @@
 
+@keyframes animateInNotice {
+	from {	
+		top: 100vh;
+		left: 100vw;
+	}
+
+	to {
+		top: calc(100vh - 100px);
+		left: calc(100vw - 400px);
+	}
+}
+
 .container{
 	border: 4px black;
 	border-radius: 5px;
@@ -16,10 +28,13 @@
 
 .shownBoxImg{
 	background-color: aqua;
+	position: absolute;
 	height: 100px;
 	width: 400px;
 	top: calc(100vh - 100px);
 	left: calc(100vw - 400px);
+	animation-name: animateInNotice;
+	animation-duration: 3s;
 }
 
 .noticeText{
