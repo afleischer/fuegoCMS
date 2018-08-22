@@ -317,14 +317,11 @@ const NavButton = ({onClick}) => {
 **
 ===========*/
 
-const TextItem = TextArrayVar.map((number) => {
-
-});
-
-const ImageItem = ImageVar.map((ImageVar) => {
-	//Do functional components have props?
-	<img src = {this.props.thumbnail}>
-	</img>
+//if displayText is an array of []
+const TextItem = TextArray.map((textValue) => {
+	<div>
+		<p>{this.props.textValue}</p>
+	</div>
 });
 
 
@@ -343,15 +340,18 @@ export class TextAddContainer extends React.Component{
 	}
 	state = {
 
-		TextArray : TextArrayVar
-
 	}
 
 	//When loading or when a user adds new content, retrieve a list 
 	//of all content from Firebase
 
 	RetrieveText(){
-		
+    	var TextRef = firebase.database().ref('blogs/');
+    	let TextArrayVar = [];
+		for(key in TextRef){
+			TextArrayVar.push(key.copy);			
+		}
+		return TextArrayVar; 
 	}
 
 
@@ -359,7 +359,7 @@ export class TextAddContainer extends React.Component{
 		return(
 			<div onLoad = {this.RetrieveText}>
 				<Dropdown />
-				<TextItem displayText = {this.state.TextArray} />
+				<TextItem TextArray = {this.RetrieveText} />
 				<button onClick = {this.RetrieveText}>Refresh</button>
 			</div>
 			);
@@ -367,6 +367,11 @@ export class TextAddContainer extends React.Component{
 }
 
 
+const ImageItem = ImageVar.map((ImageVar) => {
+	//Do functional components have props?
+	<img src = {this.props.thumbnail}>
+	</img>
+});
 
 export class ImageAddContainer extends React.Component{
 	constructor(opts){
@@ -382,14 +387,14 @@ export class ImageAddContainer extends React.Component{
 
 		var thumbnailArray = [];
 
-		for(let i = 0 ; i <= ; ){
-
+		for(key in snapshot.val()){
+			thumbnailArray.push(key);
 		}
 		//for each image present in firebase database, store the thumbnail image
 		//and add it to the array 
 
-		reader.onloadend = function(){
-
+		console.log(thumbnailArray);
+		//reader.onloadend = function(){
 		}
 	}
 
