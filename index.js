@@ -5,10 +5,15 @@ import ReactDOM from 'react-dom';
 
 //import firebase from 'firebase';
 
-var firebase = require("firebase/app");
-var admin = require("firebase-admin");
+/*
+Global variables 
+*/
 
-var db = admin.database();
+var firebase = require("firebase/app");
+//var admin = require("firebase-admin");
+
+
+//var db = admin.database();
 
 
 require("firebase/auth");
@@ -351,7 +356,14 @@ export class TextAddContainer extends React.Component{
 		for(key in TextRef){
 			TextArrayVar.push(key.copy);			
 		}
-		return TextArrayVar; 
+
+		let TextItem = TextArrayVar.map((textValue) => {
+			<div>
+				<p>{this.props.textValue}</p>
+			</div>
+		}
+
+		return TextItem; 
 	}
 
 
@@ -359,6 +371,7 @@ export class TextAddContainer extends React.Component{
 		return(
 			<div onLoad = {this.RetrieveText}>
 				<Dropdown />
+				{this.RetrieveText}
 				<TextItem TextArray = {this.RetrieveText} />
 				<button onClick = {this.RetrieveText}>Refresh</button>
 			</div>
@@ -369,8 +382,11 @@ export class TextAddContainer extends React.Component{
 
 const ImageItem = ImageVar.map((ImageVar) => {
 	//Do functional components have props?
-	<img src = {this.props.thumbnail}>
-	</img>
+	<div>
+		<img src = {this.props.ImageVar.name_prop}>
+		</img>
+		<p>{this.props.ImageVar.thumbnail_prop}</p>
+	</div>
 });
 
 export class ImageAddContainer extends React.Component{
@@ -383,19 +399,42 @@ export class ImageAddContainer extends React.Component{
 
 	getImagePreview(){
 
-		var reader  = new FileReader();
 
-		var thumbnailArray = [];
 
-		for(key in snapshot.val()){
-			thumbnailArray.push(key);
+		/***********
+		The idea:
+
+		FileReader() object lets web apps async read file contents on computer via File/Blob objects
+
+		// 1. First, get a list of the files by referencing the location and lo
+		************/
+
+		var storageRef = firebase.storage().ref();
+		var imageArray = [];
+
+		/*
+		Firebase data structure: 
+
+			
+		*/ function appendObjTo(thatArray, newObj) {
+			const frozenObj = Object.freeze(newObj);
+			return Object.freeze(thatArray.concat(frozenObj));
+			}
+
+
+		// 1. First, get a list of the files by referencing the location and lo
+		for(key in storageRef){
+			//need to get a file object for each
+			//imageArray.push(snapshot.val());
+
+			appendObjTo(imageArray, {name_prop : snapshot.val(), thumbnail_prop : snapshot.val() })
 		}
-		//for each image present in firebase database, store the thumbnail image
-		//and add it to the array 
 
-		console.log(thumbnailArray);
+		console.log(imageArray);
 		//reader.onloadend = function(){
-		}
+
+		return imageArray;	
+
 	}
 
 
@@ -409,6 +448,9 @@ export class ImageAddContainer extends React.Component{
 }
 
 
+/*============
+Render the Virtual DOM
+============*/
 
 ReactDOM.render(
 	<App />,
@@ -416,37 +458,4 @@ ReactDOM.render(
 );
 
 
-
-
-// OLD OLD OLD OLD OLD
-
-
-export class Sidebar extends React.Component{
-
- state = { 
-     sidebarVisible : false,
-  }
- 
-
-   toggleVisible = () => this.setState(state => ({
-         sidebarVisible : !state.sidebarVisible,
-   }));
-
-    render(){
-	return(
-	    <div className = "SidebarDiv">
-		<SidebarMenu show = {this.state.sidebarVisible}>
-		<InnerMenu />
-	    </SidebarMenu>
-		<HideShowBtn onClick = {this.toggleVisible} />
-	    </div>
-	);
-    }
-
-}
-
-
-/*============
-Render the Virtual DOM
-============*/
 
