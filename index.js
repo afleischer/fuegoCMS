@@ -6,6 +6,10 @@ import ReactDOM from 'react-dom';
 //import firebase from 'firebase';
 
 var firebase = require("firebase/app");
+var admin = require("firebase-admin");
+
+var db = admin.database();
+
 
 require("firebase/auth");
 require("firebase/database");
@@ -17,45 +21,54 @@ require("firebase/storage");
 
 
 /*============
-Firebase authentication
+Firebase initialization
 ============*/
 
-/********
- Initialize Firebase
-********/
+	var config = {
+	    apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
+	    authDomain: "fuegocms.firebaseapp.com",
+	    databaseURL: "https://fuegocms.firebaseio.com",
+	    projectId: "fuegocms",
+	    storageBucket: "fuegocms.appspot.com",
+	    messagingSenderId: "283527892810"
+	  };
 
-var config = {
-    apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
-    authDomain: "fuegocms.firebaseapp.com",
-    databaseURL: "https://fuegocms.firebaseio.com",
-    projectId: "fuegocms",
-    storageBucket: "fuegocms.appspot.com",
-    messagingSenderId: "283527892810"
-  };
+	firebase.initializeApp(config);
 
-firebase.initializeApp(config);
 
-/* I'm using Cloud Firestore instead, not this
-Firebase realtime DB
-
-ui.start('#firebaseui-auth-container', {
-	signInOptions: [
-	  firebase.auth.EmailAuthProvider.PROVIDER_ID
-	],
-	// Other config options...
-  });
-
-*/
+/*===========
+*
+* Begin App
+*
+============*/
 
 export default class App extends React.Component{
+	constructor(props){
+		super(props);
+		this.setTextListener = this.setTextListener.bind(this);
+		this.setImageListener = this.setImageListener.bind(this);
+
+	}
     state = {
-
-	
-	//Number of elements
-	
-
+		TextList : null,
+		ImageList : null
     }
 
+    setTextListener(){
+    	var TextRef = firebase.database().ref('blogs/');
+		
+		TextRef.on('value', function(snapshot) {
+  			this.setState({
+  				TextList : snapshot.val()
+  			});
+		});
+    }
+
+    setImageListener(){
+    	var ImageRef = firebase.storage().ref();
+
+    	ImageRef.on()
+    }
 
 
     //In render, pass the state of the div down as props to the
@@ -63,21 +76,34 @@ export default class App extends React.Component{
     render(){
 	return(
 		<div>
-			<div className = "content_bar">
-				<h1>Upload Content </h1>
-		    	<CMSContainerTextPost />
-		    	<CMSContainerImageUpload /> 
 
-		    	<h1>Add to Page</h1>
-		    	
+			<div className = "sidebar">
 
+				<div className = "upload_content">
+					<h1>Upload Content </h1>
+			    	<CMSContainerTextPost />
+			    	<CMSContainerImageUpload /> 
+			    </div>
 
-			    <button className = "collapse">X</button>
-			    
-		    </div>
-		    <div className = "visual_section">
+			    <div className = "add_content" onLoad = {this.setTextListener}>
+			    	<h1>Add to Page</h1>
+			    	<TextAddContainer TextArray = {this.state.TextList} />
+			    	<ImageAddContainer ImageArray = {this.state.ImageList} />
+			    </div>
 
-		    </div>
+			    <div className = "style_content">
+			    	<h1>Style Page Content</h1>
+			    	<StyleContentList />
+			    </div>
+			
+			<button className = "collapse">X</button>
+			</div>
+
+			<div className = "VisualSection">
+				<Dropdown />
+				<VisualEditor />
+			</div>
+
 	    </div>
 	);
     }
@@ -90,12 +116,11 @@ export default class App extends React.Component{
 
 
 /*============
-Basic CMS functionality 
+*
+*	Content Upload Section of CMS Sidebar
+*
 ============*/
 
-//
-//  Container for updating a text post within the CMS
-//
 
 
 function NoticeBoxText(props){
@@ -130,10 +155,8 @@ export class CMSContainerTextPost extends React.Component{
 		let currentDateTimeRaw = Date.now();
 		let currentDateTime = currentDateTimeDate.toDateString();
 
-		//Future State: Add what user made the update
-
 			/*****
-			Old: Firebase Realtime database update
+			Add text to Firebase
 			*****/		
 
 			
@@ -197,9 +220,9 @@ export class CMSContainerImageUpload extends React.Component{
 		toUpload : "null"
 	}
 
-	/********
+	/*============
 	Update state to reflect the file to upload 
-	********/
+	=============*/
 	setFile(ev){
 
 		var file = ev.target.files[0];
@@ -229,54 +252,31 @@ export class CMSContainerImageUpload extends React.Component{
 	Upload file to Firebase
 	===========*/
 
+		const ref = firebase.storage().ref();
 
-//Alternate code
-	const ref = firebase.storage().ref();
+		const file = document.querySelector('#image_field').files[0];
+			console.log("file sent is:" + file);
 
-	const file = document.querySelector('#image_field').files[0];
-		console.log("file sent is:" + file);
-
-	var dateVar = new Date;
-	//const name = (+new Date()) + '-' + file.name;
-	const name = dateVar.toDateString() + '-' + file.name;
-	const metadata = {
-	  contentType: file.type
+		var dateVar = new Date;
+		//const name = (+new Date()) + '-' + file.name;
+		const name = dateVar.toDateString() + '-' + file.name;
+		const metadata = {
+		  contentType: file.type
 	};
 
-	const task = ref.child(name).put(file, metadata);
-task
-  .then(snapshot => snapshot.ref.getDownloadURL())
-  .then((url) => {
-    console.log(url);
-    document.querySelector('#someImageTagID').src = url;
-  })
-  .catch(console.error);
+		const task = ref.child(name).put(file, metadata);
+	task
+	  .then(snapshot => snapshot.ref.getDownloadURL())
+	  .then((url) => {
+	    console.log(url);
+	    document.querySelector('#someImageTagID').src = url;
+	  })
+	  .catch(console.error);
 
-	/*=========
-	
-	==========*/
+
 	this.setState({noticeVisible : "shownBoxImg"});
 		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
 //End alternate code
-
-		//Create reference to file 
-
-		/* Old code
-		var file = this.state.toUpload;
-		console.log("File received is:"+ file);
-
-		let imageUploadRef = imageRef.child(file);
-		imageUploadRef.put(file).then(function(snapshot){
-			//Pop up element that says "file uploaded!"
-		this.setState({noticeVisible : "shownBoxImg"});
-		setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
-		});
-		
-		*/ 
-	}
-
-	sendImageToDB(ev){
-
 	}
 
 	render(){
@@ -293,9 +293,12 @@ task
 }
 
 
-/*=============
-End Basic CMS Functionality
-=============*/
+	/*=============
+	End Upload Section
+	=============*/
+
+
+
 
 const NavButton = ({onClick}) => {
       <button className = "sidebar-toggler sidebar-toggler-right" style ={{backgroundColor: 'blue',  position: "absolute", margin: "30px"}}type="button" data-toggle="collapse" data-target="#collapsingNavbar" onClick={onClick}>
@@ -308,36 +311,111 @@ const NavButton = ({onClick}) => {
       </button>
 }
 
-const SidebarMenu = ({show}) => <div style = {{visibility : show ? "visible" : "hidden" , backgroundColor : "#565151" , position : "absolute", height : "100vh" , width : "200px"}}> </div>
+/*==========
+**
+** "Add Content" Section of CMS Sidebar
+**
+===========*/
+
+const TextItem = TextArrayVar.map((number) => {
+
+});
+
+const ImageItem = ImageVar.map((ImageVar) => {
+	//Do functional components have props?
+	<img src = {this.props.thumbnail}>
+	</img>
+});
 
 
+export class TextAddContainer extends React.Component{
+	constructor(opts){
+		super(props);
 
-//code apeing: https://stackoverflow.com/questions/46818687/react-changing-css-property-on-click-arrow-function
+		//Array/Object containing all the text posts
+		//as received from 
+		TextArrayVar = props.TextArray;
 
 
-//Issue: I'm trying to create a statelss functional component within a class.  Don't. 
+		//bindings
+		this.RetrieveText = this.RetrieveText.bind(this);
 
-
-
-
-    
-    export class InnerMenu extends React.Component{
-	//Can I have a class nested within another class?
+	}
 	state = {
-	    
+
+		TextArray : TextArrayVar
+
 	}
 
-	//Get functionality now, add form later.
+	//When loading or when a user adds new content, retrieve a list 
+	//of all content from Firebase
 
-	addDiv = () => {
+	RetrieveText(){
+		
+	}
 
 
-	    //Pass up the state to App to pass to the VisualEditor
-	    //Previously I binded this downwards, so in App I'll need to bind this to this class
-	    
+	render(){
+		return(
+			<div onLoad = {this.RetrieveText}>
+				<Dropdown />
+				<TextItem displayText = {this.state.TextArray} />
+				<button onClick = {this.RetrieveText}>Refresh</button>
+			</div>
+			);
+	}
+}
+
+
+
+export class ImageAddContainer extends React.Component{
+	constructor(opts){
+		super(props)
+	}
+	state = {
+
+	}
+
+	getImagePreview(){
+
+		var reader  = new FileReader();
+
+		var thumbnailArray = [];
+
+		for(let i = 0 ; i <= ; ){
+
 		}
-    }  
-    
+		//for each image present in firebase database, store the thumbnail image
+		//and add it to the array 
+
+		reader.onloadend = function(){
+
+		}
+	}
+
+
+	render(){
+		return(
+
+			<ImageItem thumbnail = ""/>
+			);
+	}
+
+}
+
+
+
+ReactDOM.render(
+	<App />,
+    document.getElementById('root')
+);
+
+
+
+
+// OLD OLD OLD OLD OLD
+
+
 export class Sidebar extends React.Component{
 
  state = { 
@@ -363,7 +441,7 @@ export class Sidebar extends React.Component{
 }
 
 
-ReactDOM.render(
-	<App />,
-    document.getElementById('root')
-);
+/*============
+Render the Virtual DOM
+============*/
+

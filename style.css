@@ -33,11 +33,6 @@ h2{
 	
 }
 
-.content_bar{
-	width: 350px;
-	background-color: #E8D9D1;
-}
-
 .hiddenBoxImg{
 	background-color: aqua;
 	position: absolute;
@@ -60,4 +55,9 @@ h2{
 
 .noticeText{
 	font-family: 'Baloo Bhai';
+}
+
+.upload_content{
+	width: 350px;
+	background-color: #E8D9D1;
 }
