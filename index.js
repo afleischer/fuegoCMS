@@ -323,14 +323,24 @@ const NavButton = ({onClick}) => {
 
 //if displayText is an array of []
 
-/*
-const TextItem = TextArray.map((textValue) => {
-	<div>
-		<p>{this.props.textValue}</p>
-	</div>
-});
-*/ 
 
+const TextItem = (props) => {
+	const TextArray = props.TextArray;
+	const TextValues = Object.values(TextArray[0]);
+
+
+
+	const returnArray = TextArray.map(() => {
+		<div>
+			<p>{this.props.TextArray}</p>
+		</div>
+	});
+
+	return returnArray;
+} 
+
+
+/* 
 class TextItem extends React.Component{
 
 	//This function will likely be moved elsewhere
@@ -341,16 +351,11 @@ class TextItem extends React.Component{
 
 		CopyArray.map()
 
+			<div>
+				<p>{this.props.textValue}</p>
+			</div>
 
-
-		/**************
-
-		BAPSN: Get the map function to work in this and map it! 
-
-		**************/
-
-
-
+		return 
 
 	}
 
@@ -363,10 +368,17 @@ class TextItem extends React.Component{
 		);
 	}
 }
+*/ 
+
 
 export class TextAddContainer extends React.Component{
 	state = {
 
+	}
+
+	componentWillMount(){
+		let theValue = RetrieveText();
+		this.setState({TextRetrieved : theValue})
 	}
 
 	//When loading or when a user adds new content, retrieve a list 
@@ -399,7 +411,7 @@ export class TextAddContainer extends React.Component{
 		return(
 			<div onLoad = {this.RetrieveText}>
 				<Dropdown />
-				<TextItem TextArray = {this.RetrieveText} />
+				<TextItem TextArray = {this.state.TextRetrieved} />
 				<button onClick = {this.RetrieveText}>Refresh</button>
 			</div>
 			);
