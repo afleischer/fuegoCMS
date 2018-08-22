@@ -101,7 +101,6 @@ export default class App extends React.Component{
 			    	<StyleContentList />
 			    </div>
 			
-			<button className = "collapse">X</button>
 			</div>
 
 			<div className = "VisualSection">
@@ -109,6 +108,7 @@ export default class App extends React.Component{
 				<VisualEditor />
 			</div>
 
+			<button className = "collapse">X</button>
 	    </div>
 	);
     }
@@ -217,7 +217,6 @@ export class CMSContainerImageUpload extends React.Component{
 	constructor(props){
 		super(props);
 		this.handleUploadImage = this.handleUploadImage.bind(this);
-		this.sendImageToDB = this.sendImageToDB.bind(this);
 		this.setFile = this.setFile.bind(this);
 	}
 	state = {
@@ -323,26 +322,49 @@ const NavButton = ({onClick}) => {
 ===========*/
 
 //if displayText is an array of []
+
+/*
 const TextItem = TextArray.map((textValue) => {
 	<div>
 		<p>{this.props.textValue}</p>
 	</div>
 });
+*/ 
+
+class TextItem extends React.Component{
+
+	//This function will likely be moved elsewhere
+	getTextCopyValues(){
+
+		let CopyArray = Object.values(this.props.TextArrayVar[0]);
 
 
-export class TextAddContainer extends React.Component{
-	constructor(opts){
-		super(props);
-
-		//Array/Object containing all the text posts
-		//as received from 
-		TextArrayVar = props.TextArray;
+		CopyArray.map()
 
 
-		//bindings
-		this.RetrieveText = this.RetrieveText.bind(this);
+
+		/**************
+
+		BAPSN: Get the map function to work in this and map it! 
+
+		**************/
+
+
+
 
 	}
+
+
+	render(){
+		return(
+			<div>
+				<p>{this.props.textValue}</p>
+			</div>
+		);
+	}
+}
+
+export class TextAddContainer extends React.Component{
 	state = {
 
 	}
@@ -352,18 +374,24 @@ export class TextAddContainer extends React.Component{
 
 	RetrieveText(){
     	var TextRef = firebase.database().ref('blogs/');
-    	let TextArrayVar = [];
-		for(key in TextRef){
-			TextArrayVar.push(key.copy);			
-		}
+    	console.log("TextRef keys are:"+Object.keys(TextRef));
+    	var TextArrayVar = [];
 
-		let TextItem = TextArrayVar.map((textValue) => {
-			<div>
-				<p>{this.props.textValue}</p>
-			</div>
-		}
+    	TextRef.once('value').then(function(snapshot){ //remember, we have child data that we listen for here
+			TextArrayVar.push(snapshot.val());	
+			console.log("snapshot is:" + Object.values(theSnapshot));	
+			/*
+			for(snapshot.key in snapshot){
+				TextArrayVar.push(snapshot.val());
+			}
 
-		return TextItem; 
+			for(let i = 0; i <= snapshot.length; i++){
+				TextArrayVar.push(snapshot.val());
+			}
+			*/
+    	});
+    	console.log("Updated TextArrayVar is:"+ TextArrayVar);
+		return TextArrayVar;
 	}
 
 
@@ -371,7 +399,6 @@ export class TextAddContainer extends React.Component{
 		return(
 			<div onLoad = {this.RetrieveText}>
 				<Dropdown />
-				{this.RetrieveText}
 				<TextItem TextArray = {this.RetrieveText} />
 				<button onClick = {this.RetrieveText}>Refresh</button>
 			</div>
@@ -379,7 +406,7 @@ export class TextAddContainer extends React.Component{
 	}
 }
 
-
+/*
 const ImageItem = ImageVar.map((ImageVar) => {
 	//Do functional components have props?
 	<div>
@@ -388,11 +415,26 @@ const ImageItem = ImageVar.map((ImageVar) => {
 		<p>{this.props.ImageVar.thumbnail_prop}</p>
 	</div>
 });
+*/ 
+
+class ImageItem extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div>
+				<img src = {this.props.ImageVar.name_prop}>
+				</img>
+				<p>{this.props.ImageVar.thumbnail_prop}</p>
+			</div>
+
+		);
+	}
+}
 
 export class ImageAddContainer extends React.Component{
-	constructor(opts){
-		super(props)
-	}
 	state = {
 
 	}
@@ -441,11 +483,51 @@ export class ImageAddContainer extends React.Component{
 	render(){
 		return(
 
-			<ImageItem thumbnail = ""/>
+			<ImageItem ImageVar = {this.getImagePreview}/>
 			);
 	}
 
 }
+
+export class StyleContentList extends React.Component{
+
+	render(){
+		return(
+			
+			<div>foo</div>
+			);
+	}
+
+}
+
+/*============
+*
+* CMS Styling section
+*
+============*/ 
+
+
+export class Dropdown extends React.Component{
+
+	render(){
+		return(
+			<div>foo</div>
+
+			);
+	}
+}
+
+export class VisualEditor extends React.Component{
+
+
+	render(){
+		return(
+			<div>foo</div>
+
+			);
+	}
+}
+
 
 
 /*============
