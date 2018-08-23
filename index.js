@@ -55,6 +55,17 @@ const dbTextRef = db.ref('blogs/');
 ============*/
 
 export default class App extends React.Component{
+	constructor(props){
+		super(props);
+
+
+		//set the pointer to retrieve the data from the "blogs" folder on app load
+		dbTextRef.on('value', snapshot => {
+    	this.setState({
+    		TextList : snapshot
+    		});
+		});
+	}
     state = {
 		TextList : null,
 		ImageList : null,
@@ -62,13 +73,9 @@ export default class App extends React.Component{
 
     //Set listener on data
 
-componentDidUpdate(){  //fuck the police 
-			dbTextRef.on('value', snapshot => {
-    	this.setState({
-    		TextList : snapshot
-    	});
-	});
-}
+
+
+
     //In render, pass the state of the div down as props to the
 
     render(){
@@ -321,16 +328,36 @@ const TextItem = (props) => {
 	console.log("Prop received in individual item is:" + props.TextArray);
 
 	const TextArray = props.TextArray;
-	console.log(TextArray);
-	const TextValues = Object.values(TextArray[0]);
-	var returnArray = [];
 
-	for(let i = 0; i <= TextArray.length; i++){
-		returnArray.push(<div key = {i}><p className = "CMSTextPreviewMenu">TextArray[0][i]</p></div>);
+	//If Firebase hasn't yet responded by the time this function calls, we need to be 
+	//ready to handle the behavior
+	var returnArray = []; 
+	var TextValueDisplayVar = [];
+	
+	try{
+		const LoadedTest = Object.values(TextArray)[0];
+		
+		TextArray.forEach(function (childSnapshot) {
+			let TextValue = childSnapshot.val().copy;
+			console.log("Child elements of "+ childSnapshot);
+			console.log("Child element values are:"+ childSnapshot.val());
+			TextValueDisplayVar.push(TextValue);
+			console.log("updated TVDV is : "+TextValueDisplayVar);
+		});
+
+		for(let i = 0; i <= Object.keys(TextArray).length; i++){
+			returnArray.push(<div key = {i}><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p></div>);
+		}
+		
+
+	} catch (err){
+		//return "loading" elements while we wait for Firebase to finish loading
+		returnArray.push(<div><p className = "LoadingText">Loading...</p></div>);
 	}
 
 	return returnArray;
-} 
+
+}
 
 
 export class TextAddContainer extends React.Component{
@@ -377,7 +404,6 @@ export class TextAddContainer extends React.Component{
 			<div>
 				<Dropdown />
 				<TextItem TextArray = {this.props.TextArray} />
-				<button onClick = {this.RetrieveText}>Refresh</button>
 			</div>
 			);
 	}
