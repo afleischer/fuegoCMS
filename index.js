@@ -3,25 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-//import firebase from 'firebase';
+const fetch = require('node-fetch');
 
-/*
-Global variables 
-*/
-
-var firebase = require("firebase/app");
-//var admin = require("firebase-admin");
-
-
-//var db = admin.database();
-
-
-require("firebase/auth");
-require("firebase/database");
-require("firebase/firestore");
-require("firebase/messaging");
-require("firebase/functions");
-require("firebase/storage");
 
 
 
@@ -38,7 +21,31 @@ Firebase initialization
 	    messagingSenderId: "283527892810"
 	  };
 
-	firebase.initializeApp(config);
+
+
+require("firebase/auth");
+require("firebase/database");
+require("firebase/firestore");
+require("firebase/messaging");
+require("firebase/functions");
+require("firebase/storage");
+
+
+//import firebase from 'firebase';
+
+/*
+Global variables 
+*/
+
+var firebase = require("firebase/app");
+//var admin = require("firebase-admin");
+
+firebase.initializeApp(config);
+
+
+
+const db = firebase.database();
+const dbTextRef = db.ref('blogs/');
 
 
 /*===========
@@ -48,34 +55,20 @@ Firebase initialization
 ============*/
 
 export default class App extends React.Component{
-	constructor(props){
-		super(props);
-		this.setTextListener = this.setTextListener.bind(this);
-		this.setImageListener = this.setImageListener.bind(this);
-
-	}
     state = {
 		TextList : null,
-		ImageList : null
+		ImageList : null,
     }
 
-    setTextListener(){
-    	var TextRef = firebase.database().ref('blogs/');
-		
-		TextRef.on('value', function(snapshot) {
-  			this.setState({
-  				TextList : snapshot.val()
-  			});
-		});
-    }
+    //Set listener on data
 
-    setImageListener(){
-    	var ImageRef = firebase.storage().ref();
-
-    	ImageRef.on()
-    }
-
-
+componentDidUpdate(){  //fuck the police 
+			dbTextRef.on('value', snapshot => {
+    	this.setState({
+    		TextList : snapshot
+    	});
+	});
+}
     //In render, pass the state of the div down as props to the
 
     render(){
@@ -90,7 +83,7 @@ export default class App extends React.Component{
 			    	<CMSContainerImageUpload /> 
 			    </div>
 
-			    <div className = "add_content" onLoad = {this.setTextListener}>
+			    <div className = "add_content">
 			    	<h1>Add to Page</h1>
 			    	<TextAddContainer TextArray = {this.state.TextList} />
 			    	<ImageAddContainer ImageArray = {this.state.ImageList} />
@@ -325,64 +318,33 @@ const NavButton = ({onClick}) => {
 
 
 const TextItem = (props) => {
+	console.log("Prop received in individual item is:" + props.TextArray);
+
 	const TextArray = props.TextArray;
+	console.log(TextArray);
 	const TextValues = Object.values(TextArray[0]);
+	var returnArray = [];
 
-
-
-	const returnArray = TextArray.map(() => {
-		<div>
-			<p>{this.props.TextArray}</p>
-		</div>
-	});
+	for(let i = 0; i <= TextArray.length; i++){
+		returnArray.push(<div key = {i}><p className = "CMSTextPreviewMenu">TextArray[0][i]</p></div>);
+	}
 
 	return returnArray;
 } 
 
 
-/* 
-class TextItem extends React.Component{
-
-	//This function will likely be moved elsewhere
-	getTextCopyValues(){
-
-		let CopyArray = Object.values(this.props.TextArrayVar[0]);
-
-
-		CopyArray.map()
-
-			<div>
-				<p>{this.props.textValue}</p>
-			</div>
-
-		return 
-
-	}
-
-
-	render(){
-		return(
-			<div>
-				<p>{this.props.textValue}</p>
-			</div>
-		);
-	}
-}
-*/ 
-
-
 export class TextAddContainer extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.RetrieveText = this.RetrieveText.bind(this);
+
+	console.log("Props received in Text Container is: "+ props.TextArray);
+
+	}
 	state = {
-
+	TextRetrieved : 'foo'
 	}
-
-	componentWillMount(){
-		let theValue = RetrieveText();
-		this.setState({TextRetrieved : theValue})
-	}
-
-	//When loading or when a user adds new content, retrieve a list 
-	//of all content from Firebase
 
 	RetrieveText(){
     	var TextRef = firebase.database().ref('blogs/');
@@ -391,7 +353,6 @@ export class TextAddContainer extends React.Component{
 
     	TextRef.once('value').then(function(snapshot){ //remember, we have child data that we listen for here
 			TextArrayVar.push(snapshot.val());	
-			console.log("snapshot is:" + Object.values(theSnapshot));	
 			/*
 			for(snapshot.key in snapshot){
 				TextArrayVar.push(snapshot.val());
@@ -403,15 +364,19 @@ export class TextAddContainer extends React.Component{
 			*/
     	});
     	console.log("Updated TextArrayVar is:"+ TextArrayVar);
+    	this.setState({TextRetrieved : TextArrayVar});
 		return TextArrayVar;
 	}
 
 
+	//When loading or when a user adds new content, retrieve a list 
+	//of all content from Firebase
+
 	render(){
 		return(
-			<div onLoad = {this.RetrieveText}>
+			<div>
 				<Dropdown />
-				<TextItem TextArray = {this.state.TextRetrieved} />
+				<TextItem TextArray = {this.props.TextArray} />
 				<button onClick = {this.RetrieveText}>Refresh</button>
 			</div>
 			);
