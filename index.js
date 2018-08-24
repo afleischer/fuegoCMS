@@ -163,7 +163,6 @@ export class CMSContainerTextPost extends React.Component{
 		//let updateText = event.target.value;
 		let updateText = ev.target.value;
 		this.setState({blogText : updateText});
-		console.log(event);
 	}
 
 	sendBlogTextToDB() {
@@ -277,15 +276,24 @@ export class CMSContainerImageUpload extends React.Component{
 		//const name = (+new Date()) + '-' + file.name;
 		const name = dateVar.toDateString() + '-' + file.name;
 		const metadata = {
-		  contentType: file.type
+		  fileType: file.type,
+		  fileName: file.name,
+		  fileDate: file.lastModifiedDate
 	};
 
 		const task = ref.child(name).put(file, metadata);
 	task
 	  .then(snapshot => snapshot.ref.getDownloadURL())
 	  .then((url) => {
+	  	//send the url to firebase! 
 	    console.log(url);
-	    document.querySelector('#someImageTagID').src = url;
+	    firebase.database().ref('image_data/').set({
+	    	image_name : metadata.fileType,
+	    	image_date : metadata.fileDate,
+	    	image_type : metadata.fileType,
+	    	image_url : url
+	    })
+	    //document.querySelector('#someImageTagID').src = url;
 	  })
 	  .catch(console.error);
 
@@ -376,7 +384,7 @@ export class TextAddContainer extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.RetrieveText = this.RetrieveText.bind(this);
+	//this.RetrieveText = this.RetrieveText.bind(this);
 
 		/*============
 		Set Firebase listener for text values
@@ -390,31 +398,8 @@ export class TextAddContainer extends React.Component{
 
 	}
 	state = {
-	TextRetrieved : 'foo'
+
 	}
-
-	RetrieveText(){
-    	var TextRef = firebase.database().ref('blogs/');
-    	console.log("TextRef keys are:"+Object.keys(TextRef));
-    	var TextArrayVar = [];
-
-    	TextRef.once('value').then(function(snapshot){ //remember, we have child data that we listen for here
-			TextArrayVar.push(snapshot.val());	
-			/*
-			for(snapshot.key in snapshot){
-				TextArrayVar.push(snapshot.val());
-			}
-
-			for(let i = 0; i <= snapshot.length; i++){
-				TextArrayVar.push(snapshot.val());
-			}
-			*/
-    	});
-    	console.log("Updated TextArrayVar is:"+ TextArrayVar);
-    	this.setState({TextRetrieved : TextArrayVar});
-		return TextArrayVar;
-	}
-
 
 	//When loading or when a user adds new content, retrieve a list 
 	//of all content from Firebase
@@ -424,7 +409,7 @@ export class TextAddContainer extends React.Component{
 			<div>
 				<h2> Add Stored Text and Copy</h2>
 				<Dropdown />
-				<TextItem TextArray = {this.props.TextArray} />
+				<TextItem TextArray = {this.state.TextList} />
 			</div>
 			);
 	}
@@ -464,6 +449,7 @@ class ImageItem extends React.Component{
 const ImageItem = (props) => {
 
 var returnAray = [];
+/*
 
 	storageRef.forEach(function(snapshot){
 		storageRef.child(snapshot.image.imageName).getDownloadURL().then(function(url) {
@@ -471,6 +457,9 @@ var returnAray = [];
 		});
 	});
 	return returnArray;
+	*/
+		return(<div>foo</div>);
+
 }
 
 export class ImageAddContainer extends React.Component{
@@ -482,7 +471,7 @@ export class ImageAddContainer extends React.Component{
 		const storageRef = firebase.storage().ref();
 		
 		//get metaData
-		firebase.database.ref('image-metadata/').set({
+		db.ref('image-metadata/').set({
 			//onload, set the firebase data to be 
 
 		});
@@ -531,7 +520,6 @@ export class ImageAddContainer extends React.Component{
 			appendObjTo(imageArray, {name_prop : snapshot.val(), thumbnail_prop : snapshot.val() })
 		}
 
-		console.log(imageArray);
 		//reader.onloadend = function(){
 
 		return imageArray;	
