@@ -5,9 +5,6 @@ import ReactDOM from 'react-dom';
 
 const fetch = require('node-fetch');
 
-
-
-
 /*============
 Firebase initialization
 ============*/
@@ -30,8 +27,16 @@ require("firebase/messaging");
 require("firebase/functions");
 require("firebase/storage");
 
+/*
+//Importing items for advanced image options
+const functions = require('firebase-functions');
 
-//import firebase from 'firebase';
+const gcs = require('@google-cloud/storage')();
+//const spawn = require('child-process-promise').spawn;
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+*/
 
 /*
 Global variables 
@@ -46,6 +51,10 @@ firebase.initializeApp(config);
 
 const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
+const storageRef = firebase.storage().ref();
+
+
+
 
 
 /*===========
@@ -60,11 +69,14 @@ export default class App extends React.Component{
 
 
 		//set the pointer to retrieve the data from the "blogs" folder on app load
+
+		/*
 		dbTextRef.on('value', snapshot => {
     	this.setState({
     		TextList : snapshot
     		});
 		});
+		*/
 	}
     state = {
 		TextList : null,
@@ -366,7 +378,15 @@ export class TextAddContainer extends React.Component{
 
 		this.RetrieveText = this.RetrieveText.bind(this);
 
-	console.log("Props received in Text Container is: "+ props.TextArray);
+		/*============
+		Set Firebase listener for text values
+		=============*/
+		dbTextRef.on('value', snapshot => {
+    	this.setState({
+    		TextList : snapshot
+    		});
+		});
+
 
 	}
 	state = {
@@ -402,6 +422,7 @@ export class TextAddContainer extends React.Component{
 	render(){
 		return(
 			<div>
+				<h2> Add Stored Text and Copy</h2>
 				<Dropdown />
 				<TextItem TextArray = {this.props.TextArray} />
 			</div>
@@ -420,10 +441,11 @@ const ImageItem = ImageVar.map((ImageVar) => {
 });
 */ 
 
+
+
+/*
 class ImageItem extends React.Component{
-	constructor(props){
-		super(props);
-	}
+
 
 	render(){
 		return(
@@ -436,18 +458,52 @@ class ImageItem extends React.Component{
 		);
 	}
 }
+*/
+
+
+const ImageItem = (props) => {
+
+var returnAray = [];
+
+	storageRef.forEach(function(snapshot){
+		storageRef.child(snapshot.image.imageName).getDownloadURL().then(function(url) {
+			returnArray.push(<div className = "thumbnail_div"><img className = "thumbnail" src ={url} /></div>);
+		});
+	});
+	return returnArray;
+}
 
 export class ImageAddContainer extends React.Component{
+	constructor(props){
+		super(props);
+
+		//attach a listener for StorageRef
+
+		const storageRef = firebase.storage().ref();
+		
+		//get metaData
+		firebase.database.ref('image-metadata/').set({
+			//onload, set the firebase data to be 
+
+		});
+
+	}
 	state = {
+
+		image_metadata : null
 
 	}
 
+	//or I could send this to firebase storage...  
+
 	getImagePreview(){
 
-
-
 		/***********
+		
+
+
 		The idea:
+
 
 		FileReader() object lets web apps async read file contents on computer via File/Blob objects
 
@@ -485,7 +541,6 @@ export class ImageAddContainer extends React.Component{
 
 	render(){
 		return(
-
 			<ImageItem ImageVar = {this.getImagePreview}/>
 			);
 	}
@@ -497,7 +552,7 @@ export class StyleContentList extends React.Component{
 	render(){
 		return(
 			
-			<div>foo</div>
+			<div></div>
 			);
 	}
 
@@ -514,7 +569,7 @@ export class Dropdown extends React.Component{
 
 	render(){
 		return(
-			<div>foo</div>
+			<div></div>
 
 			);
 	}
@@ -525,7 +580,7 @@ export class VisualEditor extends React.Component{
 
 	render(){
 		return(
-			<div>foo</div>
+			<div></div>
 
 			);
 	}
