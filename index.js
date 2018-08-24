@@ -275,21 +275,25 @@ export class CMSContainerImageUpload extends React.Component{
 		var dateVar = new Date;
 		//const name = (+new Date()) + '-' + file.name;
 		const name = dateVar.toDateString() + '-' + file.name;
+		console.log("file date modified object is:"+ file.lastModifiedDate);
 		const metadata = {
-		  fileType: file.type,
-		  fileName: file.name,
-		  fileDate: file.lastModifiedDate
+		  "fileType": file.type,
+		  "fileName": file.name,
+		  "uploadDate": name
 	};
 
 		const task = ref.child(name).put(file, metadata);
 	task
 	  .then(snapshot => snapshot.ref.getDownloadURL())
 	  .then((url) => {
-	  	//send the url to firebase! 
-	    console.log(url);
-	    firebase.database().ref('image_data/').set({
-	    	image_name : metadata.fileType,
-	    	image_date : metadata.fileDate,
+
+		console.log(url);
+		const image_date = metadata.uploadDate;
+		/*==========
+		Send file metadata to realtime database
+		==========*/
+	    firebase.database().ref('image_data/'+currentDateTimeDate).set({
+	    	image_name : metadata.fileName,   	
 	    	image_type : metadata.fileType,
 	    	image_url : url
 	    })
