@@ -52,6 +52,8 @@ firebase.initializeApp(config);
 const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
 const storageRef = firebase.storage().ref();
+const databaseImageRef = db.ref('image_data');
+
 
 
 
@@ -274,7 +276,8 @@ export class CMSContainerImageUpload extends React.Component{
 
 		var dateVar = new Date;
 		//const name = (+new Date()) + '-' + file.name;
-		const name = dateVar.toDateString() + '-' + file.name;
+		//const name = dateVar.toDateString() + '-' + file.name;
+		const name = file.name;
 		console.log("file date modified object is:"+ file.lastModifiedDate);
 		const metadata = {
 		  "fileType": file.type,
@@ -450,10 +453,90 @@ class ImageItem extends React.Component{
 */
 
 
-const ImageItem = (props) => {
+class ImageItem extends React.Component {
+	constructor(props){
+		super(props);
+		this.getArray = this.getArray.bind(this);
+	}
+	state = {
+		returnArrayState : []
+	}
 
-var returnAray = [];
+	getArray(props){
+		var props = this.props;
+		var returnArray = [];
+		const storageRef = firebase.storage().ref();
+		var name = props.image_metadata;
+		
+		try{
+			for(let i = 0; i < props.ImageVar.length; i++){
+				
+				storageRef.child(props.ImageVar[i]).getDownloadURL().then(function(url) {
+					console.log("The server got:"+url);
+					var joined = tempArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
+					/*this.setState({
+						returnArrayState : joined
+					}); */
+					//returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
+				});
+			}
+		}catch(error){
+			var loadingMessage = <div className ="thumbnails_loading"key="shutupreact">Loading images...</div>;
+			tempArray.push(loadingMessage);
+			/*this.setState({
+				returnArrayState : loadingMessage
+			}); */
+		}
+	
+	};
+
+	componentDidUpdate(){
+		var tempArray = [];
+		this.getArray();
+		this.setState({
+			returnArrayState : tempArray
+		})
+	}
+
+	render(){
+		return(
+		
+		<div>{this.state.returnArrayState}</div>
+		);
+	}
+}
+
+/* 
+
+const ImageItem = (props) =>{
+
+		var returnArray = [];
+		const storageRef = firebase.storage().ref();
+		var name = props.image_metadata;
+		
+		try{
+			for(let i = 0; i < props.ImageVar.length; i++){
+				
+				storageRef.child(props.ImageVar[i]).getDownloadURL().then(function(url) {
+					console.log("The server got:"+url);
+					returnArray.push(<div className = "thumbnail_div"><img className = "thumbnail" src ={url} /></div>);
+				});
+			}
+		}catch(error){
+			returnArray.push(<div key="shutupreact">foo</div>);
+		}
+
+return returnArray;
+
+}
+
+*/ 
+
+
 /*
+
+	//for each name in props.image_metadata
+
 
 	storageRef.forEach(function(snapshot){
 		storageRef.child(snapshot.image.imageName).getDownloadURL().then(function(url) {
@@ -461,24 +544,50 @@ var returnAray = [];
 		});
 	});
 	return returnArray;
-	*/
-		return(<div>foo</div>);
+	
+		return returnArray;
 
 }
+*/
 
 export class ImageAddContainer extends React.Component{
 	constructor(props){
 		super(props);
 
-		//attach a listener for StorageRef
 
+		const databaseImageRef = db.ref('image_data');
 		const storageRef = firebase.storage().ref();
-		
-		//get metaData
-		db.ref('image-metadata/').set({
-			//onload, set the firebase data to be 
 
-		});
+
+		//within databaRef, for each image_data child get the image_url
+		//
+
+		var stateArray = [];
+		
+		var iterator = 1;
+
+/* 
+{
+	image_name_1.jpg
+}
+
+*/
+
+		
+	databaseImageRef.on("value", snapshot => {
+		var metadata_array = [];
+			snapshot.forEach(function (childSnapshot) {
+				var foo = childSnapshot.val().image_name;
+				metadata_array.push(foo);
+			});
+
+			this.setState({
+				image_metadata : metadata_array
+			});
+			
+	});
+
+
 
 	}
 	state = {
@@ -510,7 +619,11 @@ export class ImageAddContainer extends React.Component{
 		Firebase data structure: 
 
 			
-		*/ function appendObjTo(thatArray, newObj) {
+		*/ 
+		
+
+
+		function appendObjTo(thatArray, newObj) {
 			const frozenObj = Object.freeze(newObj);
 			return Object.freeze(thatArray.concat(frozenObj));
 			}
@@ -533,7 +646,7 @@ export class ImageAddContainer extends React.Component{
 
 	render(){
 		return(
-			<ImageItem ImageVar = {this.getImagePreview}/>
+			<ImageItem ImageVar = {this.state.image_metadata}/>
 			);
 	}
 
