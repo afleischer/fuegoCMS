@@ -27,6 +27,8 @@ require("firebase/messaging");
 require("firebase/functions");
 require("firebase/storage");
 
+
+
 /*
 //Importing items for advanced image options
 const functions = require('firebase-functions');
@@ -52,7 +54,10 @@ firebase.initializeApp(config);
 const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
 const storageRef = firebase.storage().ref();
-const databaseImageRef = db.ref('image_data');
+const databaseImageRef = db.ref('image_data/');
+
+//const functions = require('firebase-functions');
+
 
 
 
@@ -473,35 +478,27 @@ class ImageItem extends React.Component {
 				
 				storageRef.child(props.ImageVar[i]).getDownloadURL().then(function(url) {
 					console.log("The server got:"+url);
-					var joined = tempArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
-					/*this.setState({
+					gcs.bucket.file(url)
+					returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
+					/* this.setState({
 						returnArrayState : joined
 					}); */
 					//returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
 				});
 			}
 		}catch(error){
-			var loadingMessage = <div className ="thumbnails_loading"key="shutupreact">Loading images...</div>;
-			tempArray.push(loadingMessage);
-			/*this.setState({
+		returnArray.push(<div className ="thumbnails_loading"key="shutupreact">Loading images...</div>);
+		/*	this.setState({
 				returnArrayState : loadingMessage
-			}); */
+			}); */ 
 		}
-	
+	return returnArray;
 	};
-
-	componentDidUpdate(){
-		var tempArray = [];
-		this.getArray();
-		this.setState({
-			returnArrayState : tempArray
-		})
-	}
 
 	render(){
 		return(
 		
-		<div>{this.state.returnArrayState}</div>
+		<div>{this.getArray()}</div>
 		);
 	}
 }
@@ -577,8 +574,9 @@ export class ImageAddContainer extends React.Component{
 	databaseImageRef.on("value", snapshot => {
 		var metadata_array = [];
 			snapshot.forEach(function (childSnapshot) {
-				var foo = childSnapshot.val().image_name;
-				metadata_array.push(foo);
+				var RDB_image_name = childSnapshot.val().image_name;
+				var RDB_image_url = childSnapshot.val().image_url;
+				metadata_array.push([{image_name : RDB_image_name},{image_url : RDB_image_url}]);
 			});
 
 			this.setState({
@@ -587,6 +585,12 @@ export class ImageAddContainer extends React.Component{
 			
 	});
 
+//can also try onChange
+/*
+	const generateThumbnail = functions.storage.object().onFinalize((object) => {
+		
+	});
+*/
 
 
 	}
@@ -643,6 +647,9 @@ export class ImageAddContainer extends React.Component{
 
 	}
 
+	componentDidUpdate(){
+		console.log("ending metadata is:"+ this.state.image_metadata);
+	}
 
 	render(){
 		return(
