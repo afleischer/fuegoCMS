@@ -371,10 +371,7 @@ const TextItem = (props) => {
 		
 		TextArray.forEach(function (childSnapshot) {
 			let TextValue = childSnapshot.val().copy;
-			console.log("Child elements of "+ childSnapshot);
-			console.log("Child element values are:"+ childSnapshot.val());
 			TextValueDisplayVar.push(TextValue);
-			console.log("updated TVDV is : "+TextValueDisplayVar);
 		});
 
 		for(let i = 0; i <= Object.keys(TextArray).length; i++){
@@ -384,7 +381,7 @@ const TextItem = (props) => {
 
 	} catch (err){
 		//return "loading" elements while we wait for Firebase to finish loading
-		returnArray.push(<div><p className = "LoadingText">Loading...</p></div>);
+		returnArray.push(<div><p className = "LoadingText">Loading Copy Entries...</p></div>);
 	}
 
 	return returnArray;
@@ -563,12 +560,6 @@ export class ImageAddContainer extends React.Component{
 		
 		var iterator = 1;
 
-/* 
-{
-	image_name_1.jpg
-}
-
-*/
 
 		
 	databaseImageRef.on("value", snapshot => {
@@ -605,27 +596,14 @@ export class ImageAddContainer extends React.Component{
 	getImagePreview(){
 
 		/***********
-		
-
-
-		The idea:
-
-
+	
+		Old code- this can be useful for getting thumbnails off of the desktop, but we're loading from the server
 		FileReader() object lets web apps async read file contents on computer via File/Blob objects
 
 		// 1. First, get a list of the files by referencing the location and lo
-		************/
-
+	
 		var storageRef = firebase.storage().ref();
 		var imageArray = [];
-
-		/*
-		Firebase data structure: 
-
-			
-		*/ 
-		
-
 
 		function appendObjTo(thatArray, newObj) {
 			const frozenObj = Object.freeze(newObj);
@@ -644,12 +622,10 @@ export class ImageAddContainer extends React.Component{
 		//reader.onloadend = function(){
 
 		return imageArray;	
+			************/
 
 	}
 
-	componentDidUpdate(){
-		console.log("ending metadata is:"+ this.state.image_metadata);
-	}
 
 	render(){
 		return(
