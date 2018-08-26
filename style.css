@@ -33,6 +33,11 @@ h2{
 	
 }
 
+.image_add_container{
+	height: 420px;
+	overflow-y: scroll;
+}
+
 .hiddenBoxImg{
 	background-color: aqua;
 	position: absolute;
@@ -51,6 +56,31 @@ h2{
 	left: calc(100vw - 400px);
 	animation-name: animateInNotice;
 	animation-duration: 3s;
+}
+
+.sidebar{
+	width: 500px;
+    background-color: #E8D9D1;
+}
+
+.thumbnail{
+    height: 80%;
+}
+
+.thumbnail_div{
+	border-style: inset;
+    border-width: 5px;
+    border-color: #c4c4c4;
+    width: 150px;
+    height: 200px;
+    display: inline-block;
+    overflow: scroll;
+     background-color: #c8d6e3;
+
+}
+
+.thumbnail_name{
+	margin: 0;
 }
 
 .noticeText{

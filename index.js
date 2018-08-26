@@ -55,6 +55,7 @@ const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
 const storageRef = firebase.storage().ref();
 const databaseImageRef = db.ref('image_data/');
+import Iframe from 'react-iframe';
 
 //const functions = require('firebase-functions');
 
@@ -93,6 +94,26 @@ export default class App extends React.Component{
     //Set listener on data
 
 
+	setFrameProperties(tag, content, style){
+
+		var pageURL =  this.state.CurrentEditPage;
+		var pageRef = firebase.database().ref('pages/').child(pageURL);
+			//var updatePageRef = pageRef.child(pageURL)
+
+			update
+
+			//<$tagName style = '$tagStyle'>tagContent</tagName>
+
+			if(tag = "img"){
+				var tagName = 'img'
+			}
+
+		pageRef.set({
+			    [tagID] : b
+		});
+
+	}
+
 
 
     //In render, pass the state of the div down as props to the
@@ -122,12 +143,14 @@ export default class App extends React.Component{
 			
 			</div>
 
+			<button className = "collapse">X</button>
+
 			<div className = "VisualSection">
 				<Dropdown />
 				<VisualEditor />
 			</div>
 
-			<button className = "collapse">X</button>
+
 	    </div>
 	);
     }
@@ -535,7 +558,7 @@ const ImageItem = (props) => {
 				var imageName = Metadata[i].image_name;
 				var imageUrl = Metadata[i].image_url;
 				
-				returnArray.push(<div className = "thumbnail_div"><p>{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
+				returnArray.push(<div className = "thumbnail_div"><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
 				
 			}
 		}catch(error){
@@ -657,7 +680,9 @@ componentDidMount(){
 
 	render(){
 		return(
-			<ImageItem Metadata = {this.state.image_metadata} />
+			<div className = "image_add_container">
+				<ImageItem Metadata = {this.state.image_metadata} />
+			</div>
 			);
 	}
 
@@ -683,6 +708,11 @@ export class StyleContentList extends React.Component{
 
 export class Dropdown extends React.Component{
 
+
+	setWebImage(){
+
+	}
+
 	render(){
 		return(
 			<div></div>
@@ -691,12 +721,65 @@ export class Dropdown extends React.Component{
 	}
 }
 
-export class VisualEditor extends React.Component{
+const Dropdown = (props) => {
 
+	let pages = props.Pages;
+	var returnArray = [(<select id="page_selector">)];
+
+	for(let i = 0; i < pages.length ; i++){
+		returnArray.push(<option value={pages[i]}>pages[i]</option>);
+	}
+
+	returnArray.push(</select>);
+	return returnArray;
+}
+
+export class VisualEditor extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
+	}
+
+	state = {
+		CurrentEditPage : 'localhost:8080/src/example.html',
+		PagesToEdit : [],
+	}
+
+	setVisualEditorPage(ev){
+		//change "PageEdited" to 
+		let DropdownSelection = ev.target.value;
+		this.setState({
+			CurrentEditPage : DropdownSelection
+		});
+	}
+
+//Pass this up to the app level! 
+	setFrameProperties(tag, content, ev){
+
+		var pageURL =  this.state.CurrentEditPage;
+		var pageRef = firebase.database().ref('pages/').child(pageURL);
+			//var updatePageRef = pageRef.child(pageURL)
+
+		pageRef.set({
+			    content : blogEntryCopy
+		});
+
+	}
 
 	render(){
 		return(
-			<div></div>
+			<div>
+				<Dropdown onChange = {this.setVisualEditorPage(ev)} Pages = {this.state.PagesToEdit} />
+				<Iframe url = {this.state.CurrentEditPage}
+					width = "calc(100vw - 500px)"
+					height = "90vh"
+					id = "myId"
+					className = "iframe"
+					display="initial"
+
+				 />
+			</div>
 
 			);
 	}
