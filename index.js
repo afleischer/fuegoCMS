@@ -85,6 +85,9 @@ export default class App extends React.Component{
     		});
 		});
 		*/
+
+		this.setFrameProperties = this.setFrameProperties.bind(this);
+
 	}
     state = {
 		TextList : null,
@@ -146,7 +149,6 @@ export default class App extends React.Component{
 			<button className = "collapse">X</button>
 
 			<div className = "VisualSection">
-				<Dropdown />
 				<VisualEditor />
 			</div>
 
@@ -440,7 +442,6 @@ export class TextAddContainer extends React.Component{
 		return(
 			<div>
 				<h2> Add Stored Text and Copy</h2>
-				<Dropdown />
 				<TextItem TextArray = {this.state.TextList} />
 			</div>
 			);
@@ -706,7 +707,7 @@ export class StyleContentList extends React.Component{
 ============*/ 
 
 
-export class Dropdown extends React.Component{
+export class Dropdown_Style extends React.Component{
 
 
 	setWebImage(){
@@ -721,16 +722,18 @@ export class Dropdown extends React.Component{
 	}
 }
 
-const Dropdown = (props) => {
+const DropdownOptions = (props) => {
 
-	let pages = props.Pages;
-	var returnArray = [(<select id="page_selector">)];
+	var pages = props.Pages;
+	var returnArray = [];
 
-	for(let i = 0; i < pages.length ; i++){
+	//returnArray.push(<select id="page_selector">);
+
+	for(let i = 0; i <= pages.length -1; i++){
 		returnArray.push(<option value={pages[i]}>pages[i]</option>);
 	}
 
-	returnArray.push(</select>);
+	//returnArray.push(</select>);
 	return returnArray;
 }
 
@@ -739,16 +742,17 @@ export class VisualEditor extends React.Component{
 		super(props);
 
 		this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
+		this.setFrameProperties = this.setFrameProperties.bind(this);
 	}
 
 	state = {
 		CurrentEditPage : 'localhost:8080/src/example.html',
-		PagesToEdit : [],
+		PagesToEdit : ['localhost:8080/src/example.html'],
 	}
 
-	setVisualEditorPage(ev){
+	setVisualEditorPage(e){
 		//change "PageEdited" to 
-		let DropdownSelection = ev.target.value;
+		let DropdownSelection = e.target.value;
 		this.setState({
 			CurrentEditPage : DropdownSelection
 		});
@@ -770,11 +774,14 @@ export class VisualEditor extends React.Component{
 	render(){
 		return(
 			<div>
-				<Dropdown onChange = {this.setVisualEditorPage(ev)} Pages = {this.state.PagesToEdit} />
-				<Iframe url = {this.state.CurrentEditPage}
+				<select id = "page_selector" onChange = {(e) => this.setVisualEditorPage(e)}> 
+					<DropdownOptions Pages = {this.state.PagesToEdit} />
+				</select>
+				<Iframe
+					id = "VisualEditor"
+					url = {this.state.CurrentEditPage}
 					width = "calc(100vw - 500px)"
 					height = "90vh"
-					id = "myId"
 					className = "iframe"
 					display="initial"
 

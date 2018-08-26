@@ -91,3 +91,9 @@ h2{
 	width: 350px;
 	background-color: #E8D9D1;
 }
+
+#VisualEditor{
+	border-width: 5px;
+	border-color: black;
+	border-style: inset;
+}
