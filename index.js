@@ -75,23 +75,35 @@ export default class App extends React.Component{
 	constructor(props){
 		super(props);
 
-
-		//set the pointer to retrieve the data from the "blogs" folder on app load
-
-		/*
-		dbTextRef.on('value', snapshot => {
-    	this.setState({
-    		TextList : snapshot
-    		});
-		});
-		*/
-
 		this.setFrameProperties = this.setFrameProperties.bind(this);
+		this.addPage = this.addPage.bind(this);
 
 	}
+
+/*========================================
+Data schema mockup 
+pages/ 
+	page_url
+		{ key
+		tag
+		placement
+		style }
+		{ key 
+		tag
+		placement
+		style }
+	page_url	
+		...
+
+========================================*/ 
+
     state = {
 		TextList : null,
 		ImageList : null,
+		CurrentEditPage : 'localhost:8080/src/example.html',
+		Editor : {
+			page_editing : null,
+		}
     }
 
     //Set listener on data
@@ -117,13 +129,17 @@ export default class App extends React.Component{
 
 	}
 
+	addPage(){
+		
+	}
+
 
 
     //In render, pass the state of the div down as props to the
 
     render(){
 	return(
-		<div>
+		<span className = "app-container">
 
 			<div className = "sidebar">
 
@@ -149,11 +165,11 @@ export default class App extends React.Component{
 			<button className = "collapse">X</button>
 
 			<div className = "VisualSection">
-				<VisualEditor />
+				<VisualEditor CurrentEditPage = {this.state.CurrentEditPage} />
 			</div>
 
 
-	    </div>
+	    </span>
 	);
     }
 
@@ -730,7 +746,7 @@ const DropdownOptions = (props) => {
 	//returnArray.push(<select id="page_selector">);
 
 	for(let i = 0; i <= pages.length -1; i++){
-		returnArray.push(<option value={pages[i]}>pages[i]</option>);
+		returnArray.push(<option value={pages[i]}>{pages[i]}</option>);
 	}
 
 	//returnArray.push(</select>);
@@ -743,10 +759,11 @@ export class VisualEditor extends React.Component{
 
 		this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
 		this.setFrameProperties = this.setFrameProperties.bind(this);
+		this.addPage = this.addPage.bind(this);
 	}
 
+//NOTICE!  CurrentEditPage will be hoisted up 
 	state = {
-		CurrentEditPage : 'localhost:8080/src/example.html',
 		PagesToEdit : ['localhost:8080/src/example.html'],
 	}
 
@@ -779,7 +796,7 @@ export class VisualEditor extends React.Component{
 				</select>
 				<Iframe
 					id = "VisualEditor"
-					url = {this.state.CurrentEditPage}
+					url = {this.props.CurrentEditPage}
 					width = "calc(100vw - 500px)"
 					height = "90vh"
 					className = "iframe"

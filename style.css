@@ -22,6 +22,21 @@ h2{
 	font-family: roboto;
 }
 
+.app-container{
+	display: grid;
+	width: 100vw;
+	height: auto;
+	grid-template-areas: 
+	"upload visual"
+	"add visual"
+	"style visual"
+
+	;
+	grid-template-rows: auto auto auto;
+	grid-template-columns: 33vw 66vw;
+
+}
+
 .collapse{
 	background-color: #BDB1AA;
 
@@ -87,9 +102,26 @@ h2{
 	font-family: 'Baloo Bhai';
 }
 
+/* Grid Area specs */
+
 .upload_content{
-	width: 350px;
+	/*width: 350px;*/
 	background-color: #E8D9D1;
+	grid-area: upload;
+}
+
+.add_content{
+
+	grid-area: add;
+}
+
+.style_content{
+	grid-area: style;
+}
+
+.VisualSection{
+
+	grid-area: visual;
 }
 
 #VisualEditor{
