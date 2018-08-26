@@ -454,7 +454,7 @@ class ImageItem extends React.Component{
 }
 */
 
-
+/*
 class ImageItem extends React.Component {
 	constructor(props){
 		super(props);
@@ -477,40 +477,38 @@ class ImageItem extends React.Component {
 					console.log("The server got:"+url);
 					gcs.bucket.file(url)
 					returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
-					/* this.setState({
+					 this.setState({
 						returnArrayState : joined
-					}); */
+					}); 
 					//returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
 				});
 			}
 		}catch(error){
 		returnArray.push(<div className ="thumbnails_loading"key="shutupreact">Loading images...</div>);
-		/*	this.setState({
+			this.setState({
 				returnArrayState : loadingMessage
-			}); */ 
+			}); 
 		}
-	return returnArray;
 	};
 
 	render(){
 		return(
-		
-		<div>{this.getArray()}</div>
+			{returnArray}
 		);
 	}
 }
 
-/* 
+*/
 
+/*
 const ImageItem = (props) =>{
 
 		var returnArray = [];
-		const storageRef = firebase.storage().ref();
-		var name = props.image_metadata;
+		//const storageRef = firebase.storage().ref();
+		var name = props.Metadata;
 		
 		try{
-			for(let i = 0; i < props.ImageVar.length; i++){
-				
+			for(let i = 0; i < Metadata.length; i++){
 				storageRef.child(props.ImageVar[i]).getDownloadURL().then(function(url) {
 					console.log("The server got:"+url);
 					returnArray.push(<div className = "thumbnail_div"><img className = "thumbnail" src ={url} /></div>);
@@ -523,8 +521,32 @@ const ImageItem = (props) =>{
 return returnArray;
 
 }
+*/
 
-*/ 
+const ImageItem = (props) => {
+
+		var returnArray = [];
+		//const storageRef = firebase.storage().ref();
+		var Metadata = props.Metadata;
+		
+		try{
+			for(let i = 0; i < Metadata.length; i++){
+
+				var imageName = Metadata[i].image_name;
+				var imageUrl = Metadata[i].image_url;
+				
+				returnArray.push(<div className = "thumbnail_div"><p>{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
+				
+			}
+		}catch(error){
+			returnArray.push(<div key="shutupreact">foo</div>);
+		}
+
+return returnArray;
+
+}
+
+
 
 
 /*
@@ -567,7 +589,10 @@ export class ImageAddContainer extends React.Component{
 			snapshot.forEach(function (childSnapshot) {
 				var RDB_image_name = childSnapshot.val().image_name;
 				var RDB_image_url = childSnapshot.val().image_url;
-				metadata_array.push([{image_name : RDB_image_name},{image_url : RDB_image_url}]);
+				metadata_array.push(
+					{image_name : RDB_image_name,
+					image_url : RDB_image_url}
+					);
 			});
 
 			this.setState({
@@ -626,10 +651,13 @@ export class ImageAddContainer extends React.Component{
 
 	}
 
+componentDidMount(){
+	console.log("State update finished");
+}
 
 	render(){
 		return(
-			<ImageItem ImageVar = {this.state.image_metadata}/>
+			<ImageItem Metadata = {this.state.image_metadata} />
 			);
 	}
 
