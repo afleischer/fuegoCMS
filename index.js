@@ -88,19 +88,31 @@ export default class App extends React.Component{
     //Set listener on data
 
 
-	setFrameProperties(tag, content, style){
+	setFrameProperties(e, tag, content, style){
 
-		var pageURL =  this.state.CurrentEditPage;
+		var event = e;
+		var child = e.childNodes;
+		console.log(chid);
+		var imageURL = child.getAttribute("src");
+		var pageURL =  document.getElementById('page_selector').value;
 		var pageRef = firebase.database().ref('pages/').child(pageURL);
-			//var updatePageRef = pageRef.child(pageURL)
+		var tagName = '';
 
-			update
-
+		var update = [];
+			
+			//Handle tags
 			//<$tagName style = '$tagStyle'>tagContent</tagName>
 
-			if(tag = "img"){
-				var tagName = 'img'
-			}
+		switch(tag){
+			case 'img':
+				update = (<img src = {event.target.child}></img>)
+				break;
+			case 'p':
+
+				break;
+			case default :
+				
+		}
 
 		pageRef.set({
 			    [tagID] : b
@@ -438,104 +450,7 @@ export class TextAddContainer extends React.Component{
 	}
 }
 
-/*
-const ImageItem = ImageVar.map((ImageVar) => {
-	//Do functional components have props?
-	<div>
-		<img src = {this.props.ImageVar.name_prop}>
-		</img>
-		<p>{this.props.ImageVar.thumbnail_prop}</p>
-	</div>
-});
-*/ 
 
-
-
-/*
-class ImageItem extends React.Component{
-
-
-	render(){
-		return(
-			<div>
-				<img src = {this.props.ImageVar.name_prop}>
-				</img>
-				<p>{this.props.ImageVar.thumbnail_prop}</p>
-			</div>
-
-		);
-	}
-}
-*/
-
-/*
-class ImageItem extends React.Component {
-	constructor(props){
-		super(props);
-		this.getArray = this.getArray.bind(this);
-	}
-	state = {
-		returnArrayState : []
-	}
-
-	getArray(props){
-		var props = this.props;
-		var returnArray = [];
-		const storageRef = firebase.storage().ref();
-		var name = props.image_metadata;
-		
-		try{
-			for(let i = 0; i < props.ImageVar.length; i++){
-				
-				storageRef.child(props.ImageVar[i]).getDownloadURL().then(function(url) {
-					console.log("The server got:"+url);
-					gcs.bucket.file(url)
-					returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
-					 this.setState({
-						returnArrayState : joined
-					}); 
-					//returnArray.push(<div className = "thumbnails_loaded"><img className = "thumbnail" src ={url} /></div>);
-				});
-			}
-		}catch(error){
-		returnArray.push(<div className ="thumbnails_loading"key="shutupreact">Loading images...</div>);
-			this.setState({
-				returnArrayState : loadingMessage
-			}); 
-		}
-	};
-
-	render(){
-		return(
-			{returnArray}
-		);
-	}
-}
-
-*/
-
-/*
-const ImageItem = (props) =>{
-
-		var returnArray = [];
-		//const storageRef = firebase.storage().ref();
-		var name = props.Metadata;
-		
-		try{
-			for(let i = 0; i < Metadata.length; i++){
-				storageRef.child(props.ImageVar[i]).getDownloadURL().then(function(url) {
-					console.log("The server got:"+url);
-					returnArray.push(<div className = "thumbnail_div"><img className = "thumbnail" src ={url} /></div>);
-				});
-			}
-		}catch(error){
-			returnArray.push(<div key="shutupreact">foo</div>);
-		}
-
-return returnArray;
-
-}
-*/
 
 const ImageItem = (props) => {
 
@@ -549,7 +464,7 @@ const ImageItem = (props) => {
 				var imageName = Metadata[i].image_name;
 				var imageUrl = Metadata[i].image_url;
 				
-				returnArray.push(<div className = "thumbnail_div"><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
+				returnArray.push(<div className = "thumbnail_div" onClick = {this.setFrameProperties(e,"img", imageName,"position: relative;")}><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
 				
 			}
 		}catch(error){
@@ -562,24 +477,6 @@ return returnArray;
 
 
 
-
-/*
-
-	//for each name in props.image_metadata
-
-
-	storageRef.forEach(function(snapshot){
-		storageRef.child(snapshot.image.imageName).getDownloadURL().then(function(url) {
-			returnArray.push(<div className = "thumbnail_div"><img className = "thumbnail" src ={url} /></div>);
-		});
-	});
-	return returnArray;
-	
-		return returnArray;
-
-}
-*/
-
 export class ImageAddContainer extends React.Component{
 	constructor(props){
 		super(props);
@@ -589,15 +486,6 @@ export class ImageAddContainer extends React.Component{
 		const storageRef = firebase.storage().ref();
 
 
-		//within databaRef, for each image_data child get the image_url
-		//
-
-		var stateArray = [];
-		
-		var iterator = 1;
-
-
-		
 	databaseImageRef.on("value", snapshot => {
 		var metadata_array = [];
 			snapshot.forEach(function (childSnapshot) {
@@ -614,14 +502,6 @@ export class ImageAddContainer extends React.Component{
 			});
 			
 	});
-
-//can also try onChange
-/*
-	const generateThumbnail = functions.storage.object().onFinalize((object) => {
-		
-	});
-*/
-
 
 	}
 	state = {
@@ -782,12 +662,14 @@ export class VisualEditor extends React.Component{
 //Here's the real meat of this.  
 	VisualLogic(){
 
+
+
 	}
 
 
 	addPage(pageName){
 		//get the value of the newPage name
-		var newPage = querySelector("#page_addition").value;
+		var newPage = document.querySelector("#page_addition").value;
 
 		//Add the name of the new page to the database
 		const webPrefix = "localhost:8080/src";
