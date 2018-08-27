@@ -76,35 +76,14 @@ export default class App extends React.Component{
 		super(props);
 
 		this.setFrameProperties = this.setFrameProperties.bind(this);
-		this.addPage = this.addPage.bind(this);
-
 	}
 
-/*========================================
-Data schema mockup 
-pages/ 
-	page_url
-		{ key
-		tag
-		placement
-		style }
-		{ key 
-		tag
-		placement
-		style }
-	page_url	
-		...
 
-========================================*/ 
 
     state = {
 		TextList : null,
 		ImageList : null,
-		CurrentEditPage : 'localhost:8080/src/example.html',
-		Editor : {
-			page_editing : null,
 		}
-    }
 
     //Set listener on data
 
@@ -128,11 +107,6 @@ pages/
 		});
 
 	}
-
-	addPage(){
-		
-	}
-
 
 
     //In render, pass the state of the div down as props to the
@@ -165,7 +139,7 @@ pages/
 			<button className = "collapse">X</button>
 
 			<div className = "VisualSection">
-				<VisualEditor CurrentEditPage = {this.state.CurrentEditPage} />
+				<VisualEditor CurrentEditPage = {this.state.CurrentEditPage}/>
 			</div>
 
 
@@ -753,29 +727,103 @@ const DropdownOptions = (props) => {
 	return returnArray;
 }
 
+/*========================================
+Data schema mockup 
+pages/ 
+	page_url
+		{ key
+		tag
+		placement
+		style }
+		{ key 
+		tag
+		placement
+		style }
+	page_url	
+		...
+
+========================================*/ 
+
 export class VisualEditor extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
+		//this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
 		this.setFrameProperties = this.setFrameProperties.bind(this);
 		this.addPage = this.addPage.bind(this);
+		this.setPage = this.setPage.bind(this);
+		this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
+
+		firebase.database().ref('pages/').on('value', snapshot => {
+			console.log("This is a breakpoint!");
+			
+			/*  I'm going to handle dealing with the snapshot as needed in the VisualEditor
+			var pageArray = [];
+
+			snapshot.forEach(function(childSnapshot) {
+				var url = snapshot.child().val().;
+			});
+    	this.setState({
+    		pagesToEdit : derp,
+    		VisualSnapshot : snapshot
+    		});
+			*/
+		});
 	}
 
 //NOTICE!  CurrentEditPage will be hoisted up 
 	state = {
-		PagesToEdit : ['localhost:8080/src/example.html'],
+		pagesToEdit : null,
+		VisualSnapshot : null,
+		CurrentEditPage : null
+
 	}
 
-	setVisualEditorPage(e){
-		//change "PageEdited" to 
-		let DropdownSelection = e.target.value;
-		this.setState({
-			CurrentEditPage : DropdownSelection
+//Here's the real meat of this.  
+	VisualLogic(){
+
+	}
+
+
+	addPage(pageName){
+		//get the value of the newPage name
+		var newPage = querySelector("#page_addition").value;
+
+		//Add the name of the new page to the database
+		const webPrefix = "localhost:8080/src";
+		const webSuffix = ".html"
+
+		var PageToAdd = webPrefix + newPage + webSuffix;
+
+		//send to FB
+		var pageRef = firebase.database().ref('pages/'+PageToAdd);
+		pageRef.set({
+			page_name : newPage,
+			tags :  [
+				{
+					tagName : header1,
+					tag_type : h1,
+					placement : 1,
+					style : "font-family: helvetica;"
+				}
+					]
+			
+
+
+		});
+
+	}
+
+	fetchPagesToEdit(){
+		var pages = firebase.database().ref('pages/').child();
+		var returnArray = [];
+
+		pages.forEach(function(value){
+			returnArray.push(value);
 		});
 	}
 
-//Pass this up to the app level! 
+
 	setFrameProperties(tag, content, ev){
 
 		var pageURL =  this.state.CurrentEditPage;
@@ -788,21 +836,29 @@ export class VisualEditor extends React.Component{
 
 	}
 
+	setPage(e){
+		//change "PageEdited" to 
+		let DropdownSelection = e.target.value;
+		this.setState({
+			CurrentEditPage : DropdownSelection
+		});
+	}
+
 	render(){
 		return(
 			<div>
-				<select id = "page_selector" onChange = {(e) => this.setVisualEditorPage(e)}> 
-					<DropdownOptions Pages = {this.state.PagesToEdit} />
+				<select id = "page_selector" onChange = {(e) => this.setPage(e)}> 
+					<DropdownOptions Pages = {this.state.pagesToEdit} />
 				</select>
+				Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
+				<input type = "submit" value = "submit" onClick = {this.addPage()}></input>
 				<Iframe
 					id = "VisualEditor"
-					url = {this.props.CurrentEditPage}
+					url = {this.state.CurrentEditPage}
 					width = "calc(100vw - 500px)"
 					height = "90vh"
 					className = "iframe"
-					display="initial"
-
-				 />
+					display="initial" />
 			</div>
 
 			);
