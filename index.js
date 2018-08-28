@@ -151,7 +151,7 @@ export default class App extends React.Component{
 			<button className = "collapse">X</button>
 
 			<div className = "VisualSection">
-				<VisualEditor CurrentEditPage = {this.state.CurrentEditPage}/>
+				<VisualEditor />
 			</div>
 
 
@@ -635,8 +635,9 @@ export class VisualEditor extends React.Component{
 		const webPrefix = "localhost:8080/src/";
 		const webSuffix = ".html"
 		var PageToAdd = webPrefix + newPage + webSuffix;
+		var dateVar = new Date();
 
-		var pageRef = firebase.database().ref('pages/'+PageToAdd);
+		var pageRef = firebase.database().ref('pages/'+dateVar);
 
 
 		//send to FB
@@ -689,7 +690,7 @@ export class VisualEditor extends React.Component{
 		//change "PageEdited" to 
 		let DropdownSelection = e.target.value;
 		this.setState({
-			CurrentEditPage : DropdownSelection
+			CurrentEditPage : "src/"+DropdownSelection+".html"
 		});
 	}
 
