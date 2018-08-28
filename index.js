@@ -408,7 +408,7 @@ const TextItem = (props) => {
 
 	} catch (err){
 		//return "loading" elements while we wait for Firebase to finish loading
-		returnArray.push(<div><p className = "LoadingText">Loading Copy Entries...</p></div>);
+		returnArray.push(<div key = "shutupreact2"><p className = "LoadingText">Loading Copy Entries...</p></div>);
 	}
 
 	return returnArray;
@@ -463,8 +463,8 @@ const ImageItem = (props) => {
 
 				var imageName = Metadata[i].image_name;
 				var imageUrl = Metadata[i].image_url;
-				
-				returnArray.push(<div className = "thumbnail_div" onClick = {this.setFrameProperties(e,"img", imageName,"position: relative;")}><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
+				//onClick = {this.setFrameProperties(e,"img", imageName,"position: relative;")}
+				returnArray.push(<div className = "thumbnail_div" key = {i} ><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
 				
 			}
 		}catch(error){
@@ -497,6 +497,7 @@ export class ImageAddContainer extends React.Component{
 					);
 			});
 
+
 			this.setState({
 				image_metadata : metadata_array
 			});
@@ -511,43 +512,6 @@ export class ImageAddContainer extends React.Component{
 	}
 
 	//or I could send this to firebase storage...  
-
-	getImagePreview(){
-
-		/***********
-	
-		Old code- this can be useful for getting thumbnails off of the desktop, but we're loading from the server
-		FileReader() object lets web apps async read file contents on computer via File/Blob objects
-
-		// 1. First, get a list of the files by referencing the location and lo
-	
-		var storageRef = firebase.storage().ref();
-		var imageArray = [];
-
-		function appendObjTo(thatArray, newObj) {
-			const frozenObj = Object.freeze(newObj);
-			return Object.freeze(thatArray.concat(frozenObj));
-			}
-
-
-		// 1. First, get a list of the files by referencing the location and lo
-		for(key in storageRef){
-			//need to get a file object for each
-			//imageArray.push(snapshot.val());
-
-			appendObjTo(imageArray, {name_prop : snapshot.val(), thumbnail_prop : snapshot.val() })
-		}
-
-		//reader.onloadend = function(){
-
-		return imageArray;	
-			************/
-
-	}
-
-componentDidMount(){
-	console.log("State update finished");
-}
 
 	render(){
 		return(
@@ -600,7 +564,7 @@ const DropdownOptions = (props) => {
 	//returnArray.push(<select id="page_selector">);
 
 	for(let i = 0; i <= pages.length -1; i++){
-		returnArray.push(<option value={pages[i]}>{pages[i]}</option>);
+		returnArray.push(<option key={i} value={pages[i].page_name}>{pages[i].page_name}</option>);
 	}
 
 	//returnArray.push(</select>);
@@ -635,27 +599,11 @@ export class VisualEditor extends React.Component{
 		this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
 
 	firebase.database().ref('pages/').on('value', snapshot => {
+		console.log("this is a breakpiont");
     	this.setState({
     		DBSnapshot : snapshot
     		});
 		});
-/*
-		//Pages will be updated by functions that populate the page
-		firebase.database().ref('pages/').on('value', snapshot => {
-			console.log("This is a breakpoint!");
-			
-			var pageArray = [];
-
-			snapshot.forEach(function(childSnapshot) {
-				var url = snapshot.child().val();
-			});
-    	this.setState({
-    		pagesToEdit : derp,
-    		VisualSnapshot : snapshot
-
-    		});
-		});
-		*/
 	}
 
 //NOTICE!  CurrentEditPage will be hoisted up 
@@ -686,9 +634,10 @@ export class VisualEditor extends React.Component{
 		//Add the name of the new page to the database
 		const webPrefix = "localhost:8080/src/";
 		const webSuffix = ".html"
+		var PageToAdd = webPrefix + newPage + webSuffix;
+
 		var pageRef = firebase.database().ref('pages/'+PageToAdd);
 
-		var PageToAdd = webPrefix + newPage + webSuffix;
 
 		//send to FB
 		if ((newPage != "") && (newPage != undefined) && (newPage != null)){
@@ -704,19 +653,19 @@ export class VisualEditor extends React.Component{
 				}
 					]
 			
-		});
+			});
 		}
 
 
 	}
 
-	fetchPagesToEdit(args){
-		var snapshot = args;
-		var returnArray = [];
+	fetchPagesToEdit(){
+		var returnArray	= [];
+		var snapshot = this.state.DBSnapshot;
 
 		if(snapshot){
 			snapshot.forEach(function (childSnapshot) {
-				let pushValue = childSnapshot.val().page_name;
+				let pushValue = childSnapshot.val();
 				returnArray.push(pushValue);
 			});
 		}
@@ -748,7 +697,7 @@ export class VisualEditor extends React.Component{
 		return(
 			<div>
 				<select id = "page_selector" onChange = {(e) => this.setPage(e)}> 
-					<DropdownOptions Pages = {this.fetchPagesToEdit(this.state.DBSnapshot)} />
+					<DropdownOptions Pages = {this.fetchPagesToEdit()} />
 				</select>
 				Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
 				<input type = "submit" value = "submit" onClick = {this.addPage}></input>
