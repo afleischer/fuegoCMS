@@ -105,13 +105,13 @@ export default class App extends React.Component{
 
 		switch(tag){
 			case 'img':
-				update = (<img src = {event.target.child}></img>)
+				update = (<img src = {event.target.child}></img>);
 				break;
 			case 'p':
-
+				update = (<p>{event.target.value}</p>);
 				break;
-			case default :
-				
+			default :
+				console.log("Neither, received:"+this.event.target);
 		}
 
 		pageRef.set({
@@ -634,21 +634,28 @@ export class VisualEditor extends React.Component{
 		this.setPage = this.setPage.bind(this);
 		this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
 
+	firebase.database().ref('pages/').on('value', snapshot => {
+    	this.setState({
+    		DBSnapshot : snapshot
+    		});
+		});
+/*
+		//Pages will be updated by functions that populate the page
 		firebase.database().ref('pages/').on('value', snapshot => {
 			console.log("This is a breakpoint!");
 			
-			/*  I'm going to handle dealing with the snapshot as needed in the VisualEditor
 			var pageArray = [];
 
 			snapshot.forEach(function(childSnapshot) {
-				var url = snapshot.child().val().;
+				var url = snapshot.child().val();
 			});
     	this.setState({
     		pagesToEdit : derp,
     		VisualSnapshot : snapshot
+
     		});
-			*/
 		});
+		*/
 	}
 
 //NOTICE!  CurrentEditPage will be hoisted up 
@@ -669,40 +676,51 @@ export class VisualEditor extends React.Component{
 
 	addPage(pageName){
 		//get the value of the newPage name
-		var newPage = document.querySelector("#page_addition").value;
+		try{
+			var newPage = document.querySelector("#page_addition").value;
+		}
+		catch(error){
+			return false;
+		}
 
 		//Add the name of the new page to the database
-		const webPrefix = "localhost:8080/src";
+		const webPrefix = "localhost:8080/src/";
 		const webSuffix = ".html"
+		var pageRef = firebase.database().ref('pages/'+PageToAdd);
 
 		var PageToAdd = webPrefix + newPage + webSuffix;
 
 		//send to FB
-		var pageRef = firebase.database().ref('pages/'+PageToAdd);
+		if ((newPage != "") && (newPage != undefined) && (newPage != null)){
 		pageRef.set({
 			page_name : newPage,
 			tags :  [
 				{
-					tagName : header1,
-					tag_type : h1,
+					tagName : "header1",
+					tag_type : "h1",
+					content : "This is a new page!",
 					placement : 1,
 					style : "font-family: helvetica;"
 				}
 					]
 			
-
-
 		});
+		}
+
 
 	}
 
-	fetchPagesToEdit(){
-		var pages = firebase.database().ref('pages/').child();
+	fetchPagesToEdit(args){
+		var snapshot = args;
 		var returnArray = [];
 
-		pages.forEach(function(value){
-			returnArray.push(value);
-		});
+		if(snapshot){
+			snapshot.forEach(function (childSnapshot) {
+				let pushValue = childSnapshot.val().page_name;
+				returnArray.push(pushValue);
+			});
+		}
+		return returnArray;
 	}
 
 
@@ -730,12 +748,12 @@ export class VisualEditor extends React.Component{
 		return(
 			<div>
 				<select id = "page_selector" onChange = {(e) => this.setPage(e)}> 
-					<DropdownOptions Pages = {this.state.pagesToEdit} />
+					<DropdownOptions Pages = {this.fetchPagesToEdit(this.state.DBSnapshot)} />
 				</select>
 				Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
-				<input type = "submit" value = "submit" onClick = {this.addPage()}></input>
+				<input type = "submit" value = "submit" onClick = {this.addPage}></input>
 				<Iframe
-					id = "VisualEditor"
+					id = "VisualEditorWindow"
 					url = {this.state.CurrentEditPage}
 					width = "calc(100vw - 500px)"
 					height = "90vh"
