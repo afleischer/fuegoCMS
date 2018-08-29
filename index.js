@@ -3,7 +3,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+/*
+const express = require('express');
+const app = express()
+
+app.get('/', (req, res) => res.send('Hello world!'))
+app.listen(3000, ()=> console.log('Exmaple listening on port 3000!'))
+*/
+
 const fetch = require('node-fetch');
+//var fs = require('fs');
+
+
+/** End express code **/
+
 
 /*============
 Firebase initialization
