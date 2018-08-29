@@ -24,7 +24,7 @@ module.exports = {
         proxy: {
             'src': 'http://localhost:3000'
         }
-    }
+    },
     output: {
         filename: 'transformed.js',
         path: __dirname + '/build'

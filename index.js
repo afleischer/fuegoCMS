@@ -2,6 +2,8 @@
 //import firebase from 'firebase';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Iframe from 'react-iframe';
+
 
 /*
 const express = require('express');
@@ -68,7 +70,6 @@ const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
 const storageRef = firebase.storage().ref();
 const databaseImageRef = db.ref('image_data/');
-import Iframe from 'react-iframe';
 
 //const functions = require('firebase-functions');
 
@@ -126,10 +127,6 @@ export default class App extends React.Component{
 			default :
 				console.log("Neither, received:"+this.event.target);
 		}
-
-		pageRef.set({
-			    [tagID] : b
-		});
 
 	}
 
