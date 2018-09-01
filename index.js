@@ -694,27 +694,6 @@ export class VisualEditor extends React.Component{
 
   }
 
-  getCount(tag){
-  		let snapshot = this.state.PagesSnapshot
-  		let counter = 1;
-  		let returnArray = [];
-
-
-      snapshot.forEach(function (childSnapshot) {
-        let pushValue = childSnapshot.val();
-        //let tagValue = c
-        returnArray.push({pushValue});
-      });
-
- 		snapshot.forEach()
-  			if(tag == "img"){
-  				
-  			}else if(tag == "p"){
-
-  			}
-   
-
-  }
 
 //Here's the real meat of this.  
   VisualLogic(){
@@ -745,13 +724,11 @@ export class VisualEditor extends React.Component{
 
 
 
-    //https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
-    //https://firebase.google.com/docs/database/web/read-and-write <- see "updating"
+    
     if ((newPage != "") && (newPage != undefined) && (newPage != null)){
     pageRef.set({
       tags :  [
         		{
-          tagName : "header1",
           tag_type : "h1",
           content : "This is a new page!",
           placement : 1,
@@ -793,38 +770,39 @@ const request = new Request('http://localhost:3000/'+newPage)
 
 
 
-  addTagToFrame(event, tag, content){
+//https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
+    //https://firebase.google.com/docs/database/web/read-and-write <- see "updating"
+  addTagToFrame(event, tag, content, style){
 
   	//Get a reference to the page being edited
     var pageURL =  this.state.CurrentEditPage;
     var pageRef = firebase.database().ref('pages/').child(pageURL);
     var snapshot = this.state.PagesSnapshot;
      
+    var allTag = "tag_type";
 
     //To the end, add a tag
 
+    /*
     var tagCount = getCounter(snapshot, pageRef, tag);
     var newTagKey = pageRef.push().key;
-
-    var tagCounter = getCounter(snapshot, pageRef, 'tag_type');
-
-    //send to FB
+    var tagCounterAll = getCounter(snapshot, pageRef, allTag);
+  */
+    //send to Firebase
 
     var tagData = {
     	 tags :  [
         		{
-          tagName : "header1",
           tag_type : tag,
           content : content,
           placement : tagCounter,
-          style : "font-family: helvetica;"
+          style : style
         }
           ]
     }
 
     var updates = {};
   		updates['/pages/' + newTagKey] = tagData;
-  		updates['/user-posts/' + uid + '/' + newTagKey] = tagData;
 
     pageRef.update(updates);
 

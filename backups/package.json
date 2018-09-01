@@ -50,7 +50,6 @@
     "firebaseui": "^3.3.0",
     "lodash": "^3.10.1",
     "node-sass": "^4.9.3",
-    "re-base": "^4.0.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "webpack-dev-middleware": "^3.2.0"
