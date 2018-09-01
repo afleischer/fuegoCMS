@@ -69,6 +69,7 @@ export default class App extends React.Component{
 
     this.setFrameProperties = this.setFrameProperties.bind(this);
     //this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
+    this.getCounter = this.getCounter.bind(this);
   }
 
 
@@ -83,7 +84,7 @@ export default class App extends React.Component{
 /*
 fetchPagesToEdit(){
     var returnArray = [];
-    var snapshot = this.state.DBSnapshot;
+    var snapshot = this.state.PagesSnapshot;
 
     if(snapshot){
       snapshot.forEach(function (childSnapshot) {
@@ -102,6 +103,15 @@ fetchPagesToEdit(){
 
 //
 
+getCounter(snapshot, path, tag){
+	var returnArray = [];
+	  snapshot.forEach(function (childSnapshot) {
+      let tagCount = childSnapshot.val().tag;
+      returnArray.push(tagCount);
+    });
+	 return returnArray.length;
+}
+
 
 
   setFrameProperties(e, tag, content, style){
@@ -112,6 +122,7 @@ fetchPagesToEdit(){
     var imageURL = child.getAttribute("src");
     var pageURL =  document.getElementById('page_selector').value;
     var pageRef = firebase.database().ref('pages/').child(pageURL);
+    var pageRefChildImg = pageRef.child('img');
     
     //var nextCounter = pageCount + 1;
 
@@ -120,22 +131,21 @@ fetchPagesToEdit(){
     //Get the current page in the VisualEditor -> Dropdown list
 
     //use re-base's fetch to fetch the number of tagNames named 'img'
-
-    ( getPageImgCounter )
-
     var counter = 1;
 
+    /*
     if (tag == "img"){
       base.fetch(pageRef, {
         context: this,
         asArray: true,
-        then(data){
-          forEach(pageRef.child(''){
+        .then(data){
+          forEach(pageRefChildImg(){
             counter++;
           })
         }
       }) //getting the number of img tags per the active pageURL
     }  
+    
       //Handle tags
       //<$tagName style = '$tagStyle'>tagContent</tagName>
 
@@ -154,8 +164,18 @@ fetchPagesToEdit(){
     pageRef.set({
        : 
     })
+    */
 
   }
+
+/*
+  getChildren(ref, snapshot){
+    forEach(function (childSnapshot) {
+      let TextValue = childSnapshot.val().copy;
+      TextValueDisplayVar.push(TextValue);
+    });
+  }
+*/
 
 //Get a page state list
   componentDidMount(){
@@ -168,11 +188,12 @@ fetchPagesToEdit(){
         pagesData.forEach((page) => {
           pageCounter++;
         });
-      }
-      this.setState({
+      },
+      
+    })
+    this.setState({
         pageCount : pageCounter
       })
-    })
   }
 
 
@@ -651,15 +672,16 @@ export class VisualEditor extends React.Component{
     super(props);
 
     //this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
-    this.setFrameProperties = this.setFrameProperties.bind(this);
+    this.addTagToFrame = this.addTagToFrame.bind(this);
     this.addPage = this.addPage.bind(this);
     this.setPage = this.setPage.bind(this);
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
+    this.getCount = this.getCount.bind(this);
 
   firebase.database().ref('pages/').on('value', snapshot => {
     console.log("this is a breakpiont");
       this.setState({
-        DBSnapshot : snapshot
+        PagesSnapshot : snapshot
         });
     });
   }
@@ -669,6 +691,28 @@ export class VisualEditor extends React.Component{
     pagesToEdit : null,
     VisualSnapshot : null,
     CurrentEditPage : null
+
+  }
+
+  getCount(tag){
+  		let snapshot = this.state.PagesSnapshot
+  		let counter = 1;
+  		let returnArray = [];
+
+
+      snapshot.forEach(function (childSnapshot) {
+        let pushValue = childSnapshot.val();
+        //let tagValue = c
+        returnArray.push({pushValue});
+      });
+
+ 		snapshot.forEach()
+  			if(tag == "img"){
+  				
+  			}else if(tag == "p"){
+
+  			}
+   
 
   }
 
@@ -696,16 +740,17 @@ export class VisualEditor extends React.Component{
     var dateVar = new Date();
     const pagePathVar = "/"+newPage;
 
+    var snapshot = this.state.PagesSnapshot;
 
-    var pageRef = firebase.database().ref('pages/'+dateVar);
 
 
-    //send to FB
+
+    //https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
+    //https://firebase.google.com/docs/database/web/read-and-write <- see "updating"
     if ((newPage != "") && (newPage != undefined) && (newPage != null)){
     pageRef.set({
-      page_name : newPage,
       tags :  [
-        {
+        		{
           tagName : "header1",
           tag_type : "h1",
           content : "This is a new page!",
@@ -723,7 +768,7 @@ export class VisualEditor extends React.Component{
 
   fetchPagesToEdit(){
     var returnArray = [];
-    var snapshot = this.state.DBSnapshot;
+    var snapshot = this.state.PagesSnapshot;
 
     if(snapshot){
       snapshot.forEach(function (childSnapshot) {
@@ -748,15 +793,40 @@ const request = new Request('http://localhost:3000/'+newPage)
 
 
 
-  setFrameProperties(tag, content, ev){
+  addTagToFrame(event, tag, content){
 
+  	//Get a reference to the page being edited
     var pageURL =  this.state.CurrentEditPage;
     var pageRef = firebase.database().ref('pages/').child(pageURL);
-      //var updatePageRef = pageRef.child(pageURL)
+    var snapshot = this.state.PagesSnapshot;
+     
 
-    pageRef.set({
-          content : blogEntryCopy
-    });
+    //To the end, add a tag
+
+    var tagCount = getCounter(snapshot, pageRef, tag);
+    var newTagKey = pageRef.push().key;
+
+    var tagCounter = getCounter(snapshot, pageRef, 'tag_type');
+
+    //send to FB
+
+    var tagData = {
+    	 tags :  [
+        		{
+          tagName : "header1",
+          tag_type : tag,
+          content : content,
+          placement : tagCounter,
+          style : "font-family: helvetica;"
+        }
+          ]
+    }
+
+    var updates = {};
+  		updates['/pages/' + newTagKey] = tagData;
+  		updates['/user-posts/' + uid + '/' + newTagKey] = tagData;
+
+    pageRef.update(updates);
 
   }
 
