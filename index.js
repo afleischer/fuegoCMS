@@ -116,12 +116,12 @@ setPage(e){
 
 
 getCounter(snapshot, path, tag){
-	var returnArray = [];
-	  snapshot.forEach(function (childSnapshot) {
+  var returnArray = [];
+    snapshot.forEach(function (childSnapshot) {
       let tagCount = childSnapshot.val().tag;
       returnArray.push(tagCount);
     });
-	 return returnArray.length;
+   return returnArray.length;
 }
 
 
@@ -903,7 +903,7 @@ export class VisualEditor extends React.Component{
     if ((newPage != "") && (newPage != undefined) && (newPage != null)){
     pageRef.set({
       tags :  [
-        		{
+            {
           tag_type : "h1",
           content : "This is a new page!",
           placement : 1,
@@ -954,7 +954,7 @@ const request = new Request('http://localhost:3000/'+newPage)
     //https://firebase.google.com/docs/database/web/read-and-write <- see "updating"
   addTagToFrame(event, tag, style, CurrentEditPageHandle){
 
-  	//Get a reference to the page being edited
+    //Get a reference to the page being edited
     var pageURL =  this.state.CurrentEditPage;  
     var pageRef = firebase.database().ref('pages/').child(pageURL);
     var snapshot = this.state.PagesSnapshot;
@@ -971,8 +971,8 @@ const request = new Request('http://localhost:3000/'+newPage)
     //send to Firebase
 
     var tagData = {
-    	 tags :  [
-        		{
+       tags :  [
+            {
           tag_type : tag,
           content : content,
           placement : tagCounter,
@@ -983,7 +983,7 @@ const request = new Request('http://localhost:3000/'+newPage)
 
 //can also try: https://firebase.google.com/docs/database/web/lists-of-data
     var updates = {};
-  		updates['/pages/' + newTagKey] = tagData;
+      updates['/pages/' + newTagKey] = tagData;
 
     pageRef.update(updates);
 
