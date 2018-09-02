@@ -801,6 +801,7 @@ export class VisualEditor extends React.Component{
     this.addPage = this.addPage.bind(this);
     //this.setPage = this.setPage.bind(this);
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
+    this.VisualLogic = this.VisualLogic.bind(this);
 
   firebase.database().ref('pages/').on('value', snapshot => {
     console.log("this is a breakpiont");
@@ -820,8 +821,11 @@ export class VisualEditor extends React.Component{
 //Populate the iFrame with the content.  
   VisualLogic(){
 
-
+ 
     const snapshot = this.state.PagesSnapshot;
+
+
+    if(snapshot){
     const currPage = document.querySelector('#page_selector').value;
     //const FBRef = firebase.database().ref('/pages/'+currPage).orderByChild('placement');
     const FBRef = firebase.database().ref('/pages/'+currPage);
@@ -835,6 +839,8 @@ export class VisualEditor extends React.Component{
       console.log('break');
 
       var TagType = `{testValue.pages.currPage.tags[0].tag_type}`;
+
+
       var tagStyle_pt1 = testValue.pages
       var tagStyle_pt2 = tagStyle_pt1[currPage];
       var tagStyle = tagStyle_pt2.tags[0].style;
@@ -842,16 +848,15 @@ export class VisualEditor extends React.Component{
       var tagContent_pt1 = testValue.pages;
       var tagContent_pt2 = tagContent_pt1[currPage];
       var tagContent = tagContent_pt2.tags[0].content;
-
       
         //if (childSnapshot.child('tags')){
         pageTags.push(<TagType style = {tagStyle}>{tagContent}</TagType>);
         //React.createElement(TagType, {style : tagStyle}, tagContent);
       //}
       }
-      
-
     });
+    
+  
     
     
     /*
@@ -868,6 +873,8 @@ export class VisualEditor extends React.Component{
 
     let editorFrame = document.getElementById('VisualEditorWindow')
     editorFrame.contentDocument.write(pageTags);
+
+    }
   }
 
 
@@ -995,6 +1002,10 @@ const request = new Request('http://localhost:3000/'+newPage)
 
   */ 
 
+  componentDidMount(){
+    this.VisualLogic();
+  }
+
   render(){
     return(
       <div>
@@ -1005,7 +1016,6 @@ const request = new Request('http://localhost:3000/'+newPage)
         <input type = "submit" value = "submit" onClick = {this.addPage}></input>
         <Iframe
           id = "VisualEditorWindow"
-          onLoa
           url = {this.props.CurrentEditPageHandle}
           width = "calc(100vw - 500px)"
           height = "90vh"
