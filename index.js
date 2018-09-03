@@ -106,7 +106,9 @@ fetchPagesToEdit(){
 //
 
 setPage(e){
-    //change "PageEdited" to 
+  if(!e){
+    return "loading...";
+  }
     let DropdownSelection = e.target.value;
     this.setState({
       CurrentEditPage : "src/"+DropdownSelection+".html",
@@ -190,6 +192,8 @@ getCounter(snapshot, path, tag){
 
 //Get a page state list
   componentDidMount(){
+
+    this.setPage();
     //get a list of the 
 /*
     base.listenTo('pages', {
@@ -676,7 +680,7 @@ export class ImageAddContainer extends React.Component{
     var snapshot = this.state.PagesSnapshot;
     }
 
-    catch(errror){
+    catch(error){
       return "Loading...";
     }
      
@@ -775,27 +779,17 @@ const DropdownOptions = (props) => {
   return returnArray;
 }
 
-/*========================================
-Data schema mockup 
-pages/ 
-  page_url
-    { key
-    tag
-    placement
-    style }
-    { key 
-    tag
-    placement
-    style }
-  page_url  
-    ...
 
-========================================*/ 
+export class GhostElement extends React.Component{
+  constructor(props){
+    super(props);
 
-const GhostElement = (props) => {
+    this.ghostFunction = this.ghostFunction.bind(this);
+  }
 
 
-const snapshot = this.state.PagesSnapshot;
+ghostFunction(){
+  const snapshot = this.props.Snapshot;
 
     if(snapshot){
     const currPage = document.querySelector('#page_selector').value;
@@ -813,13 +807,17 @@ const snapshot = this.state.PagesSnapshot;
       var tagStyle_pt1 = testValue.pages
       var tagStyle_pt2 = tagStyle_pt1[currPage];
       var tagStyle = tagStyle_pt2.tags[0].style;
+      var tagStyleObj = "{"+tagStyle+"}";
+      //var tagStyleObj = JSON.parse(tagStyleString);
+
+      console.log("Objectified tag is:"+ tagStyleObj);
 
       var tagContent_pt1 = testValue.pages;
       var tagContent_pt2 = tagContent_pt1[currPage];
       var tagContent = tagContent_pt2.tags[0].content;
       
           if(tagType == 'p'){
-            pageTags.push(<p style = {tagStyle}>{tagContent}</p>);
+            pageTags.push(<p styles = {tagStyleObj}>{tagContent}</p>);
           }else if(TagType == 'img'){
             pageTags.push(<img src = {imageSrc}></img>);
           }
@@ -827,25 +825,40 @@ const snapshot = this.state.PagesSnapshot;
     });
      return pageTags;
   }
+
+  return "Loading Content...";
 }
+
+  render(){
+    return(
+      (<div>{this.ghostFunction()}</div>)
+      );
+    }
+
+}
+
 
 
 export class VisualEditor extends React.Component{
   constructor(props){
     super(props);
 
+    //set functions
     //this.setVisualEditorPage = this.setVisualEditorPage.bind(this);
     this.addTagToFrame = this.addTagToFrame.bind(this);
     this.addPage = this.addPage.bind(this);
     //this.setPage = this.setPage.bind(this);
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
-    this.VisualLogic = this.VisualLogic.bind(this);
+    this.loadIFrame = this.loadIFrame.bind(this);
+    this.setHTML = this.setHTML.bind(this);
 
-<<<<<<< HEAD
-=======
+
+    //set refs
     this.ghostRef = React.createRef();
+    this.iFrameRef = React.createRef();
 
->>>>>>> 53247cc48c7e807519d42bd07d37fd828eca2efe
+
+  //Set Database listeners
   firebase.database().ref('pages/').on('value', snapshot => {
     console.log("this is a breakpiont");
       this.setState({
@@ -854,85 +867,60 @@ export class VisualEditor extends React.Component{
     });
   }
 
-//NOTICE!  CurrentEditPage will be hoisted up 
+//Set state
   state = {
     pagesToEdit : null,
     VisualSnapshot : null,
   }
 
+/******************
+Begin functions
+******************/
 
 //Populate the iFrame with the content.  
-  VisualLogic(){
-<<<<<<< HEAD
 
- 
-    const snapshot = this.state.PagesSnapshot;
+//Notice!  This logic has been duplicated into "ghostElement" and will be referenced
+//instead in the function setHTML
+  loadIFrame(){
 
-
-    if(snapshot){
-    const currPage = document.querySelector('#page_selector').value;
-    //const FBRef = firebase.database().ref('/pages/'+currPage).orderByChild('placement');
-    const FBRef = firebase.database().ref('/pages/'+currPage);
-=======
  
     const snapshot = this.state.PagesSnapshot;
 
     if(snapshot){
     const currPage = document.querySelector('#page_selector').value;
->>>>>>> 53247cc48c7e807519d42bd07d37fd828eca2efe
     var pageTags = [];
     
     snapshot.forEach(function (childSnapshot){
       let testValue = childSnapshot.val();
+
       if(currPage == Object.keys(testValue.pages)[0]){
-      const currPage = document.querySelector('#page_selector').value;
 
-<<<<<<< HEAD
-      console.log('break');
+        const currPage = document.querySelector('#page_selector').value;
 
-      var TagType = `{testValue.pages.currPage.tags[0].tag_type}`;
+        console.log('break');
 
-=======
-      var tagType_pt1 = testValue.pages
-      var tagType_pt2 = tagType_pt1[currPage];
-      var tagType = tagType_pt2.tags[0].tag_type;
->>>>>>> 53247cc48c7e807519d42bd07d37fd828eca2efe
+        var TagType = `{testValue.pages.currPage.tags[0].tag_type}`;
 
-      var tagStyle_pt1 = testValue.pages
-      var tagStyle_pt2 = tagStyle_pt1[currPage];
-      var tagStyle = tagStyle_pt2.tags[0].style;
+        var tagType_pt1 = testValue.pages
+        var tagType_pt2 = tagType_pt1[currPage];
+        var tagType = tagType_pt2.tags[0].tag_type;
 
-      var tagContent_pt1 = testValue.pages;
-      var tagContent_pt2 = tagContent_pt1[currPage];
-      var tagContent = tagContent_pt2.tags[0].content;
-      
-<<<<<<< HEAD
-        //if (childSnapshot.child('tags')){
-        pageTags.push(<TagType style = {tagStyle}>{tagContent}</TagType>);
-        //React.createElement(TagType, {style : tagStyle}, tagContent);
-      //}
-      }
-    });
-    
-  
-    
-    
-    /*
-    
-    const customTag = `{pageTags.tag_type}`
+        var tagStyle_pt1 = testValue.pages
+        var tagStyle_pt2 = tagStyle_pt1[currPage];
+        var tagStyle = tagStyle_pt2.tags[0].style;
 
-    //way to order by the placement key? 
-    FBRef.forEach(function (childSnapshot){
-      if (childSnapshot.child('tags')){
-        pageTags.push(<customTag style = {pageTags.style}>{pageTags.content}</customTag>);
-      }
-    });
-    */
+        var tagContent_pt1 = testValue.pages;
+        var tagContent_pt2 = tagContent_pt1[currPage];
+        var tagContent = tagContent_pt2.tags[0].content;
+        
+          //if (childSnapshot.child('tags')){
+          //pageTags.push(<TagType style = {tagStyle}>{tagContent}</TagType>);
+          //React.createElement(TagType, {style : tagStyle}, tagContent);
+      //}    
 
-    let editorFrame = document.getElementById('VisualEditorWindow')
-    editorFrame.contentDocument.write(pageTags);
+    //let editorFrame = document.getElementById('VisualEditorWindow')
+    //editorFrame.contentDocument.write(pageTags);
 
-=======
           if(tagType == 'p'){
             pageTags.push(<p style = {tagStyle}>{tagContent}</p>);
           }else if(TagType == 'img'){
@@ -940,7 +928,8 @@ export class VisualEditor extends React.Component{
           }
         }
     });
-    
+   
+   /*  
     let editorFrame = document.getElementById('VisualEditorWindow');
     let editorFrameDoc = editorFrame.contentDocument;
     //editorFrameDoc.write(pageTags)
@@ -949,9 +938,17 @@ export class VisualEditor extends React.Component{
 
     //editorFrame.contentDocument.write(JSON.stringify(pageTags));
     editorFrame.contentDocument.write(pageTags);
->>>>>>> 53247cc48c7e807519d42bd07d37fd828eca2efe
+    */
+
+
+    /***********
+    get the outerHTML content of the ghostRef 
+    ***********/
+
+
+      }
     }
-  }
+
 
 
   addPage(pageName){
@@ -1008,22 +1005,25 @@ export class VisualEditor extends React.Component{
     }
     
     return returnArray;
-
-    /* 
-
-    const headers = new Headers()
-headers.append('Content-type', 'application/json');
-
-const options = {
-  method: 'POST',
-  headers,
-  body: JSON.stringify(data),
-}
-
-const request = new Request('http://localhost:3000/'+newPage)
-*/ 
   }
 
+
+  setHTML(){
+    let ghostRef = this.ghostRef.current;
+    let iFrameRef = this.loadIFrame.current;
+try{
+      let ghostRefTags = ReactDOM.findDOMNode(ghostRef);
+      let outerElements = ghostRefTags.outerHTML;
+
+      let editorFrame = document.getElementById('VisualEditorWindow');
+
+    editorFrame.contentDocument.write(outerElements);
+    }catch(error){
+      console.log("setHTML is loading...");
+      return false;
+    }
+
+  }
 
 
 //https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
@@ -1079,13 +1079,13 @@ const request = new Request('http://localhost:3000/'+newPage)
   */ 
 
   componentDidMount(){
-    this.VisualLogic();
+    this.loadIFrame();
   }
 
   render(){
     return(
       <div>
-        <select id = "page_selector" onChange = {(e) => {this.props.SetPage(e), this.VisualLogic()}}> 
+        <select id = "page_selector" onChange = {(e) => {this.props.SetPage(e), this.loadIFrame(), this.setHTML()}}> 
           <DropdownOptions Pages = {this.fetchPagesToEdit()} />
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
@@ -1093,18 +1093,14 @@ const request = new Request('http://localhost:3000/'+newPage)
         <Iframe
           id = "VisualEditorWindow"
           url = {this.props.CurrentEditPageHandle}
-<<<<<<< HEAD
-=======
-          ref = {this.VisualLogic}
->>>>>>> 53247cc48c7e807519d42bd07d37fd828eca2efe
+          ref = {this.iFrameRef}
           width = "calc(100vw - 500px)"
           height = "90vh"
           className = "iframe"
-          display="initial" />
-<<<<<<< HEAD
-=======
+          display="initial" 
+          onLoad = {this.setHTML}
+          />
           <GhostElement ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
->>>>>>> 53247cc48c7e807519d42bd07d37fd828eca2efe
       </div>
 
       );
