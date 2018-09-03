@@ -47,6 +47,7 @@ const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
 const storageRef = firebase.storage().ref();
 const databaseImageRef = db.ref('image_data/');
+const dbPageRef = firebase.database().ref('pages/');
 import Iframe from 'react-iframe';
 
 //const functions = require('firebase-functions');
@@ -105,6 +106,11 @@ fetchPagesToEdit(){
 
 //
 
+
+getData(){
+
+}
+
 setPage(e){
   if(!e){
     return "loading...";
@@ -146,71 +152,15 @@ getCounter(snapshot, path, tag){
     //use re-base's fetch to fetch the number of tagNames named 'img'
     var counter = 1;
 
-    /*
-    if (tag == "img"){
-      base.fetch(pageRef, {
-        context: this,
-        asArray: true,
-        .then(data){
-          forEach(pageRefChildImg(){
-            counter++;
-          })
-        }
-      }) //getting the number of img tags per the active pageURL
-    }  
-    
-      //Handle tags
-      //<$tagName style = '$tagStyle'>tagContent</tagName>
-
-    switch(tag){
-      case 'img':
-        update = (<img src = {event.target.child}></img>);
-        pageRef.set({ images[nextCounter] :  })
-        break;
-      case 'p':
-        update = (<p>{event.target.value}</p>);
-        break;
-      default :
-        console.log("Neither, received:"+this.event.target);
-    }
-
-    pageRef.set({
-       : 
-    })
-    */
 
   }
 
-/*
-  getChildren(ref, snapshot){
-    forEach(function (childSnapshot) {
-      let TextValue = childSnapshot.val().copy;
-      TextValueDisplayVar.push(TextValue);
-    });
-  }
-*/
 
 //Get a page state list
   componentDidMount(){
 
     this.setPage();
-    //get a list of the 
-/*
-    base.listenTo('pages', {
-      context: this,
-      asArray: true,
-      then(pagesData){
-        pageCounter = 0;
-        pagesData.forEach((page) => {
-          pageCounter++;
-        });
-      },
-      
-    })
-    this.setState({
-        pageCount : pageCounter
-      })
-*/
+
 
   }
 
@@ -728,38 +678,7 @@ export class ImageAddContainer extends React.Component{
 
 }
 
-export class StyleContentList extends React.Component{
 
-  render(){
-    return(
-      
-      <div></div>
-      );
-  }
-
-}
-
-/*============
-*
-* CMS Styling section
-*
-============*/ 
-
-
-export class Dropdown_Style extends React.Component{
-
-
-  setWebImage(){
-
-  }
-
-  render(){
-    return(
-      <div></div>
-
-      );
-  }
-}
 
 const DropdownOptions = (props) => {
 
@@ -1021,6 +940,11 @@ try{
     }catch(error){
       console.log("setHTML is loading...");
       return false;
+
+
+      //TODO: Page Swapping, First page Loading notice
+
+
     }
 
   }
@@ -1106,6 +1030,118 @@ try{
       );
   }
 }
+
+
+
+
+/*============
+*
+* CMS Styling section
+*
+============*/ 
+
+
+const StyleTextCopyList = (props) => {
+
+  //order by child "placement", filter by page id 
+  snapshot = props.snapshot;
+  currentPage = props.currentPage;
+
+  //NOTICE: If it fails here, try it when calling the snapshot 
+  filteredSnap = snapshot.orderByChild('placement').equalTo(currentPage);
+  
+  //Feature: list the tags on the page, 
+
+  paragraphArray = [];
+  h1Array = [];
+  h2Array = [];
+  h3Array = [];
+
+  returnArray = [];
+
+  filteredSnap.forEach(function (childSnapshot){
+    value = childSnapshot.val();
+    //if the child is of the type "p"
+    if(childSnapshot.child('p')){
+      paragraphArray.push(value);
+    }else if(childSnapshot.child('h1')){
+      h1Array.push(value);
+
+    }else if(childSnapshot.child('h2')){
+      h2Array.push(value);
+
+    }else if(childSnapshot.child('h3')){
+      h3Array.push(value);
+    }
+
+  });
+
+  returnArray = [(<div><h2 className = "style_subheader">Text Elements ("<p>" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("<h1>" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("<h2>" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("<h3>" tag)</h2><div>{h3Array}</div></div>)];
+
+  return returnArray;
+
+}
+
+const ImageStyleList = (props) => {
+
+}
+
+
+export class StyleContentList extends React.Component{
+  constructor(props){
+    super(props);
+
+  }
+
+  //"page/" and "image_data" snapshot
+    dbPageRef.on('value', snapshot => {
+    this.setState({
+      PageSnapshot : snapshot
+      });
+  });
+    db.ref('image_data').on('value', snapshot => {
+      this.setState({
+        ImageList : snapshot
+      });
+    });
+
+  state = {
+
+  }
+
+  StyleBar(){
+
+
+  }
+
+  render(){
+    return(
+      <div>
+        <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} } />
+        <ImageStyleList ImageList = {this.state.ImageList} />
+      </div>
+      );
+  }
+
+
+
+
+
+export class Dropdown_Style extends React.Component{
+
+
+  setWebImage(){
+
+  }
+
+  render(){
+    return(
+      <div></div>
+
+      );
+  }
+}
+
 
 
 
