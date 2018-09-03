@@ -1,0 +1,131 @@
+@keyframes animateInNotice {
+	from {	
+		top: 100vh;
+		left: 100vw;
+	}
+
+	to {
+		top: calc(100vh - 100px);
+		left: calc(100vw - 400px);
+	}
+}
+
+button{
+	border-radius: 20px;
+}
+
+h1{
+	font-family: roboto;
+}
+
+h2{
+	font-family: roboto;
+}
+
+.app-container{
+	display: grid;
+	width: 100vw;
+	height: auto;
+	grid-template-areas: 
+	"upload visual"
+	"add visual"
+	"style visual"
+
+	;
+	grid-template-rows: auto auto auto;
+	grid-template-columns: 33vw 66vw;
+
+}
+
+.collapse{
+	background-color: #BDB1AA;
+
+}
+
+.container{
+	border: 4px black;
+	border-radius: 5px;
+	
+}
+
+.image_add_container{
+	height: 420px;
+	overflow-y: scroll;
+}
+
+.hiddenBoxImg{
+	background-color: aqua;
+	position: absolute;
+	height: 100px;
+	width: 400px;
+	top: 100vh;
+	left: 100vw;
+}
+
+.shownBoxImg{
+	background-color: aqua;
+	position: absolute;
+	height: 100px;
+	width: 400px;
+	top: calc(100vh - 100px);
+	left: calc(100vw - 400px);
+	animation-name: animateInNotice;
+	animation-duration: 3s;
+}
+
+.sidebar{
+	width: 500px;
+    background-color: #E8D9D1;
+}
+
+.thumbnail{
+    height: 80%;
+}
+
+.thumbnail_div{
+	border-style: inset;
+    border-width: 5px;
+    border-color: #c4c4c4;
+    width: 150px;
+    height: 200px;
+    display: inline-block;
+    overflow: scroll;
+     background-color: #c8d6e3;
+
+}
+
+.thumbnail_name{
+	margin: 0;
+}
+
+.noticeText{
+	font-family: 'Baloo Bhai';
+}
+
+/* Grid Area specs */
+
+.upload_content{
+	/*width: 350px;*/
+	background-color: #E8D9D1;
+	grid-area: upload;
+}
+
+.add_content{
+
+	grid-area: add;
+}
+
+.style_content{
+	grid-area: style;
+}
+
+.VisualSection{
+
+	grid-area: visual;
+}
+
+#VisualEditor{
+	border-width: 5px;
+	border-color: black;
+	border-style: inset;
+}

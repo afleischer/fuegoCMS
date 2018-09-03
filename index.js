@@ -792,6 +792,44 @@ pages/
 
 ========================================*/ 
 
+const GhostElement = (props) => {
+
+
+const snapshot = this.state.PagesSnapshot;
+
+    if(snapshot){
+    const currPage = document.querySelector('#page_selector').value;
+    var pageTags = [];
+    
+    snapshot.forEach(function (childSnapshot){
+      let testValue = childSnapshot.val();
+      if(currPage == Object.keys(testValue.pages)[0]){
+      const currPage = document.querySelector('#page_selector').value;
+
+      var tagType_pt1 = testValue.pages
+      var tagType_pt2 = tagType_pt1[currPage];
+      var tagType = tagType_pt2.tags[0].tag_type;
+
+      var tagStyle_pt1 = testValue.pages
+      var tagStyle_pt2 = tagStyle_pt1[currPage];
+      var tagStyle = tagStyle_pt2.tags[0].style;
+
+      var tagContent_pt1 = testValue.pages;
+      var tagContent_pt2 = tagContent_pt1[currPage];
+      var tagContent = tagContent_pt2.tags[0].content;
+      
+          if(tagType == 'p'){
+            pageTags.push(<p style = {tagStyle}>{tagContent}</p>);
+          }else if(TagType == 'img'){
+            pageTags.push(<img src = {imageSrc}></img>);
+          }
+        }
+    });
+     return pageTags;
+  }
+}
+
+
 export class VisualEditor extends React.Component{
   constructor(props){
     super(props);
@@ -802,6 +840,8 @@ export class VisualEditor extends React.Component{
     //this.setPage = this.setPage.bind(this);
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
     this.VisualLogic = this.VisualLogic.bind(this);
+
+    this.ghostRef = React.createRef();
 
   firebase.database().ref('pages/').on('value', snapshot => {
     console.log("this is a breakpiont");
@@ -820,15 +860,11 @@ export class VisualEditor extends React.Component{
 
 //Populate the iFrame with the content.  
   VisualLogic(){
-
  
     const snapshot = this.state.PagesSnapshot;
 
-
     if(snapshot){
     const currPage = document.querySelector('#page_selector').value;
-    //const FBRef = firebase.database().ref('/pages/'+currPage).orderByChild('placement');
-    const FBRef = firebase.database().ref('/pages/'+currPage);
     var pageTags = [];
     
     snapshot.forEach(function (childSnapshot){
@@ -836,10 +872,9 @@ export class VisualEditor extends React.Component{
       if(currPage == Object.keys(testValue.pages)[0]){
       const currPage = document.querySelector('#page_selector').value;
 
-      console.log('break');
-
-      var TagType = `{testValue.pages.currPage.tags[0].tag_type}`;
-
+      var tagType_pt1 = testValue.pages
+      var tagType_pt2 = tagType_pt1[currPage];
+      var tagType = tagType_pt2.tags[0].tag_type;
 
       var tagStyle_pt1 = testValue.pages
       var tagStyle_pt2 = tagStyle_pt1[currPage];
@@ -849,31 +884,22 @@ export class VisualEditor extends React.Component{
       var tagContent_pt2 = tagContent_pt1[currPage];
       var tagContent = tagContent_pt2.tags[0].content;
       
-        //if (childSnapshot.child('tags')){
-        pageTags.push(<TagType style = {tagStyle}>{tagContent}</TagType>);
-        //React.createElement(TagType, {style : tagStyle}, tagContent);
-      //}
-      }
+          if(tagType == 'p'){
+            pageTags.push(<p style = {tagStyle}>{tagContent}</p>);
+          }else if(TagType == 'img'){
+            pageTags.push(<img src = {imageSrc}></img>);
+          }
+        }
     });
     
-  
-    
-    
-    /*
-    
-    const customTag = `{pageTags.tag_type}`
+    let editorFrame = document.getElementById('VisualEditorWindow');
+    let editorFrameDoc = editorFrame.contentDocument;
+    //editorFrameDoc.write(pageTags)
 
-    //way to order by the placement key? 
-    FBRef.forEach(function (childSnapshot){
-      if (childSnapshot.child('tags')){
-        pageTags.push(<customTag style = {pageTags.style}>{pageTags.content}</customTag>);
-      }
-    });
-    */
+    //editorFrame.postMessage(pageTags, 'http://localhost:8080/', false);
 
-    let editorFrame = document.getElementById('VisualEditorWindow')
+    //editorFrame.contentDocument.write(JSON.stringify(pageTags));
     editorFrame.contentDocument.write(pageTags);
-
     }
   }
 
@@ -1017,10 +1043,12 @@ const request = new Request('http://localhost:3000/'+newPage)
         <Iframe
           id = "VisualEditorWindow"
           url = {this.props.CurrentEditPageHandle}
+          ref = {this.VisualLogic}
           width = "calc(100vw - 500px)"
           height = "90vh"
           className = "iframe"
           display="initial" />
+          <GhostElement ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );
