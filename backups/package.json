@@ -32,13 +32,12 @@
     "css-loader": "^1.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "express": "^4.16.3",
     "html-webpack-plugin": "^3.2.0",
     "nodemon": "^1.18.4",
     "react-iframe": "^1.2.0",
     "style-loader": "^0.22.1",
-    "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0",
+    "webpack": "^4.12.2",
+    "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
@@ -51,7 +50,6 @@
     "firebaseui": "^3.3.0",
     "lodash": "^3.10.1",
     "node-sass": "^4.9.3",
-    "re-base": "^4.0.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "webpack-dev-middleware": "^3.2.0"
