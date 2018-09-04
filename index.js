@@ -1044,48 +1044,52 @@ try{
 const StyleTextCopyList = (props) => {
 
   //order by child "placement", filter by page id 
-  snapshot = props.snapshot;
-  currentPage = props.currentPage;
+  try{
+    snapshot = props.snapshot;
+    currentPage = props.currentPage;
 
-  //NOTICE: If it fails here, try it when calling the snapshot 
-  filteredSnap = snapshot.orderByChild('placement').equalTo(currentPage);
-  
-  //Feature: list the tags on the page, 
+    //NOTICE: If it fails here, try it when calling the snapshot 
+    filteredSnap = snapshot.orderByChild('placement').equalTo(currentPage);
+    
+    //Feature: list the tags on the page, 
 
-  paragraphArray = [];
-  h1Array = [];
-  h2Array = [];
-  h3Array = [];
+    paragraphArray = [];
+    h1Array = [];
+    h2Array = [];
+    h3Array = [];
 
-  returnArray = [];
+    returnArray = [];
 
-  filteredSnap.forEach(function (childSnapshot){
-    value = childSnapshot.val();
-    //if the child is of the type "p"
-    if(childSnapshot.child('p')){
-      paragraphArray.push(value);
-    }else if(childSnapshot.child('h1')){
-      h1Array.push(value);
+    filteredSnap.forEach(function (childSnapshot){
+      value = childSnapshot.val();
+      //if the child is of the type "p"
+      if(childSnapshot.child('p')){
+        paragraphArray.push(value);
+      }else if(childSnapshot.child('h1')){
+        h1Array.push(value);
 
-    }else if(childSnapshot.child('h2')){
-      h2Array.push(value);
+      }else if(childSnapshot.child('h2')){
+        h2Array.push(value);
 
-    }else if(childSnapshot.child('h3')){
-      h3Array.push(value);
-    }
+      }else if(childSnapshot.child('h3')){
+        h3Array.push(value);
+      }
 
-  });
+    });
 
+    returnArray = [(<div><h2 className = "style_subheader">Text Elements ("P" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("h1" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("h2" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("h3" tag)</h2><div>{h3Array}</div></div>)];
 
-
-  returnArray = [(<div><h2 className = "style_subheader">Text Elements ("P" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("h1" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("h2" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("h3" tag)</h2><div>{h3Array}</div></div>)];
-
-  return returnArray;
+    return returnArray;
+  }catch(error){
+    return (<div>Loading...</div>);
+  }
 
 }
 
 const ImageStyleList = (props) => {
 
+
+return (<div><p>Under Construction...</p></div>)
 }
 
 
