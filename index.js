@@ -1076,7 +1076,9 @@ const StyleTextCopyList = (props) => {
 
   });
 
-  returnArray = [(<div><h2 className = "style_subheader">Text Elements ("<p>" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("<h1>" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("<h2>" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("<h3>" tag)</h2><div>{h3Array}</div></div>)];
+
+
+  returnArray = [(<div><h2 className = "style_subheader">Text Elements ("P" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("h1" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("h2" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("h3" tag)</h2><div>{h3Array}</div></div>)];
 
   return returnArray;
 
@@ -1091,19 +1093,22 @@ export class StyleContentList extends React.Component{
   constructor(props){
     super(props);
 
+    //Database listeners
+      dbPageRef.on('value', snapshot => {
+        this.setState({
+          PageSnapshot : snapshot
+          });
+      });
+        db.ref('image_data').on('value', snapshot => {
+          this.setState({
+            ImageList : snapshot
+          });
+        });
+
   }
 
   //"page/" and "image_data" snapshot
-    dbPageRef.on('value', snapshot => {
-    this.setState({
-      PageSnapshot : snapshot
-      });
-  });
-    db.ref('image_data').on('value', snapshot => {
-      this.setState({
-        ImageList : snapshot
-      });
-    });
+  
 
   state = {
 
@@ -1117,11 +1122,12 @@ export class StyleContentList extends React.Component{
   render(){
     return(
       <div>
-        <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} } />
+        <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} />
         <ImageStyleList ImageList = {this.state.ImageList} />
       </div>
       );
   }
+}
 
 
 
