@@ -472,11 +472,14 @@ export class TextAddContainer extends React.Component{
     /*============
     Set Firebase listener for text values
     =============*/
+
+  
     dbTextRef.on('value', snapshot => {
       this.setState({
         TextList : snapshot
         });
     });
+  
 
     this.addTagToFrame = this.addTagToFrame.bind(this);
 
@@ -1044,42 +1047,53 @@ try{
 const StyleTextCopyList = (props) => {
 
   //order by child "placement", filter by page id 
+
   try{
-    snapshot = props.snapshot;
-    currentPage = props.currentPage;
+    var currentPage = props.currentPage;
+    var snapshot = props.snapshot;
 
-    //NOTICE: If it fails here, try it when calling the snapshot 
-    filteredSnap = snapshot.orderByChild('placement').equalTo(currentPage);
-    
-    //Feature: list the tags on the page, 
+    if( currentPage && snapshot){
+      //NOTICE: If it fails here, try it when calling the snapshot 
+      
 
-    paragraphArray = [];
-    h1Array = [];
-    h2Array = [];
-    h3Array = [];
+      //var filteredSnap = snapshot.orderByChild('placement').equalTo(currentPage);
+      
+      //Feature: list the tags on the page, 
 
-    returnArray = [];
+      var paragraphArray = [];
+      var h1Array = [];
+      var h2Array = [];
+      var h3Array = [];
 
-    filteredSnap.forEach(function (childSnapshot){
-      value = childSnapshot.val();
-      //if the child is of the type "p"
-      if(childSnapshot.child('p')){
-        paragraphArray.push(value);
-      }else if(childSnapshot.child('h1')){
-        h1Array.push(value);
+      var returnArray = [];
 
-      }else if(childSnapshot.child('h2')){
-        h2Array.push(value);
+      snapshot.forEach(function (childSnapshot){
+        let value = childSnapshot.val();
+        //if the child is of the type "p"
+        if(childSnapshot.child('p')){
+          paragraphArray.push(value);
+        }else if(childSnapshot.child('h1')){
+          h1Array.push(value);
 
-      }else if(childSnapshot.child('h3')){
-        h3Array.push(value);
-      }
+        }else if(childSnapshot.child('h2')){
+          h2Array.push(value);
 
-    });
+        }else if(childSnapshot.child('h3')){
+          h3Array.push(value);
+        }
 
-    returnArray = [(<div><h2 className = "style_subheader">Text Elements ("P" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("h1" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("h2" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("h3" tag)</h2><div>{h3Array}</div></div>)];
+      });
 
-    return returnArray;
+      returnArray = [(<div><h2 className = "style_subheader">Text Elements ("P" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("h1" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("h2" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("h3" tag)</h2><div>{h3Array}</div></div>)];
+      let returnArrayFinal = (<div>{returnArray}</div>)
+
+      return returnArrayFinal;
+
+    }else{
+      return (<div>Loading...</div>);
+    }
+
+
   }catch(error){
     return (<div>Loading...</div>);
   }
@@ -1087,10 +1101,11 @@ const StyleTextCopyList = (props) => {
 }
 
 const ImageStyleList = (props) => {
-
-
-return (<div><p>Under Construction...</p></div>)
+  return (<div><p>Under Construction...</p></div>)
 }
+
+
+
 
 
 export class StyleContentList extends React.Component{
@@ -1098,11 +1113,30 @@ export class StyleContentList extends React.Component{
     super(props);
 
     //Database listeners
+
+
+/* 
+    dbPageRef.orderByChild('placement').on('value', snapshot => {
+        let snapshotArray = [];
+          snapshot.forEach(function (childSnapshot) {
+          let Value = childSnapshot.val();
+          console.log(Value);
+          snapshotArray.push(Value);
+        });
+
+      this.setState({
+        TextList : snapshotArray
+        });
+    });
+*/
+
+    
       dbPageRef.on('value', snapshot => {
         this.setState({
           PageSnapshot : snapshot
           });
       });
+
         db.ref('image_data').on('value', snapshot => {
           this.setState({
             ImageList : snapshot
@@ -1120,6 +1154,10 @@ export class StyleContentList extends React.Component{
 
   StyleBar(){
 
+
+  }
+  
+  componentWillUnmount(){
 
   }
 
