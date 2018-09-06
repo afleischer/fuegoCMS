@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './style.css';
 //import ReactImage from './react.png';
 import base from 're-base';
+import Style from 'style-it';
+
 
 const fetch = require('node-fetch');
 
@@ -140,7 +142,7 @@ getCounter(snapshot, path, tag){
     var child = e.childNodes;
     var imageURL = child.getAttribute("src");
     var pageURL =  document.getElementById('page_selector').value;
-    var pageRef = firebase.database().ref('pages/').child(pageURL);
+    var pageRef = dbPageRef.child(pageURL);
     var pageRefChildImg = pageRef.child('img');
     
     //var nextCounter = pageCount + 1;
@@ -542,6 +544,7 @@ export class TextAddContainer extends React.Component{
     var updates = {};
       updates['/pages/' + pageURL] = tagData;
 
+    //check this behavior, see if I should use push instead
     pageRef.update(updates);
 
   }
@@ -714,9 +717,41 @@ ghostFunction(){
   const snapshot = this.props.Snapshot;
 
     if(snapshot){
+
     const currPage = document.querySelector('#page_selector').value;
-    var pageTags = [];
-    
+
+      if(currPage != ""){
+
+
+      var pageTags = [];
+
+      var page_tag_pull = Object.keys(snapshot.val());
+
+      var current_page_node = snapshot.child(currPage);
+
+      current_page_node.forEach(function (tagSnapshot){
+        let tags_value = tagSnapshot.val();
+
+        let tag_type = tags_value.tag_type;
+        let tag_content = tags_value.content;
+        let tag_placement = tags_value.placement;
+        let tag_style = tags_value.style;
+
+        if (tag_type == 'p'){
+          pageTags.push(<p styles = {tag_style}>{tag_content}</p>);
+        }else if (tag_type == 'h1'){
+          pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
+        }
+        /*
+        else if(TagType == 'img'){
+            pageTags.push(<img src = {imageSrc}></img>);
+          }
+        */ 
+       });
+
+        return pageTags;
+
+      /* 
     snapshot.forEach(function (childSnapshot){
       let testValue = childSnapshot.val();
       if(currPage == Object.keys(testValue.pages)[0]){
@@ -745,7 +780,11 @@ ghostFunction(){
           }
         }
     });
-     return pageTags;
+
+    */
+
+
+   }
   }
 
   return "Loading Content...";
@@ -810,7 +849,45 @@ Begin functions
 
     if(snapshot){
     const currPage = document.querySelector('#page_selector').value;
+    if (currPage != ""){
+
+
     var pageTags = [];
+
+/////////////
+
+      var page_tag_pull = Object.keys(snapshot.val());
+
+      var current_page_node = snapshot.child(currPage);
+
+      current_page_node.forEach(function (tagSnapshot){
+        let tags_value = tagSnapshot.val();
+
+        let tag_type = tags_value.tag_type;
+        let tag_content = tags_value.content;
+        let tag_placement = tags_value.placement;
+        let tag_style = tags_value.style;
+
+        if (tag_type == 'p'){
+          pageTags.push(<p styles = {tag_style}>{tag_content}</p>);
+        }else if (tag_type == 'h1'){
+          pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
+        }
+        /*
+        else if(TagType == 'img'){
+            pageTags.push(<img src = {imageSrc}></img>);
+          }
+        */ 
+       });
+
+        return pageTags;
+
+      }
+/////////////
+    return "loading..."
+
+      }
+/*
     
     snapshot.forEach(function (childSnapshot){
       let testValue = childSnapshot.val();
@@ -849,7 +926,8 @@ Begin functions
             pageTags.push(<img src = {imageSrc}></img>);
           }
         }
-    });
+        */
+    }
    
    /*  
     let editorFrame = document.getElementById('VisualEditorWindow');
@@ -866,10 +944,6 @@ Begin functions
     /***********
     get the outerHTML content of the ghostRef 
     ***********/
-
-
-      }
-    }
 
 
 
@@ -918,13 +992,12 @@ Begin functions
     var snapshot = this.state.PagesSnapshot;
 
     if(snapshot){
-      snapshot.forEach(function (childSnapshot) {
-        //let pushValue = childSnapshot.val();
-        let pushValue = Object.keys(childSnapshot.val().pages)[0];
-        let testValue = childSnapshot
-        returnArray.push(pushValue);
-      });
-    }
+      let snaplength = Object.keys(snapshot.val()).length;
+      let page_name = Object.keys(snapshot.val());
+        for(let i = 0; i < snaplength; i++){
+          returnArray.push(page_name[i]);
+        }
+    };
     
     return returnArray;
   }
@@ -1061,33 +1134,45 @@ const StyleTextCopyList = (props) => {
       //Feature: list the tags on the page, 
 
       var paragraphArray = [];
+      var p_styles
       var h1Array = [];
       var h2Array = [];
       var h3Array = [];
 
       var returnArray = [];
 
+      let key = 0;
+
       snapshot.forEach(function (childSnapshot){
         let value = childSnapshot.val();
+        let styled = Style.it(`{value.tags.style}`);
         //if the child is of the type "p"
         if(childSnapshot.child('p')){
-          paragraphArray.push(value);
+          paragraphArray.push(value.tags.content);
+
+          paragraphArray.push(<p key = {key}>{value.tags.content}</p>);
+          key++;
         }else if(childSnapshot.child('h1')){
-          h1Array.push(value);
+          //h1Array.push(value);
+          h1Array.push(<h1 key = {key}>{value.tags.content}</h1>);
 
         }else if(childSnapshot.child('h2')){
-          h2Array.push(value);
+          //h2Array.push(value);
+          h2Array.push(<h2 key = {key}>{value.tags.content}</h2>);
 
         }else if(childSnapshot.child('h3')){
-          h3Array.push(value);
+          //h3Array.push(value);
+          h3Array.push(<h3 key = {key}>{value.tags.content}</h3>);
         }
 
       });
 
+      
+      //returnArray = [(<div className = "style_list">{paragraphArray}</div>), (<div className="style_list">{h1Array}</div>), (<div className = "style_list">{h2Array}</div>),(<div>{h3Array}</div>)];
       returnArray = [(<div><h2 className = "style_subheader">Text Elements ("P" tag)</h2><div className = "style_list">{paragraphArray}</div> </div>), (<div><h2 className = "style_subheader">Large Headers ("h1" tag)</h2><div className="style_list">{h1Array}</div> </div>), (<div><h2 className = "style_subheader">Medium Headers ("h2" tag)</h2><div className = "style_list">{h2Array}</div></div>),(<div><h2 className = "style_subheader">Small Headers ("h3" tag)</h2><div>{h3Array}</div></div>)];
-      let returnArrayFinal = (<div>{returnArray}</div>)
+      //let returnArrayFinal = (<div>{returnArray}</div>)
 
-      return returnArrayFinal;
+      return returnArray;
 
     }else{
       return (<div>Loading...</div>);
