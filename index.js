@@ -115,7 +115,17 @@ getData(){
 
 setPage(e){
   if(!e){
-    return "loading...";
+    try{
+     let dropdown_first = document.getElementById('#page_selector').value;
+    } catch(error){
+        return "loading...";
+    }
+    if (!dropdown_first){
+    }
+    this.setState({
+      CurrentEditPage : "src/"+dropdown_first+".html",
+      CurrentEditPageHandle : dropdown_first
+    })
   }
     let DropdownSelection = e.target.value;
     this.setState({
