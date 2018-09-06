@@ -1,6 +1,6 @@
-import React from './react';
+import React, { Component } from 'react';
 
-var firebase = require("../firebase/app");
+var firebase = require("firebase/app");
 
 
 const DropdownOptions = (props) => {

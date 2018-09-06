@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
-var firebase = require("../firebase/app");
+import Style from 'style-it';
+
+
+var firebase = require("firebase/app");
 
 
 const StyleTextCopyList = (props) => {

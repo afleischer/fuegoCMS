@@ -15,9 +15,19 @@ Components
 =============*/
 
 
+//Content-addition-to-database components
+import CMSContainerTextPost from './components/CMSContainerTextPost';
+import CMSContainerImageUpload from './components/CMSContainerImageUpload';
+
+//database-to-sidebar addition components
+import TextAddContainer from './components/TextAddContainer';
+import ImageAddContainer from './components/ImageAddContainer';
+
+//Style-addition-to-database components
+import StyleContentList from './components/StyleContentList';
+
+//live-edit iFrame population components
 import VisualEditor from './components/VisualEditor';
-
-
 
 /*============
 Firebase initialization

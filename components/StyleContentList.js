@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import StyleTextCopyList from './sidebar_list_children/StyleTextCopyList'
+import StyleTextCopyList from './sidebar_list_children/StyleTextCopyList';
+import ImageStyleList from './sidebar_list_children/ImageStyleList';
 
 var firebase = require("firebase/app");
 
@@ -10,7 +11,7 @@ export class StyleContentList extends React.Component{
 
     //Database listeners
     
-      firebase.database().ref('pages/');.on('value', snapshot => {
+      firebase.database().ref('pages/').on('value', snapshot => {
         this.setState({
           PageSnapshot : snapshot
           });
