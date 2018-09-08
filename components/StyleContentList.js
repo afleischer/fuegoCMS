@@ -2,12 +2,22 @@ import React, { Component } from 'react';
 
 import {StyleTextCopyList} from './sidebar_list_children/StyleTextCopyList';
 import {ImageStyleList} from './sidebar_list_children/ImageStyleList'
-import '../db_init';
+import firebase from '../firebase.js';
 
 
-var firebase = require("firebase/app");
+/*
+ try {
+    let firApp = firebase.app("FuegoCMS");
+    return firApp;
+  } catch (error) {
+    return firebase.initializeApp({
+      credential: firebase.credential.cert(firebaseCredentials),
+      databaseURL: firebaseUrl
+    }, applicationName);
+  }
+*/
 
-export class StyleContentList extends React.Component{
+class StyleContentList extends React.Component{
   constructor(props){
     super(props);
     //Database listeners
@@ -18,7 +28,7 @@ export class StyleContentList extends React.Component{
           });
       });
 
-        db.ref('image_data').on('value', snapshot => {
+        firebase.database().ref('image_data').on('value', snapshot => {
           this.setState({
             ImageList : snapshot
           });
@@ -51,3 +61,5 @@ export class StyleContentList extends React.Component{
       );
   }
 }
+
+export default StyleContentList;

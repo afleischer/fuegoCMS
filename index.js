@@ -4,6 +4,8 @@ import './style.css';
 import base from 're-base';
 import Style from 'style-it';
 import Iframe from 'react-iframe';
+
+import firebase from './firebase.js';
 //import firebase from 'firebase/app';
 
 /*==============
@@ -12,10 +14,10 @@ Initialize firebase
 
 //import './db_init';
 
-//import('./db_init')
+//import {importFirebase} from 'firebase';
 
 
-//import firebase from 'firebase/app';
+/* 
 import * as firebase from 'firebase';
   import 'firebase/auth';
   import 'firebase/database';
@@ -34,8 +36,35 @@ import * as firebase from 'firebase';
     };
 
 firebase.initializeApp(config);
+*/
 
- 
+/*==============
+ES5 inclusion
+==============*/
+/*
+ // Firebase App is always required and must be first
+var firebase = require("firebase/app");
+
+// Add additional services that you want to use
+require("firebase/auth");
+require("firebase/database");
+require("firebase/firestore");
+require("firebase/messaging");
+require("firebase/functions");
+
+// Comment out (or don't require) services that you don't want to use
+// require("firebase/storage");
+
+var config = {
+      apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
+      authDomain: "fuegocms.firebaseapp.com",
+      databaseURL: "https://fuegocms.firebaseio.com",
+      projectId: "fuegocms",
+      storageBucket: "fuegocms.appspot.com",
+      messagingSenderId: "283527892810"
+    };
+firebase.initializeApp(config);
+*/
 
 /*============
 Components
@@ -59,6 +88,8 @@ import VisualEditor from './components/VisualEditor';
 /*============
 Firebase initialization
 ============*/
+
+//const firebase = importFirebase;
 
 //import {firebase_setup} from './db_init';
 const db = firebase.database();

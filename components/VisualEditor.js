@@ -1,10 +1,23 @@
 import React, { Component } from 'react';
+import Iframe from 'react-iframe';
 
-//import {firebase_setup} from '../db_init';
+import GhostElement from './VisualEditorChildren/GhostElement.js';
 
+import firebase from '../firebase.js';
 //var firebase = require("firebase/app");
-import '../db_init';
+//import '../db_init';
 
+/*
+ try {
+    let firApp = firebase.app(applicationName);
+    return firApp;
+  } catch (error) {
+    return firebase.initializeApp({
+      credential: firebase.credential.cert(firebaseCredentials),
+      databaseURL: firebaseUrl
+    }, applicationName);
+  }
+*/
 
 const DropdownOptions = (props) => {
 

@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
 
-
+import firebase from '../firebase.js';
 
 //var firebase = require("firebase/app");
 
+/* 
+ try {
+    let firApp = firebase.app("FuegoCMS");
+    return firApp;
+  } catch (error) {
+    return firebase.initializeApp({
+      credential: firebase.credential.cert(firebaseCredentials),
+      databaseURL: firebaseUrl
+    }, applicationName);
+  }
+  */
 //const db = firebase.database();
 
 const ImageItem = (props) => {
 
-  import('../db_init');
+  //import('../db_init');
 
     var returnArray = [];
     //const storageRef = firebase.storage().ref();

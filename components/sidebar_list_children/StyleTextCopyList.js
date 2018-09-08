@@ -2,13 +2,24 @@ import React, { Component } from 'react';
 
 import Style from 'style-it';
 
-import '../../db_init';
+import firebase from '../../firebase.js';
 
 //import {firebase_setup} from '../../db_init';
 
 
 //var firebase = require("firebase/app");
 
+/*
+ try {
+    let firApp = firebase.app(applicationName);
+    return firApp;
+  } catch (error) {
+    return firebase.initializeApp({
+      credential: firebase.credential.cert(firebaseCredentials),
+      databaseURL: firebaseUrl
+    }, applicationName);
+  }
+*/ 
 
 export const StyleTextCopyList = (props) => {
 

@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
 
-import('../db_init');
+import firebase from '../firebase.js';
 
-
+/*
+ try {
+    let firApp = firebase.app("FuegoCMS");
+    return firApp;
+  } catch (error) {
+    return firebase.initializeApp({
+      credential: firebase.credential.cert(firebaseCredentials),
+      databaseURL: firebaseUrl
+    }, applicationName);
+  }
+  */
 //var firebase = require("firebase/app");
 //import firebase from 'firebase';
 //import {firebase_setup} from '../db_init';

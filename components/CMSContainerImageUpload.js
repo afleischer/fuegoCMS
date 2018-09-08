@@ -1,13 +1,25 @@
 import React, { Component } from 'react';
 
 
-import '../db_init';
+import firebase from '../firebase.js';
 
+/*
+ try {
+    let firApp = firebase.app("fuegocms");
+    return firApp;
+  } catch (error) {
+    const config = {
+        apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
+        authDomain: "fuegocms.firebaseapp.com",
+        databaseURL: "https://fuegocms.firebaseio.com",
+        projectId: "fuegocms",
+        storageBucket: "fuegocms.appspot.com",
+        messagingSenderId: "283527892810"
+      };
+    return firebase.initializeApp(config);
+  }
 
-//import {firebase_setup} from '../db_init';
-
-//var firebase = require("firebase/app");
-
+*/
 
 function NoticeBox(props){
   return <div className = {props.class_name}><h2 className = "noticeText">Image Uploaded!</h2></div>;
