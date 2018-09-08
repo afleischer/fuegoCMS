@@ -153,7 +153,7 @@ setPage(e){
       }
   }
 
-
+/*
     let dropdown_first = document.getElementById('#page_selector').value;
 
 
@@ -164,6 +164,7 @@ setPage(e){
   }
    
 }
+*/
 
 setFirstPage(input){
   let fetchVar = input;

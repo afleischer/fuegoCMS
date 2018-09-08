@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
 import Iframe from 'react-iframe';
 
 import GhostElement from './VisualEditorChildren/GhostElement.js';
@@ -26,6 +28,7 @@ const DropdownOptions = (props) => {
   //returnArray.push(<select id="page_selector">);
 
   if(pages!= 0){
+    returnArray.push(<option key = '0' value= "Choose">Select Page to Edit</option>);
       for(let i = 0; i <= pages.length -1; i++){
     returnArray.push(<option key={i} value={pages[i]}>{pages[i]}</option>);
    } 
@@ -79,9 +82,9 @@ Begin functions
 
 //Notice!  This logic has been duplicated into "ghostElement" and will be referenced
 //instead in the function setHTML
-  loadIFrame(){
+  loadIFrame(){ }
 
- 
+ /*
     const snapshot = this.state.PagesSnapshot;
 
     if(snapshot){
@@ -91,7 +94,6 @@ Begin functions
 
     var pageTags = [];
 
-/////////////
 
       var page_tag_pull = Object.keys(snapshot.val());
 
@@ -110,20 +112,15 @@ Begin functions
         }else if (tag_type == 'h1'){
           pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
         }
-        /*
-        else if(TagType == 'img'){
-            pageTags.push(<img src = {imageSrc}></img>);
-          }
-        */ 
+
        });
 
         return pageTags;
 
       }
-/////////////
     return "loading..."
 
-      }
+      } */
 /*
     
     snapshot.forEach(function (childSnapshot){
@@ -164,7 +161,7 @@ Begin functions
           }
         }
         */
-    }
+    
    
    /*  
     let editorFrame = document.getElementById('VisualEditorWindow');
@@ -328,7 +325,7 @@ try{
   render(){
     return(
       <div>
-        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame(), this.setHTML()}} onChange = {(e) => {this.props.SetPage(e), this.loadIFrame(), this.setHTML()}}> 
+        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame() /*this.setHTML()*/}} onChange = {(e) => {this.props.SetPage(e), this.loadIFrame() /* this.setHTML() */}}> 
           <DropdownOptions Pages = {this.fetchPagesToEdit()} />
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
@@ -343,7 +340,7 @@ try{
           display="initial" 
           onLoad = {this.setHTML}
           />
-          <GhostElement ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
+          <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );

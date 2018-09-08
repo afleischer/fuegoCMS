@@ -67,9 +67,13 @@ ghostFunction(){
   return "Loading Content...";
 }
 
+componentDidUpdate(){
+  this.props.setHTML();
+}
+
   render(){
     return(
-      (<div>{this.ghostFunction()}</div>)
+      (<div className="ghost">{this.ghostFunction()}</div>)
       );
     }
 
