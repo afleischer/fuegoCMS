@@ -127,24 +127,53 @@ export default class App extends React.Component{
 setPage(e){
   if(!e){
     try{
-     let dropdown_first = document.getElementById('#page_selector').value;
+     let dropdown_selected = document.getElementById('#page_selector').value;
     } catch(error){
-        return "loading...";
-    }
-    if (!dropdown_first){
-    }
+      //get the first value that we pull from firebase inst
+      try{
+        let dropdown_first = document.getElementById('#loading_page').value; 
+        this.setState({
+          CurrentEditPageHandle : dropdown_first
+        })
+        }
+        catch(error){
+          return "loading first value...";
+        }
+      }
+
+      }
+
+      else if (e){
+        let dropdown_selected = e.target.value;
+         let DropdownSelection = e.target.value;
+        this.setState({
+      CurrentEditPage : "src/"+DropdownSelection+".html",
+      CurrentEditPageHandle : DropdownSelection
+    });
+      }
+  }
+
+
+    let dropdown_first = document.getElementById('#page_selector').value;
+
+
     this.setState({
       CurrentEditPage : "src/"+dropdown_first+".html",
       CurrentEditPageHandle : dropdown_first
     })
   }
-    let DropdownSelection = e.target.value;
-    this.setState({
-      CurrentEditPage : "src/"+DropdownSelection+".html",
-      CurrentEditPageHandle : DropdownSelection
-    });
+   
 }
 
+setFirstPage(input){
+  let fetchVar = input;
+  if(fetchVar){
+    this.setState({
+      CurrentEditPage : "src/"+fetchVar[0]+".html",
+      CurrentEditPageHandle : fetchVar[0]
+    })
+  }
+}
 
 getCounter(snapshot, path, tag){
   var returnArray = [];
@@ -182,10 +211,11 @@ getCounter(snapshot, path, tag){
 //Get a page state list
   componentDidMount(){
 
-    this.setPage();
+   // this.setPage();
 
 
   }
+  
 
     //In render, pass the state of the div down as props to the
 

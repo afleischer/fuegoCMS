@@ -31,7 +31,7 @@ ghostFunction(){
 
     const currPage = document.querySelector('#page_selector').value;
 
-      if(currPage != ""){
+      if(currPage != "" && currPage != 'Loading'){
 
 
       var pageTags = [];

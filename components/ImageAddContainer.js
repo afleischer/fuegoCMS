@@ -92,7 +92,7 @@ export default class ImageAddContainer extends React.Component{
     }
 
     catch(error){
-      return "Loading...";
+      return "Select Page";
     }
      
     var allTag = "tag_type";

@@ -25,14 +25,14 @@ const DropdownOptions = (props) => {
   var returnArray = [];
   //returnArray.push(<select id="page_selector">);
 
-  try{
+  if(pages!= 0){
       for(let i = 0; i <= pages.length -1; i++){
     returnArray.push(<option key={i} value={pages[i]}>{pages[i]}</option>);
    } 
-  }catch(error){
-    returnArray.push(<option key="shhhh" value = "Loading options...">Loading...</option>);
+  }else {
+    returnArray.push(<option id="loading_page" key="shhhh" value = "Loading">Loading</option>);
   }
-  //returnArray.push(</select>);
+
   return returnArray;
 }
 
@@ -302,6 +302,11 @@ try{
 
   }
 
+  fetchAndSet(){
+    var fetchVar = fetchPagesToEdit();
+    var setPage = this.props.SetPage(fetchVar);
+  }
+
 //Will be hoisted to parent and passed down 
 
 /* 
@@ -316,13 +321,14 @@ try{
   */ 
 
   componentDidMount(){
+    this.props.SetPage();
     this.loadIFrame();
   }
 
   render(){
     return(
       <div>
-        <select id = "page_selector" onChange = {(e) => {this.props.SetPage(e), this.loadIFrame(), this.setHTML()}}> 
+        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame(), this.setHTML()}} onChange = {(e) => {this.props.SetPage(e), this.loadIFrame(), this.setHTML()}}> 
           <DropdownOptions Pages = {this.fetchPagesToEdit()} />
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
