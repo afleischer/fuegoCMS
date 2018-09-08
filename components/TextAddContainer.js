@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 
-var firebase = require("firebase/app");
+import('../db_init');
+
+
+//var firebase = require("firebase/app");
+//import firebase from 'firebase';
+//import {firebase_setup} from '../db_init';
+
+//const db = firebase.database();
+//const dbTextRef = db.ref('blogs/');
 
 
 const TextItem = (props) => {
@@ -38,7 +46,7 @@ const TextItem = (props) => {
 
 }
 
-export class TextAddContainer extends React.Component{
+export default class TextAddContainer extends React.Component{
   constructor(props){
     super(props);
 
@@ -49,7 +57,7 @@ export class TextAddContainer extends React.Component{
     =============*/
 
   
-    dbTextRef.on('value', snapshot => {
+    firebase.database().ref('blogs/').on('value', snapshot => {
       this.setState({
         TextList : snapshot
         });

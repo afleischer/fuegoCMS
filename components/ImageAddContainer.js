@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 
-var firebase = require("firebase/app");
 
 
+//var firebase = require("firebase/app");
+
+//const db = firebase.database();
 
 const ImageItem = (props) => {
+
+  import('../db_init');
 
     var returnArray = [];
     //const storageRef = firebase.storage().ref();
@@ -29,12 +33,12 @@ return returnArray;
 
 
 
-export class ImageAddContainer extends React.Component{
+export default class ImageAddContainer extends React.Component{
   constructor(props){
     super(props);
 
 
-    const databaseImageRef = db.ref('image_data');
+    const databaseImageRef = firebase.database().ref('image_data');
     const storageRef = firebase.storage().ref();
 
 

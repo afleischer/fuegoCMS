@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 
 import Style from 'style-it';
 
+import '../../db_init';
 
-var firebase = require("firebase/app");
+//import {firebase_setup} from '../../db_init';
 
 
-const StyleTextCopyList = (props) => {
+//var firebase = require("firebase/app");
+
+
+export const StyleTextCopyList = (props) => {
 
   //order by child "placement", filter by page id 
 

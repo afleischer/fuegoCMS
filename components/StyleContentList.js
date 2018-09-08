@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
-import StyleTextCopyList from './sidebar_list_children/StyleTextCopyList';
-import ImageStyleList from './sidebar_list_children/ImageStyleList';
+import {StyleTextCopyList} from './sidebar_list_children/StyleTextCopyList';
+import {ImageStyleList} from './sidebar_list_children/ImageStyleList'
+import '../db_init';
+
 
 var firebase = require("firebase/app");
 
 export class StyleContentList extends React.Component{
   constructor(props){
     super(props);
-
     //Database listeners
     
       firebase.database().ref('pages/').on('value', snapshot => {

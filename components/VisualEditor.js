@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 
-var firebase = require("firebase/app");
+//import {firebase_setup} from '../db_init';
+
+//var firebase = require("firebase/app");
+import '../db_init';
 
 
 const DropdownOptions = (props) => {
 
   var pages = props.Pages;
   var returnArray = [];
-
   //returnArray.push(<select id="page_selector">);
 
   try{
@@ -22,7 +24,7 @@ const DropdownOptions = (props) => {
 }
 
 
-export class VisualEditor extends React.Component{
+export default class VisualEditor extends React.Component{
   constructor(props){
     super(props);
 

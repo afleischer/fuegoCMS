@@ -1,14 +1,41 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
-//import ReactImage from './react.png';
 import base from 're-base';
 import Style from 'style-it';
+import Iframe from 'react-iframe';
+//import firebase from 'firebase/app';
+
+/*==============
+Initialize firebase 
+===============*/
+
+//import './db_init';
+
+//import('./db_init')
 
 
-const fetch = require('node-fetch');
+//import firebase from 'firebase/app';
+import * as firebase from 'firebase';
+  import 'firebase/auth';
+  import 'firebase/database';
+  import 'firebase/firestore';
+  import 'firebase/messaging';
+  import 'firebase/functions';
+  import 'firebase/storage';
 
-var http = require('http');
+  var config = {
+      apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
+      authDomain: "fuegocms.firebaseapp.com",
+      databaseURL: "https://fuegocms.firebaseio.com",
+      projectId: "fuegocms",
+      storageBucket: "fuegocms.appspot.com",
+      messagingSenderId: "283527892810"
+    };
+
+firebase.initializeApp(config);
+
+ 
 
 /*============
 Components
@@ -33,50 +60,12 @@ import VisualEditor from './components/VisualEditor';
 Firebase initialization
 ============*/
 
-  var config = {
-      apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
-      authDomain: "fuegocms.firebaseapp.com",
-      databaseURL: "https://fuegocms.firebaseio.com",
-      projectId: "fuegocms",
-      storageBucket: "fuegocms.appspot.com",
-      messagingSenderId: "283527892810"
-    };
-
-
-
-require("firebase/auth");
-require("firebase/database");
-require("firebase/firestore");
-require("firebase/messaging");
-require("firebase/functions");
-require("firebase/storage");
-
-
-
-/*
-Global variables 
-*/
-
-var firebase = require("firebase/app");
-//var admin = require("firebase-admin");
-
-firebase.initializeApp(config);
-
-
-
+//import {firebase_setup} from './db_init';
 const db = firebase.database();
 const dbTextRef = db.ref('blogs/');
 const storageRef = firebase.storage().ref();
 const databaseImageRef = db.ref('image_data/');
 const dbPageRef = firebase.database().ref('pages/');
-import Iframe from 'react-iframe';
-
-//const functions = require('firebase-functions');
-
-
-
-
-
 
 
 /*===========

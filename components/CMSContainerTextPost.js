@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 
+//import {firebase_setup} from '../db_init';
 
-var firebase = require("firebase/app");
+import '../db_init';
+
+
+//var firebase = require("firebase/app");
 
 
 function NoticeBoxText(props){
   return <div className = {props.class_name}><h2 className = "noticeText">Text Copy Uploaded!</h2></div>;
 }
 
-export class CMSContainerTextPost extends React.Component{
+class CMSContainerTextPost extends React.Component{
     constructor(props){
       super(props);
       this.updateBlogTextState = this.updateBlogTextState.bind(this);
@@ -79,3 +83,5 @@ export class CMSContainerTextPost extends React.Component{
     }
     
 }
+
+export default CMSContainerTextPost; 

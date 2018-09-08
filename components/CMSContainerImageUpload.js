@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 
-var firebase = require("firebase/app");
+
+import '../db_init';
+
+
+//import {firebase_setup} from '../db_init';
+
+//var firebase = require("firebase/app");
 
 
 function NoticeBox(props){
@@ -8,7 +14,7 @@ function NoticeBox(props){
 }
 
 
-export class CMSContainerImageUpload extends React.Component{
+export default class CMSContainerImageUpload extends React.Component{
   constructor(props){
     super(props);
     this.handleUploadImage = this.handleUploadImage.bind(this);
