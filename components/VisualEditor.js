@@ -350,6 +350,8 @@ try{
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
         <input type = "submit" value = "submit" onClick = {this.addPage}></input>
+
+        <h1>Visual editing section</h1>
         <Iframe
           id = "VisualEditorWindow"
           url = {this.props.CurrentEditPageHandle}
@@ -359,6 +361,7 @@ try{
           className = "iframe"
           display="initial" 
           onLoad = {this.setHTML}
+          frameBorder = "10"
           />
           <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>

@@ -26,6 +26,10 @@ h2{
 	font-family: roboto;
 }
 
+body{
+	margin: 0;
+}
+
 .app-container{
 	display: grid;
 	width: 100vw;
@@ -50,6 +54,10 @@ h2{
 	border: 4px black;
 	border-radius: 5px;
 	
+}
+
+.ghost{
+	display: none;
 }
 
 .image_add_container{
@@ -119,6 +127,10 @@ h2{
 	grid-area: add;
 }
 
+.sidebar > * {
+	padding-left: 20px;
+}
+
 .style_content{
 	grid-area: style;
 }
@@ -126,6 +138,10 @@ h2{
 .VisualSection{
 
 	grid-area: visual;
+}
+
+.VisualSection > * {
+	padding-left: 50px;
 }
 
 #VisualEditor{

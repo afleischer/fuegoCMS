@@ -3,19 +3,6 @@ import React, { Component } from 'react';
 import firebase from '../../firebase.js';
 
 
-
-/*
-try {
-    let firApp = firebase.app("FuegoCMS");
-    return firApp;
-  } catch (error) {
-    return firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-      databaseURL: firebaseUrl
-    }, FuegoCMS);
-  }
-*/
-
 class GhostElement extends React.Component{
   constructor(props){
     super(props);
