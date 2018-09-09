@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 
-//import {firebase_setup} from '../db_init';
-
 import firebase from '../firebase.js';
 
-
-
-//var firebase = require("firebase/app");
 
 
 function NoticeBoxText(props){
