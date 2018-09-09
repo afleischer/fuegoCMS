@@ -52,6 +52,7 @@ export default class VisualEditor extends React.Component{
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
     this.loadIFrame = this.loadIFrame.bind(this);
     this.setHTML = this.setHTML.bind(this);
+    this.clearPriorHTML = this.clearPriorHTML.bind(this);
 
 
     //set refs
@@ -247,6 +248,8 @@ try{
       let editorFrame = document.getElementById('VisualEditorWindow');
 
     editorFrame.contentDocument.write(outerElements);
+    //frameDoc.documentElement.innerHTML = outerElements;
+
     }catch(error){
       console.log("setHTML is loading...");
       return false;
@@ -299,9 +302,19 @@ try{
 
   }
 
-  fetchAndSet(){
-    var fetchVar = fetchPagesToEdit();
-    var setPage = this.props.SetPage(fetchVar);
+
+  clearPriorHTML(){
+    var ghostRef = this.ghostRef;
+    var frame = document.getElementById('VisualEditorWindow');
+    var frameDoc = frame.contentDocument || frame.contentWindow.document;
+
+
+    frameDoc.documentElement.querySelectorAll(".ghost").forEach ( e => e.parentNode.removeChild(e));
+    
+    //frameDoc.removeChild(frameDoc.documentElement.querySelectorAll(".ghost"));
+    //frameDoc.documentElement.innerHTML = "";
+
+
   }
 
 //Will be hoisted to parent and passed down 
@@ -325,7 +338,7 @@ try{
   render(){
     return(
       <div>
-        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame() /*this.setHTML()*/}} onChange = {(e) => {this.props.SetPage(e), this.loadIFrame() /* this.setHTML() */}}> 
+        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame() /*this.setHTML()*/}} onChange = {(e) => {this.clearPriorHTML(), this.props.SetPage(e), this.loadIFrame() /* this.setHTML() */}}> 
           <DropdownOptions Pages = {this.fetchPagesToEdit()} />
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
