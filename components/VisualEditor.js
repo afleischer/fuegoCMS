@@ -243,12 +243,19 @@ Begin functions
     let iFrameRef = this.loadIFrame.current;
 try{
       let ghostRefTags = ReactDOM.findDOMNode(ghostRef);
+
+     if(ghostRefTags.innerText != "Loading Content...") {
       let outerElements = ghostRefTags.outerHTML;
 
       let editorFrame = document.getElementById('VisualEditorWindow');
 
-    editorFrame.contentDocument.write(outerElements);
+      editorFrame.contentDocument.write(outerElements);
     //frameDoc.documentElement.innerHTML = outerElements;
+     }
+     else{
+      return false;
+     }
+
 
     }catch(error){
       console.log("setHTML is loading...");
