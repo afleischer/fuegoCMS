@@ -16,7 +16,7 @@ export default class HSModal extends React.Component{
 
 
 submitAndClose(){
-	this.props.submitModal(this.props.snapshot, "HorizontalScroll", this.props.pageEditing, this.state.selectedScrollOption);
+	this.props.submitModal(this.props.snapshot, "HorizontalScroll", this.props.CurrentEditPageHandle, this.state.selectedScrollOption);
 	this.props.closeModal("hsModal");
 }
 

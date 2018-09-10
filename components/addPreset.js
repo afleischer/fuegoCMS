@@ -66,14 +66,16 @@ submitModal(snapshot, type, page, subtype){
 	if(!snapshot){
 		return false;
 	}
+		var pageEditing = page;
 
-		var newCollections = firebase.database.ref('pages/'+pageEditing+'/collections/').push().key;
+		var newCollections = firebase.database().ref('pages/'+pageEditing+'/collections/').push().key;
 		//now we have a unique key but haven't declared the section type yet
 
 
 		//get the highest count of the "Placement" tags to see where this is placed on the page
 		try{
-			let toplevel_counter = firebase.database().ref('/pages'+pageEditing).tags.orderByValue(placement).limitToLast(1);
+
+			var toplevel_counter = firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1);
 			let collection_counter = firebase.database().ref('/pages'+pageEditing).collections.orderByValue(placement).limitToLast(1);
 		}catch(error){
 			if(!toplevel_counter && !collection_counter){
@@ -110,7 +112,7 @@ submitModal(snapshot, type, page, subtype){
 		}
 
 
-		firebase.database.ref('pages/'+pageEditing).collections.update(updateVar);
+		firebase.database().ref('pages/'+pageEditing).collections.update(updateVar);
 
 	}
 
@@ -135,14 +137,14 @@ submitModal(snapshot, type, page, subtype){
 					<h3>Type: Horizontal Scroll</h3>
 					<p>Description: Section that scrolls horizontally as opposed to vertically when 
 					a wuser scrolls down</p>
-					<HSModal  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
+					<HSModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle}  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
 
 				</div>
 				<div onClick = {this.startModal("blade")}>
 					<h3>Type: Blade</h3>
 					<p>Description: Section of content that sits above fixed-background images</p>
 				</div>
-					<BladeModal submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing} />
+					<BladeModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle} submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing} />
 
 			</div>
 			);
