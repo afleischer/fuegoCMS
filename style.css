@@ -152,5 +152,7 @@ body{
 
 
 #hsModal {
-	display: none;
+    display: block;
+    position: fixed;
+    left: 50%;
 }

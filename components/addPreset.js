@@ -3,82 +3,14 @@ import React from 'react';
 
 import firebase from '../firebase'
 
+import '../style.css'
 
-/*===============
-To add next: 
+/*=============
+Children
+=============*/
 
-
-================*/ 
-
-//HorizontalScrollAdd
-
-class HSModal extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
-	state = {
-		selectedScrollOption : null,
-		snapshot : null
-	}
-
-
-
-
-	render(){
-
-		return(
-			<div id = "hsModal">
-				<h4>Scroll direction</h4>
-				<p>As the user scrolls down, the content in the section will display...</p>
-				<div>
-					<div name="Left-Right" onClick = {(e) => setState({selectedScrollOption : e.target.name})}><p>Left-to-Right</p></div>
-					<div name="Right-Left" onClick = {(e) => setState({selectedScrollOption : e.target.name})}><p>Right-to-Left</p></div>
-				</div>
-				<button onClick = { () => this.props.submitModal(this.props.snapshot, "HorizontalScroll", this.props.pageEditing, this.state.selectedScrollOption), () => this.props.closeModal("hsModal")}>SUBMIT</button>
-			</div>
-			);
-	}
-}
-
-
-
-class BladeModal extends React.Component{
-	constructor(props){
-		super(props);
-
-
-
-	}
-
-	state = {
-
-
-	}
-
-
-
-
-	render(){
-
-		return(
-			<div id = "bladeModal">
-				<h4>Blade top:</h4>
-					<div name = "flat" onClick = {(e) => setState({bladeTopOption : e.target.name})}>Flat</div>
-					<div name = "angled" onClick = {(e) => setState({bladeTopOption : e.target.name})}>Angled</div>
-					<div name = "semicircle" onClick = {(e) => setState({bladeTopOption : e.target.name})}>Semi-Circular</div>
-					
-				<h4>Blade bottom:</h4>
-					<div name = "flat" onClick = {(e) => setState({bladeBottomOption : e.target.name})}>Flat</div>
-					<div name = "angled" onClick = {(e) => setState({bladeBottomOption : e.target.name})}>Angled</div>
-					<div name = "semicircle" onClick = {(e) => setState({bladeBottomOption : e.target.name})}>Semi-Circular</div>
-
-					<button onClick = {() => this.props.submitModal(this.props.snapshot, "Blade", this.props.pageEditing, {topborder: this.state.bladeTopOption, bottomborder : this.state.bladeBottomOption}), () => this.props.closeModal("blade")}>SUBMIT</button>
-			</div>
-			);
-	}
-
-}
+import HSModal from './preset_children/HSModal';
+import BladeModal from './preset_children/BladeModal';
 
 
 class PresetAddContainer extends React.Component{
@@ -203,14 +135,15 @@ submitModal(snapshot, type, page, subtype){
 					<h3>Type: Horizontal Scroll</h3>
 					<p>Description: Section that scrolls horizontally as opposed to vertically when 
 					a wuser scrolls down</p>
+					<HSModal  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
+
 				</div>
 				<div onClick = {this.startModal("blade")}>
-					<h3>Blade</h3>
+					<h3>Type: Blade</h3>
 					<p>Description: Section of content that sits above fixed-background images</p>
 				</div>
+					<BladeModal submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing} />
 
-				<HSModal  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
-				<BladeModal submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing} />
 			</div>
 			);
 	}
