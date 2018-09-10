@@ -20,6 +20,7 @@ import CMSContainerImageUpload from './components/CMSContainerImageUpload';
 //database-to-sidebar addition components
 import TextAddContainer from './components/TextAddContainer';
 import ImageAddContainer from './components/ImageAddContainer';
+import AddPreset from './components/AddPreset';
 
 //Style-addition-to-database components
 import StyleContentList from './components/StyleContentList';
@@ -146,6 +147,7 @@ getCounter(snapshot, path, tag){
             <h1>Add to Page</h1>
             <TextAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} TextArray = {this.state.TextList} />
             <ImageAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+            <AddPreset CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
           </div>
 
           <div className = "style_content">

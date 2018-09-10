@@ -149,3 +149,8 @@ body{
 	border-color: black;
 	border-style: inset;
 }
+
+
+#hsModal {
+	display: none;
+}

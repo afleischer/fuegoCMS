@@ -14,12 +14,12 @@ To add next:
 
 class HSModal extends React.Component{
 	constructor(props){
-
-	this.submitModal = this.submitModal.bind(this);
+		super(props);
 	}
 
 	state = {
-		selectedScrollOption : null
+		selectedScrollOption : null,
+		snapshot : null
 	}
 
 
@@ -35,7 +35,7 @@ class HSModal extends React.Component{
 					<div name="Left-Right" onClick = {(e) => setState({selectedScrollOption : e.target.name})}><p>Left-to-Right</p></div>
 					<div name="Right-Left" onClick = {(e) => setState({selectedScrollOption : e.target.name})}><p>Right-to-Left</p></div>
 				</div>
-				<button onClick = {this.props.submitModal(this.props.snapshot, "HorizontalScroll", this.props.pageEditing, this.state.selectedScrollOption), this.props.closeModal("hsModal")}>SUBMIT</button>
+				<button onClick = { () => this.props.submitModal(this.props.snapshot, "HorizontalScroll", this.props.pageEditing, this.state.selectedScrollOption), () => this.props.closeModal("hsModal")}>SUBMIT</button>
 			</div>
 			);
 	}
@@ -46,6 +46,9 @@ class HSModal extends React.Component{
 class BladeModal extends React.Component{
 	constructor(props){
 		super(props);
+
+
+
 	}
 
 	state = {
@@ -70,7 +73,7 @@ class BladeModal extends React.Component{
 					<div name = "angled" onClick = {(e) => setState({bladeBottomOption : e.target.name})}>Angled</div>
 					<div name = "semicircle" onClick = {(e) => setState({bladeBottomOption : e.target.name})}>Semi-Circular</div>
 
-					<button onClick = {this.props.submitModal(this.props.snapshot, "Blade", this.props.pageEditing, {topborder: this.state.bladeTopOption, bottomborder : this.state.bladeBottomOption}), this.props.closeModal("blade")}>SUBMIT</button>
+					<button onClick = {() => this.props.submitModal(this.props.snapshot, "Blade", this.props.pageEditing, {topborder: this.state.bladeTopOption, bottomborder : this.state.bladeBottomOption}), () => this.props.closeModal("blade")}>SUBMIT</button>
 			</div>
 			);
 	}
@@ -83,13 +86,33 @@ class PresetAddContainer extends React.Component{
 		super(props);
 
 		this.startModal = this.startModal.bind(this);
+		this.submitModal = this.submitModal.bind(this);
+		this.closeModal = this.closeModal.bind(this);
+
+
+
+		/*==============
+		Set db listener
+		==============*/
+		firebase.database().ref('pages/').on('value', snapshot => {
+			this.setState({
+				snapshot: snapshot
+			});
+	    });
+
+	}
+
+	state = {
+
 	}
 
 //Pull up a modal when the user clicks on it
 
 startModal(input){
 
-	if(input == "horizontal_scroll"){
+	try{
+
+		if(input == "horizontal_scroll"){
 		var modal = document.getElementById('hsModal');
 		modal.style.display = "block";
 
@@ -98,21 +121,28 @@ startModal(input){
 		modal.style.display = "block";
 	}
 
+	}catch(error){
+
+	}
+
 }
 
 
 submitModal(snapshot, type, page, subtype){
 		//Append the data to firebase
 
+	if(!snapshot){
+		return false;
+	}
 
-		var newCollections = firebase.database.ref('pages/'+pageEditing+'/collections/'+).push().key;
+		var newCollections = firebase.database.ref('pages/'+pageEditing+'/collections/').push().key;
 		//now we have a unique key but haven't declared the section type yet
 
 
 		//get the highest count of the "Placement" tags to see where this is placed on the page
 		try{
 			let toplevel_counter = firebase.database().ref('/pages'+pageEditing).tags.orderByValue(placement).limitToLast(1);
-			let collection_counter = firebase.database().ref('/pages'+pageEditing.collections.orderByValue(placement).limitToLast(1);
+			let collection_counter = firebase.database().ref('/pages'+pageEditing).collections.orderByValue(placement).limitToLast(1);
 		}catch(error){
 			if(!toplevel_counter && !collection_counter){
 				counter = 1;
@@ -142,7 +172,7 @@ submitModal(snapshot, type, page, subtype){
 			var updateVar = {
 				type: "Blade",
 				border_top: subtype.bladeTopOption,
-				border_bottom: subtype.bladeBottomOption
+				border_bottom: subtype.bladeBottomOption,
 				placement: counter
 			}
 		}
@@ -167,24 +197,23 @@ submitModal(snapshot, type, page, subtype){
 
 	render(){
 		return(
-			<div onClick = {this.startModal("horizontal_scroll")}>
-				<h3>Type: Horizontal Scroll</h3>
-				<p>Description: Section that scrolls horizontally as opposed to vertically when 
-				a wuser scrolls down</p>
-			</div>
-			<div onClick = {this.startModal("blade")>
-				<h3>Blade<h3>
-				<p>Description: Section of content that sits above fixed-background images</p>
-			</div>
+			<div className = "PresetContainer">
+				<h1>Add Preset</h1>
+				<div onClick = {this.startModal("horizontal_scroll")}>
+					<h3>Type: Horizontal Scroll</h3>
+					<p>Description: Section that scrolls horizontally as opposed to vertically when 
+					a wuser scrolls down</p>
+				</div>
+				<div onClick = {this.startModal("blade")}>
+					<h3>Blade</h3>
+					<p>Description: Section of content that sits above fixed-background images</p>
+				</div>
 
-			<HSModal  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.prop.snapshot} pageEditing = {this.props.pageEditing}/>
-			<BladeModal submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.prop.snapshot} pageEditing = {this.props.pageEditing} />
-
-			)
+				<HSModal  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
+				<BladeModal submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing} />
+			</div>
+			);
 	}
 }
 
-
-
-
-
+export default PresetAddContainer;
