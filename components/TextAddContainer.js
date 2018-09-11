@@ -85,26 +85,10 @@ export default class TextAddContainer extends React.Component{
      
     var allTag = "tag_type";
 
-    //To the end, add a tag
-
-    /*  Old, using the below orderbyChild + limit call instead
-
-    function tagCountFunc(snapshot, pageRef, tag){
-      var returnArray = [];
-          snapshot.forEach(function (childSnapshot) {
-          let tagCount = childSnapshot.val().tag;
-          returnArray.push(tagCount);
-        });
-          return returnArray.length;
-    }
-
-    */
-
     let placement_counter;
     /*=============
     Get the most recent "placement" variable and set this to "placement" + 1
     =============*/
-    var query = firebase.database().ref('pages/' + pageURL).orderByChild('placement');    
 
       firebase.database().ref('pages/' + pageURL+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
         console.log("Test!");
@@ -112,61 +96,13 @@ export default class TextAddContainer extends React.Component{
         let keyname = Object.keys(snapshot.val())[0];
 
         placement_counter = snapshot.child(keyname).val().placement;
-      });
-
-/* 
-  Thinking about the future of my app...
-
-I want to be able to move around all the tags on the page.  
-That means that the placement will need to be important.
-I don't need to loop to find a value, I could just:
-
---For each unique key of tags:
-  
-
-  firebase.database().ref('pages/'+pageURL).orderByChild('placement').limitToLast(1)
-
-  .orderByChild(placement).limittoWhaeverthefuck(1)
-
-
-*/
-
-
-/*
-
-    firebase.database().ref('pages/'+pageURL).on('value', function(snap){
-      snap.forEach(function(childSnapshot) {
-        //We want to get each value of 
-        console.log(childSnapshot.val())
-
-      });
-    });
-
-        var tagCount = tagCountFunc(snapshot, pageRef, tag);
-
-*/ 
-
-
-    /*
-    var tagCount = getCounter(snapshot, pageRef, tag);
-    var newTagKey = pageRef.push().key;
-    var tagCounterAll = getCounter(snapshot, pageRef, allTag);
-  */
-    //send to Firebase
-
-    /*
-
-    var tagData = {
-       tags :  [
-            {
-          tag_type : tag,
-          content : content,
-          placement : tagCount,
-          style : style
+        if(!placement_counter){
+          placement_counter = 0;
         }
-          ]
-    }
-    */
+      });
+
+
+
 
 let placement_counter_new = placement_counter + 1;
 
@@ -176,19 +112,6 @@ let placement_counter_new = placement_counter + 1;
       placement : placement_counter_new,
       style : style
     });
-
-
-/*
-    var updates = {};
-      updates['/pages/' + pageURL] = tagData;
-
-    //check this behavior, see if I should use push instead
-
-    pageRef.push(updates);
-      //Future me here- use push
-
-    //pageRef.update(updates);
-    */
 
   }
 
