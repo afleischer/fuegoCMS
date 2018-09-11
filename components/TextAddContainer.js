@@ -18,13 +18,16 @@ const TextItem = (props) => {
   
   try{
     const LoadedTest = Object.values(TextArray)[0];
+
+    let counter = 0;
     
     TextArray.forEach(function (childSnapshot) {
       let TextValue = childSnapshot.val().copy;
       TextValueDisplayVar.push(TextValue);
+      counter++
     });
 
-    for(let i = 0; i <= Object.keys(TextArray).length; i++){
+    for(let i = 0; i <= counter-1; i++){
       returnArray.push(<div key = {i}><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p><button onClick = { (e) => props.clickFunc(event, 'p', 'font-family: helvetica;', CurrentEditPageHandle, snapshot, TextValueDisplayVar[i])}>Add to Page</button></div>);
     }
     
