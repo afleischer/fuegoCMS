@@ -72,11 +72,18 @@ submitModal(snapshot, type, page, subtype){
 
 			//var toplevel_counter = firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1);
 			var toplevel_counter = null;
+
+			firebase.database().ref('pages/' + pageEditing).orderByChild('tags').limitToLast(1).once('value', function(snapshot) {
+				console.log("break");
+				toplevel_counter = snapshot.val().placement;
+			});
+	/*
+
 			firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
 				console.log("break");
 				toplevel_counter = snapshot.val().placement;
 			});
-
+	*/ 
 
 			var collection_counter;
 

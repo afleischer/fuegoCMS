@@ -56,11 +56,14 @@ const TextItem = (props) => {
 
 }
 
+
+/*====================
+Container for adding text to the page
+=====================*/
+
 export default class TextAddContainer extends React.Component{
   constructor(props){
     super(props);
-
-  //this.RetrieveText = this.RetrieveText.bind(this);
 
     /*============
     Set Firebase listener for text values
@@ -136,7 +139,11 @@ export default class TextAddContainer extends React.Component{
       updates['/pages/' + pageURL] = tagData;
 
     //check this behavior, see if I should use push instead
-    pageRef.update(updates);
+
+    pageRef.push(updates);
+      //Future me here- use push
+
+    //pageRef.update(updates);
 
   }
 
