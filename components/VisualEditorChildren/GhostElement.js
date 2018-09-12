@@ -10,6 +10,10 @@ class GhostElement extends React.Component{
     this.ghostFunction = this.ghostFunction.bind(this);
   }
 
+/*==============
+Pulls from the database to populate a "ghost function" 
+--Activates automatically 
+==============*/
 
 ghostFunction(){
   const snapshot = this.props.Snapshot;
@@ -25,28 +29,32 @@ ghostFunction(){
 
       var page_tag_pull = Object.keys(snapshot.val());
 
+      var uniqueKeys = snapshot.child(currPage).val().tags;
+      var uniqueKeysArray = Object.keys(uniqueKeys);
+
       var current_page_node = snapshot.child(currPage);
 
-      current_page_node.forEach(function (tagSnapshot){
-        let tags_value = tagSnapshot.val();
 
-        let tag_type = tags_value.tag_type;
-        let tag_content = tags_value.content;
-        let tag_placement = tags_value.placement;
-        let tag_style = tags_value.style;
+      for(let i = 0; i <= uniqueKeysArray.length-1; i++){
+        let uniqueKeyIterator = uniqueKeysArray[i];
+
+        let child_base = snapshot.child(currPage).child("tags").child(uniqueKeyIterator).val()
+
+        let tag_type = child_base.tag_type;
+        let tag_content = child_base.content;
+        let tag_placement = child_base.placement;
+        let tag_style = child_base.style;
 
         if (tag_type == 'p'){
           pageTags.push(<p styles = {tag_style}>{tag_content}</p>);
         }else if (tag_type == 'h1'){
           pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
         }
-        /*
         else if(TagType == 'img'){
-            pageTags.push(<img src = {imageSrc}></img>);
-          }
-        */ 
-       });
+            pageTags.push(<img styles = {tag_style} src = {tag_content}></img>);
+          } 
 
+      }
         return pageTags;
    }
   }

@@ -2,24 +2,6 @@ import React, { Component } from 'react';
 
 import firebase from '../firebase.js';
 
-/*
- try {
-    let firApp = firebase.app("FuegoCMS");
-    return firApp;
-  } catch (error) {
-    return firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-      databaseURL: firebaseUrl
-    }, applicationName);
-  }
-  */
-//var firebase = require("firebase/app");
-//import firebase from 'firebase';
-//import {firebase_setup} from '../db_init';
-
-//const db = firebase.database();
-//const dbTextRef = db.ref('blogs/');
-
 
 const TextItem = (props) => {
   console.log("Prop received in individual item is:" + props.TextArray);
@@ -36,13 +18,16 @@ const TextItem = (props) => {
   
   try{
     const LoadedTest = Object.values(TextArray)[0];
+
+    let counter = 0;
     
     TextArray.forEach(function (childSnapshot) {
       let TextValue = childSnapshot.val().copy;
       TextValueDisplayVar.push(TextValue);
+      counter++
     });
 
-    for(let i = 0; i <= Object.keys(TextArray).length; i++){
+    for(let i = 0; i <= counter-1; i++){
       returnArray.push(<div key = {i}><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p><button onClick = { (e) => props.clickFunc(event, 'p', 'font-family: helvetica;', CurrentEditPageHandle, snapshot, TextValueDisplayVar[i])}>Add to Page</button></div>);
     }
     
@@ -56,11 +41,14 @@ const TextItem = (props) => {
 
 }
 
+
+/*====================
+Container for adding text to the page
+=====================*/
+
 export default class TextAddContainer extends React.Component{
   constructor(props){
     super(props);
-
-  //this.RetrieveText = this.RetrieveText.bind(this);
 
     /*============
     Set Firebase listener for text values
@@ -100,43 +88,33 @@ export default class TextAddContainer extends React.Component{
      
     var allTag = "tag_type";
 
-    //To the end, add a tag
+    let placement_counter;
+    /*=============
+    Get the most recent "placement" variable and set this to "placement" + 1
+    =============*/
 
-    function tagCountFunc(snapshot, pageRef, tag){
-      var returnArray = [];
-          snapshot.forEach(function (childSnapshot) {
-          let tagCount = childSnapshot.val().tag;
-          returnArray.push(tagCount);
-        });
-          return returnArray.length;
-    }
+      firebase.database().ref('pages/' + pageURL+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
+        console.log("Test!");
 
-        var tagCount = tagCountFunc(snapshot, pageRef, tag);
+        let keyname = Object.keys(snapshot.val())[0];
 
-
-    /*
-    var tagCount = getCounter(snapshot, pageRef, tag);
-    var newTagKey = pageRef.push().key;
-    var tagCounterAll = getCounter(snapshot, pageRef, allTag);
-  */
-    //send to Firebase
-
-    var tagData = {
-       tags :  [
-            {
-          tag_type : tag,
-          content : content,
-          placement : tagCount,
-          style : style
+        placement_counter = snapshot.child(keyname).val().placement;
+        if(!placement_counter){
+          placement_counter = 0;
         }
-          ]
-    }
+      });
 
-    var updates = {};
-      updates['/pages/' + pageURL] = tagData;
 
-    //check this behavior, see if I should use push instead
-    pageRef.update(updates);
+
+
+let placement_counter_new = placement_counter + 1;
+
+    var updateWithKey = firebase.database().ref('pages/'+pageURL+'/tags/').push().set({
+      tag_type : tag,
+      content : content,
+      placement : placement_counter_new,
+      style : style
+    });
 
   }
 

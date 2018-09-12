@@ -2,27 +2,13 @@ import React, { Component } from 'react';
 
 import firebase from '../firebase.js';
 
-//var firebase = require("firebase/app");
+import {getTopPlacement} from './functions/getTopPlacement'
 
-/* 
- try {
-    let firApp = firebase.app("FuegoCMS");
-    return firApp;
-  } catch (error) {
-    return firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-      databaseURL: firebaseUrl
-    }, applicationName);
-  }
-  */
-//const db = firebase.database();
 
 const ImageItem = (props) => {
 
-  //import('../db_init');
 
     var returnArray = [];
-    //const storageRef = firebase.storage().ref();
     var Metadata = props.Metadata;
     
     try{
@@ -30,9 +16,8 @@ const ImageItem = (props) => {
 
         var imageName = Metadata[i].image_name;
         var imageUrl = Metadata[i].image_url;
-        //onClick = {this.setFrameProperties(e,"img", imageName,"position: relative;")}
-        returnArray.push(<div className = "thumbnail_div" key = {i} ><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
-        
+
+        returnArray.push(<div onClick = {(e) => props.addTagToFrame(e, "img", "display: block", props.currentPage)}  className = "thumbnail_div" key = {i} ><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
       }
     }catch(error){
       returnArray.push(<div key="shutupreact">foo</div>);
@@ -44,7 +29,13 @@ return returnArray;
 
 
 
-export default class ImageAddContainer extends React.Component{
+
+/*======================
+Class containing the image container
+=======================*/
+
+
+export default class SidebarImageContainer extends React.Component{
   constructor(props){
     super(props);
 
@@ -81,10 +72,16 @@ export default class ImageAddContainer extends React.Component{
 
   }
 
-  addTagToFrame(event, tag, style, CurrentEditPageHandle){
+  /*===========
+  Adds tag to firebase, causing it to be pulled in
+  in the VisualEditor -> GhostElement component
+  ===========*/
+
+  addTagToFrame(event, tag, style){
 
     //Get a reference to the page being edited
     var pageURL =  this.props.CurrentEditPageHandle;
+    var content = event.currentTarget.lastElementChild.getAttribute('src')
 
     try{
     var pageRef = firebase.database().ref('pages/').child(pageURL);
@@ -94,33 +91,22 @@ export default class ImageAddContainer extends React.Component{
     catch(error){
       return "Select Page";
     }
-     
-    var allTag = "tag_type";
 
-    //To the end, add a tag
+    var tagCounter = getTopPlacement(pageURL);
 
-    /*
-    var tagCount = getCounter(snapshot, pageRef, tag);
-    var newTagKey = pageRef.push().key;
-    var tagCounterAll = getCounter(snapshot, pageRef, allTag);
-  */
-    //send to Firebase
 
-    var tagData = {
-       tags :  [
-            {
+    var update = {
           tag_type : tag,
           content : content,
           placement : tagCounter,
           style : style
-        }
-          ]
     }
 
-    var updates = {};
-      updates['/pages/' + newTagKey] = tagData;
 
-    pageRef.update(updates);
+
+
+    firebase.database().ref('pages/'+pageURL+'/tags/').push().set({update})
+
 
   }
 
@@ -132,7 +118,7 @@ export default class ImageAddContainer extends React.Component{
   render(){
     return(
       <div className = "image_add_container">
-        <ImageItem  Metadata = {this.state.image_metadata} />
+        <ImageItem addTagToFrame = {this.addTagToFrame} currentPage = {this.props.CurrentEditPageHandle}  Metadata = {this.state.image_metadata} />
       </div>
       );
   }
