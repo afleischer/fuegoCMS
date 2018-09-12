@@ -116,18 +116,29 @@ export default class SidebarImageContainer extends React.Component{
     var tagCounter = getTopPlacement(pageURL);
     tagCounter++;
 
-
+    /*
     var update = {
           tag_type : tag,
           content : image_main_url,
           placement : tagCounter,
           style : style
     }
+    */
 
+    /*============
+    No need to call push then set; giving parameters to push allows for a simultaneous push+set operation now
+    =============*/
 
-    let key = firebase.database().ref('pages/'+pageURL+'/tags/').push().key;
+    firebase.database().ref('pages/'+pageURL+'/tags/').push({
+        tag_type : tag,
+        content : image_main_url,
+        placement : tagCounter,
+        style : style 
+    });
 
-    firebase.database().ref('pages/'+pageURL+'/tags/'+key).set({update});
+ //   firebase.database().ref('pages/'+pageURL+'/tags/'+key).set({update});
+
+   // firebase.database().ref('pages/'+pageURL+'/tags/'+key).push().set({update});
 
 
   }
