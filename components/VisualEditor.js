@@ -62,6 +62,7 @@ export default class VisualEditor extends React.Component{
 
   //Set Database listeners
   firebase.database().ref('pages/').on('value', snapshot => {
+    this.clearPriorHTML();
     console.log("this is a breakpiont");
       this.setState({
         PagesSnapshot : snapshot
@@ -229,17 +230,6 @@ try{
   }
 
 //Will be hoisted to parent and passed down 
-
-/* 
-  setPage(e){
-    //change "PageEdited" to 
-    let DropdownSelection = e.target.value;
-    this.setState({
-      CurrentEditPage : "src/"+DropdownSelection+".html"
-    });
-  }
-
-  */ 
 
   componentDidMount(){
     this.props.SetPage();
