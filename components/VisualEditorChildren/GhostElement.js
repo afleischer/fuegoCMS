@@ -50,7 +50,7 @@ ghostFunction(){
         }else if (tag_type == 'h1'){
           pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
         }
-        else if(TagType == 'img'){
+        else if(tag_type == 'img'){
             pageTags.push(<img styles = {tag_style} src = {tag_content}></img>);
           } 
 

@@ -1,49 +1,28 @@
 import firebase from '../../firebase.js'
 
 export const getTopPlacement = (pageEditing) =>{
+
+    let placement_counter;
+    /*=============
+    Get the most recent "placement" variable and set this to "placement" + 1
+    =============*/
 	try{
 
-		//var toplevel_counter = firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1);
-		var toplevel_counter = null;
-		firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
-			console.log("break");
-			toplevel_counter = snapshot.val().placement;
-		});
+	  firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
+	        console.log("Test!");
+
+	        let keyname = Object.keys(snapshot.val())[0];
+
+	        placement_counter = snapshot.child(keyname).val().placement;
+	        if(!placement_counter){
+	          placement_counter = 0;
+	        }
+	      });
 
 
-		var collection_counter;
-
-		firebase.database().ref('/pages'+pageEditing+'/collections/').orderByValue('placement').limitToLast(1).once('value', function(snapshot){
-			console.log("break");
-			collection_counter = snapshot.val().placement;
-
-		});
-
-		if (toplevel_counter > collection_counter){
-			let counter = toplevel_counter;
-			counter++;
-		}else if (collection_counter > toplevel_counter){
-			let counter = collection_counter;
-			counter++;
-		}
-
-		counter = counter + 1;
-		return counter;
-
+	  return placement_counter;
 	}catch(error){
-		if(toplevel_counter  && !collection_counter){
-			counter = toplevel_counter;
-			counter++;
-		}
-		else if(!toplevel_counter && collection_counter){
-			counter = collection_counter;
-			counter++;
-		}else if (!toplevel_counter && !collection_counter){
-			counter = 1;
-		}
 
-		return counter;
 	}
-
 
 }
