@@ -58,9 +58,6 @@ class PresetAddContainer extends React.Component{
 	Submits data given from modal to firebase
 	===============*/
 
-	submitModal(snapshot, type, page, subtype){
-		//Append the data to firebase
-
 		if(!snapshot){
 			return false;
 		}
