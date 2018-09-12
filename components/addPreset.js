@@ -35,111 +35,108 @@ class PresetAddContainer extends React.Component{
 	}
 //Pull up a modal when the user clicks on it
 
-startModal(input){
+	startModal(input){
 
-	try{
-
-		if(input == "horizontal_scroll"){
-		var modal = document.getElementById('hsModal');
-		modal.style.display = "block";
-
-	}else if(input == "blade"){
-		var modal = document.getElementById('bladeModal');
-		modal.style.display = "block";
-	}
-
-	}catch(error){
-
-	}
-
-}
-
-
-submitModal(snapshot, type, page, subtype){
-		//Append the data to firebase
-
-	if(!snapshot){
-		return false;
-	}
-		var pageEditing = page;
-
-		var newCollections = firebase.database().ref('pages/'+pageEditing+'/collections/').push().key;
-		//now we have a unique key but haven't declared the section type yet
-
-
-		//get the highest count of the "Placement" tags to see where this is placed on the page
 		try{
 
-			//var toplevel_counter = firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1);
-			var toplevel_counter = null;
+			if(input == "horizontal_scroll"){
+			var modal = document.getElementById('hsModal');
+			modal.style.display = "block";
 
-			firebase.database().ref('pages/' + pageEditing).orderByChild('tags').limitToLast(1).once('value', function(snapshot) {
-				console.log("break");
-				toplevel_counter = snapshot.val().placement;
-			});
-	/*
-
-			firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
-				console.log("break");
-				toplevel_counter = snapshot.val().placement;
-			});
-	*/ 
-
-			var collection_counter;
-
-			firebase.database().ref('/pages'+pageEditing+'/collections/').orderByValue('placement').limitToLast(1).once('value', function(snapshot){
-				console.log("break");
-				collection_counter = snapshot.val().placement;
-
-			});
-
-			if (toplevel_counter > collection_counter){
-				let counter = toplevel_counter;
-				counter++;
-			}else if (collection_counter > toplevel_counter){
-				let counter = collection_counter;
-				counter++;
-			}
+		}else if(input == "blade"){
+			var modal = document.getElementById('bladeModal');
+			modal.style.display = "block";
+		}
 
 		}catch(error){
-			if(toplevel_counter  && !collection_counter){
-				counter = toplevel_counter;
-				counter++;
-			}
-			else if(!toplevel_counter && collection_counter){
-				counter = collection_counter;
-				counter++;
-			}else if (!toplevel_counter && !collection_counter){
-				counter = 1;
-			}
+
 		}
-
-
-
-
-		//var newCollectionsKey = firebase.database.ref('pages/'+pageEditing).tags.push().key;
-
-		//get a list of keys within the "tags"
-		if(subtype == "Left-Right" || subtype == "Right-Left"){
-			var updateVar = {
-				type: "HorizontalScroll",
-				traversal: type,
-				placement: counter
-			};
-		}
-		else if (subtype == "Flat" || subtype == "Angled" || subtype == "Semi-Circular" || subtype == "Custom"){
-			var updateVar = {
-				type: "Blade",
-				border_top: subtype.bladeTopOption,
-				border_bottom: subtype.bladeBottomOption,
-				placement: counter
-			}
-		}
-
-
-		firebase.database().ref('pages/'+pageEditing).collections.update(updateVar);
 
 	}
+
+	/*==============
+	Submits data given from modal to firebase
+	===============*/
+
+	submitModal(snapshot, type, page, subtype){
+		//Append the data to firebase
+
+		if(!snapshot){
+			return false;
+		}
+			var pageEditing = page;
+
+			var newCollections = firebase.database().ref('pages/'+pageEditing+'/collections/').push().key;
+			//now we have a unique key but haven't declared the section type yet
+
+
+			//get the highest count of the "Placement" tags to see where this is placed on the page
+			try{
+
+				//var toplevel_counter = firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1);
+				var toplevel_counter = null;
+				firebase.database().ref('pages/' + pageEditing+'/tags/').orderByChild('placement').limitToLast(1).once('value', function(snapshot) {
+					console.log("break");
+					toplevel_counter = snapshot.val().placement;
+				});
+
+
+				var collection_counter;
+
+				firebase.database().ref('/pages'+pageEditing+'/collections/').orderByValue('placement').limitToLast(1).once('value', function(snapshot){
+					console.log("break");
+					collection_counter = snapshot.val().placement;
+
+				});
+
+				if (toplevel_counter > collection_counter){
+					let counter = toplevel_counter;
+					counter++;
+				}else if (collection_counter > toplevel_counter){
+					let counter = collection_counter;
+					counter++;
+				}
+
+			}catch(error){
+				if(toplevel_counter  && !collection_counter){
+					counter = toplevel_counter;
+					counter++;
+				}
+				else if(!toplevel_counter && collection_counter){
+					counter = collection_counter;
+					counter++;
+				}else if (!toplevel_counter && !collection_counter){
+					counter = 1;
+				}
+			}
+
+
+
+
+			//var newCollectionsKey = firebase.database.ref('pages/'+pageEditing).tags.push().key;
+
+			//get a list of keys within the "tags"
+			if(subtype == "Left-Right" || subtype == "Right-Left"){
+				var updateVar = {
+					type: "HorizontalScroll",
+					traversal: type,
+					placement: counter
+				};
+			}
+			else if (subtype == "Flat" || subtype == "Angled" || subtype == "Semi-Circular" || subtype == "Custom"){
+				var updateVar = {
+					type: "Blade",
+					border_top: subtype.bladeTopOption,
+					border_bottom: subtype.bladeBottomOption,
+					placement: counter
+				}
+			}
+
+
+			firebase.database().ref('pages/'+pageEditing).collections.update(updateVar);
+
+	}
+
 
 
 	closeModal(input){

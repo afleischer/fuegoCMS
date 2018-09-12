@@ -232,7 +232,7 @@ getCounter(snapshot, path, tag){
           <div className = "add_content">
             <h1>Add to Page</h1>
             <TextAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} TextArray = {this.state.TextList} />
-            <ImageAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+            <SidebarImageContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
           </div>
 
           <div className = "style_content">
@@ -633,7 +633,7 @@ return returnArray;
 
 
 
-export class ImageAddContainer extends React.Component{
+export class SidebarImageContainer extends React.Component{
   constructor(props){
     super(props);
 

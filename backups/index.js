@@ -144,69 +144,12 @@ getCounter(snapshot, path, tag){
     //use re-base's fetch to fetch the number of tagNames named 'img'
     var counter = 1;
 
-    /*
-    if (tag == "img"){
-      base.fetch(pageRef, {
-        context: this,
-        asArray: true,
-        .then(data){
-          forEach(pageRefChildImg(){
-            counter++;
-          })
-        }
-      }) //getting the number of img tags per the active pageURL
-    }  
-    
-      //Handle tags
-      //<$tagName style = '$tagStyle'>tagContent</tagName>
-
-    switch(tag){
-      case 'img':
-        update = (<img src = {event.target.child}></img>);
-        pageRef.set({ images[nextCounter] :  })
-        break;
-      case 'p':
-        update = (<p>{event.target.value}</p>);
-        break;
-      default :
-        console.log("Neither, received:"+this.event.target);
-    }
-
-    pageRef.set({
-       : 
-    })
-    */
 
   }
 
-/*
-  getChildren(ref, snapshot){
-    forEach(function (childSnapshot) {
-      let TextValue = childSnapshot.val().copy;
-      TextValueDisplayVar.push(TextValue);
-    });
-  }
-*/
 
 //Get a page state list
   componentDidMount(){
-    //get a list of the 
-/*
-    base.listenTo('pages', {
-      context: this,
-      asArray: true,
-      then(pagesData){
-        pageCounter = 0;
-        pagesData.forEach((page) => {
-          pageCounter++;
-        });
-      },
-      
-    })
-    this.setState({
-        pageCount : pageCounter
-      })
-*/
 
   }
 
@@ -228,7 +171,7 @@ getCounter(snapshot, path, tag){
           <div className = "add_content">
             <h1>Add to Page</h1>
             <TextAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} TextArray = {this.state.TextList} />
-            <ImageAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+            <SidebarImageContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
           </div>
 
           <div className = "style_content">
@@ -629,7 +572,7 @@ return returnArray;
 
 
 
-export class ImageAddContainer extends React.Component{
+export class SidebarImageContainer extends React.Component{
   constructor(props){
     super(props);
 
