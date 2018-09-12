@@ -17,7 +17,7 @@ const ImageItem = (props) => {
         var imageName = Metadata[i].image_name;
         var imageUrl = Metadata[i].image_url;
 
-        returnArray.push(<div onClick = {(e) => props.addTagToFrame(e, "img", "display: block", imageName)}  className = "thumbnail_div" key = {i} ><p className = "thumbnail_name">{imageName}</p><img className = "thumbnail" src ={imageUrl} /></div>);
+        returnArray.push(<div onClick = {(e) => props.addTagToFrame(e, "img", "display: block", imageName)}  className = "thumbnail_div" key = {i} ><p className = "thumbnail_name" >{imageName}</p><img className = "thumbnail" src ={imageUrl} name = {imageName} /></div>);
       }
     }catch(error){
       returnArray.push(<div key="shutupreact">foo</div>);
@@ -81,11 +81,14 @@ export default class SidebarImageContainer extends React.Component{
 
     //Get a reference to the page being edited
     var pageURL =  this.props.CurrentEditPageHandle;
-    var content = event.currentTarget.lastElementChild.getAttribute('src');
+    var image_sidebar_url = event.currentTarget.lastElementChild.getAttribute('src');
 
-    var image_name = name
+    //var image_name = event.currentTarget.lastElementChild.getAttribute('name');
+
+    var image_name = event.currentTarget.lastElementChild.getAttribute('name');
 
     var image_ref_metadata = this.state.image_metadata;
+
 
     /*=================
     Compare the "contnt" var, which has the image's src attribute and name, 
@@ -94,11 +97,11 @@ export default class SidebarImageContainer extends React.Component{
       so we can push it to the ghost element
     ==================*/
 
-    var image_main_url;
+    var image_frame_url;
 
     for(let i = 0; i <= image_ref_metadata.length-1; i++){
       if(image_ref_metadata[i].image_name == image_name){
-        image_main_url = image_ref_metadata[i].image_url;
+        image_frame_url = image_ref_metadata[i].image_url;
       }
 
     }
@@ -116,14 +119,7 @@ export default class SidebarImageContainer extends React.Component{
     var tagCounter = getTopPlacement(pageURL);
     tagCounter++;
 
-    /*
-    var update = {
-          tag_type : tag,
-          content : image_main_url,
-          placement : tagCounter,
-          style : style
-    }
-    */
+
 
     /*============
     No need to call push then set; giving parameters to push allows for a simultaneous push+set operation now
@@ -131,7 +127,7 @@ export default class SidebarImageContainer extends React.Component{
 
     firebase.database().ref('pages/'+pageURL+'/tags/').push({
         tag_type : tag,
-        content : image_main_url,
+        content : image_frame_url,
         placement : tagCounter,
         style : style 
     });
