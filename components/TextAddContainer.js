@@ -28,7 +28,7 @@ const TextItem = (props) => {
     });
 
     for(let i = 0; i <= counter-1; i++){
-      returnArray.push(<div key = {i}><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p><button onClick = { (e) => props.clickFunc(event, 'p', 'font-family: helvetica;', CurrentEditPageHandle, snapshot, TextValueDisplayVar[i])}>Add to Page</button></div>);
+      returnArray.push(<div key = {i} className = "Sidebar_Text_add_to_frame"><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p><button onClick = { (e) => props.clickFunc(event, 'p', 'font-family: helvetica;', CurrentEditPageHandle, snapshot, TextValueDisplayVar[i])}>Add to Page</button></div>);
     }
     
 
@@ -123,7 +123,7 @@ let placement_counter_new = placement_counter + 1;
 
   render(){
     return(
-      <div>
+      <div className = "sidebar_text_add_frame_container">
         <h2> Add Stored Text and Copy</h2>
         <TextItem snapshot = {this.state.TextList} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} clickFunc = {this.addTagToFrame} TextArray = {this.state.TextList} />
       </div>

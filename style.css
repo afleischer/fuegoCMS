@@ -37,11 +37,13 @@ body{
 	grid-template-areas: 
 	"upload visual"
 	"add visual"
-	"style visual"
+	"style visual";
 
-	;
-	grid-template-rows: auto auto auto;
-	grid-template-columns: 33vw 66vw;
+	 grid-template-rows: auto auto auto;
+	grid-template-columns: 33vw 66vw; 
+
+	/* grid-template-rows: auto auto auto;
+	grid-template-columns: 1fr 3fr; */
 
 }
 
@@ -133,6 +135,35 @@ body{
 
 .style_content{
 	grid-area: style;
+}
+
+.image_add_container{
+	height:400px;
+	overflow:scroll;
+	margin-bottom: 20px;
+}
+
+.Preset_container{
+	border-style: inset;
+    border-width: 5px;
+    border-color: #c4c4c4;
+    height: 400px;
+    overflow: scroll;
+}
+
+.sidebar_text_add_frame_container{
+	height:400px;
+	overflow:scroll;
+	margin-bottom:20px;
+	border-style: inset;
+    border-width: 5px;
+    border-color: #c4c4c4;
+}
+
+.Sidebar_Text_add_to_frame{
+	border: solid #000;
+	border-width: 1px;
+	background-color: #c8d6e3;
 }
 
 .VisualSection{
