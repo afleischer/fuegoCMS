@@ -147,6 +147,7 @@ export default class SidebarImageContainer extends React.Component{
   render(){
     return(
       <div className = "image_add_container">
+        <h2>Add Stored Images to Page</h2>
         <ImageItem addTagToFrame = {this.addTagToFrame} currentPage = {this.props.CurrentEditPageHandle}  Metadata = {this.state.image_metadata} />
       </div>
       );

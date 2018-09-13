@@ -23,11 +23,11 @@ iframe{
 }
 
 h1{
-	font-family: roboto;
+	font-family: Montserrat;
 }
 
 h2{
-	font-family: roboto;
+	font-family: Montserrat;
 }
 
 body{
@@ -145,6 +145,9 @@ body{
 	height:400px;
 	overflow:scroll;
 	margin-bottom: 20px;
+	border-style: inset;
+    border-width: 5px;
+    border-color: #c4c4c4;
 }
 
 .Preset_container{

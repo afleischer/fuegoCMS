@@ -82,7 +82,6 @@ class PresetAddContainer extends React.Component{
 
 
 				var collection_counter;
-
 				firebase.database().ref('/pages'+pageEditing+'/collections/').orderByValue('placement').limitToLast(1).once('value', function(snapshot){
 					console.log("break");
 					collection_counter = snapshot.val().placement;
@@ -115,7 +114,9 @@ class PresetAddContainer extends React.Component{
 
 			//var newCollectionsKey = firebase.database.ref('pages/'+pageEditing).tags.push().key;
 
-			//get a list of keys within the "tags"
+			/*====================
+			Add if scrolling Horizontal Scroll
+			=====================*/
 			if(subtype == "Left-Right" || subtype == "Right-Left"){
 				var updateVar = {
 					type: "HorizontalScroll",
@@ -123,6 +124,11 @@ class PresetAddContainer extends React.Component{
 					placement: counter
 				};
 			}
+
+
+			/*====================
+			Add if Blade
+			=====================*/
 			else if (subtype == "Flat" || subtype == "Angled" || subtype == "Semi-Circular" || subtype == "Custom"){
 				var updateVar = {
 					type: "Blade",
@@ -133,7 +139,7 @@ class PresetAddContainer extends React.Component{
 			}
 
 
-			firebase.database().ref('pages/'+pageEditing).collections.update(updateVar);
+			firebase.database().ref('pages/'+pageEditing+'/collections/').push({updateVar});
 
 		}
 
@@ -154,7 +160,7 @@ class PresetAddContainer extends React.Component{
 	render(){
 		return(
 			<div className = "PresetContainer">
-				<h1>Add Preset</h1>
+				<h1>Add Template Section to Page</h1>
 				<div className = "Preset_container">	
 					<div onClick = {this.startModal("horizontal_scroll")}>
 						<h3>Type: Horizontal Scroll</h3>
