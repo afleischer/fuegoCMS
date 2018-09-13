@@ -16,6 +16,10 @@ button{
 
 iframe{
 	border: 5px black;
+	background-color: lightgoldenrodyellow;
+	border-style: inset;
+    border-width: 5px;
+    border-color: #c4c4c4;
 }
 
 h1{
@@ -188,3 +192,17 @@ body{
     position: fixed;
     left: 50%; */
 }
+
+
+/* Preset logic in horizontal scroll container */
+
+.horizontal_scroll_container{ 
+	display: flex;
+	min-width: 100%;
+	overflow-x: auto;
+}
+
+.horizontal_scroll_item{
+	width: 90%;
+}
+
