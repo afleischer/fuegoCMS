@@ -538,7 +538,7 @@ export class TextAddContainer extends React.Component{
   render(){
     return(
       <div>
-        <h2> Add Stored Text and Copy</h2>
+        <h2> Add Stored Text to Page</h2>
         <TextItem snapshot = {this.state.TextList} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} clickFunc = {this.addTagToFrame} TextArray = {this.state.TextList} />
       </div>
       );
