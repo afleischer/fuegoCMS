@@ -43,6 +43,13 @@ const config = {
     messagingSenderId: "283527892810"
 };
 firebase.initializeApp(config);
+
+
+export var sortedPagesSnapshot = (pageURL) =>{
+  let snapshot = firebase.database().ref('pages/' + pageURL+'/tags/').orderByChild('placement');
+  return snapshot;
+}
+
 export default firebase;
 
 
