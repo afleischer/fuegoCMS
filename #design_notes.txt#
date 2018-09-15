@@ -1,0 +1,67 @@
+
+
+Anywhere in my project, I want to be able to:
+
+--Get a list of unique keys to reference, given a path :: ./components/functions/getKeys.js
+--Loop through those keys
+
+
+
+
+Architecture questions:
+0. What is the primary purpose of the app and what is my scope?
+Purpose:
+--Demonstrate React + Firebase skills
+--Make a tool that allows users to easily
+
+Value add over webflow:
+-FOSS
+-Very easy to export code.
+-Import code?????  __What about nested code????__ 
+
+What value would I provide to content creators over what I currently do? 
+--Make a tool that can easily store 
+--Create tool to generate 
+
+Out of scope: Webflow look-alike.  The amount of features present would take _Way_ too much time. 
+
+
+
+1. To what extent should I allow the user to add styling?  Should I allow the user to set any style they want?
+--Is there an online list of possible styles???
+
+
+The easiest option would be to select an element, which will emit a notice as to which element is being selected.  This notice will be picked up by the styleContent section which will highlight a field that lists its properties.  I can edit these properties
+
+
+2. How do I handle nested HTML tags?
+Option 1: Placement: if decimal spotted, will be inserted before next parent element.
+Problem-> Multi-nested elements. Can add more periods if needed, but
+
+ex:
+
+<div> 1.0
+	<h1> 1.1  <b>1.1.1 </b></h1>
+	<div>1.2
+	<p>1.2.1 </p>
+	</div>
+
+</div>
+
+Problem -> Placing the closing tags after all the constituent tags have rendered.
+ex: <div> 1 <p>1.1 </p> </div> <--Close the tag here, AFTER 1.1
+Solution -> Check 
+
+
+in generateHTMLTag(){
+
+   
+
+in Firebase
+
+tags:
+	<<key>>
+		content
+		placement
+		tag_type
+		attributes
