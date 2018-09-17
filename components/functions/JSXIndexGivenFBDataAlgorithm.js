@@ -2,6 +2,8 @@
 import firebase, {sortedPagesSnapshot} from '../../firebase';
 
 import React from 'react';
+
+import naturalCompare from './natural_sort';
 // the below will be called from tagSnapshot.forEach(){}
 
 /*============
@@ -10,7 +12,52 @@ placement list.  We will use these to index the HTML tags that we
 pull from the database. 
 =============*/
 
+/*================
+PlacementSort
+
+
+=================*/
+
+
+
+/*
+function sortNumber(a,b) {
+    return a - b;
+}
+
+function superSort(a,b){
+	//if this number and the next are numbers, we want to sort them alphabetically 
+	if(Number.isInteger(a) && Number.isInteger(b)){
+		return sortNumber(a,b);
+	}
+	//if
+	else if(!Number.isInteger(a) && !Number.isInteger(a)){
+	//
+		return null;
+	}
+	else if()
+}
+*/
+
+const simplePlacementSort = (someArray) =>{
+let pArray = [];
+	for (let i = 0; i < someArray.length; i++){
+		if ((someArray[i+1] < someArray[i]) && (typeof(someArray[i]) == "number" && typeof(someArray[i+1]) == "number")){
+			let pre = someArray.slice(0, someArray.indexOf(someArray[i]));
+			let mod = someArray.slice(someArray.indexOf(someArray[i]), someArray.indexOf(someArray[i+1]));
+			let prior = someArray.slice(someArray.indexOf(someArray[i+1]), someArray.indexOf(someArray[i+2]));
+			let post = someArray.slice(someArray.indexOf(someArray[i+2]));
+			//pArray = pre + mod + prior + post;
+			pArray = pArray.concat(pre, prior, mod, post);	
+		}
+	}
+return pArray;
+}
+
+
 export const IndexHTMLGivenDBData = (props) => {
+
+
 
 	let pageURL = props.pageURL;
 	let snapshot = props.PagesSnapshot;
@@ -19,15 +66,19 @@ export const IndexHTMLGivenDBData = (props) => {
 		return(<div>Loading HTML</div>)
 	}
 
-	let placementArray = [];
+	let placementArray_raw = [];
 
 	snapshot = snapshot.child(pageURL).child('tags');
 
 	//Get the placement array to compare stuff to 
 	snapshot.forEach(function(childSnapshot){
 		//childSnapshot.
-		placementArray.push(childSnapshot.val().placement)
+		placementArray_raw.push(childSnapshot.val().placement)
 	});
+
+	//let placementArray = placementArray_raw.sort(naturalCompare);
+	let placementArray = simplePlacementSort(placementArray_raw);
+	//let placementArray = Array.prototype.alphanumSort(placementArray_raw);
 
 	//forEach in tagSnapshot, push the tag values 
 
@@ -87,7 +138,7 @@ export const IndexHTMLGivenDBData = (props) => {
 			//deal with Jest not understanding JSX so *shrug face* 
 			//let JSXVar = (<TagName {...TagAttributes}>{checkChildren(tag_placement)}<TagName/>);
 			
-			let JSXVar = React.createElement(TagName, TagAttributes, checkChildren(tag_placement));
+			let JSXVar = React.createElement(TagName, TagAttributes, checkChildren(tag_placement, tagSnapshot));
 
 			setter++;
 			JSXArray.push(JSXVar);
@@ -106,7 +157,7 @@ export const IndexHTMLGivenDBData = (props) => {
 
 
 
-	function checkChildren(tag_placement){
+	function checkChildren(tag_placement, childSnapshot){
 
 		let branch_levelJSX = [];
 
@@ -119,12 +170,15 @@ export const IndexHTMLGivenDBData = (props) => {
 			let childArray = [];
 
 		//Part 1: Get the current and next entries in the placementArray
-			let currPlacement = placementArray[tag_placement];
-			let nextPlacement = placementArray[tag_placement + 1];
+			//let currPlacement = placementArray[tag_placement];
+			let currIndex = placementArray.indexOf(tag_placement);
+
+			let currPlacement = placementArray[currIndex];
+			let nextPlacement = placementArray[currIndex + 1];
 
 		//Part 2: Parse these out by '.' separator
-			let currPlacement_parsed = currPlacement.split(".") ? currPlacement.split(".") : currPlacement.toString();
-			let nextPlacement_parsed = nextPlacement.split(".") ? nextPlacement.split(".") : nextPlacement.toString();;
+			let currPlacement_parsed = currPlacement.toString().split(".") ? currPlacement.toString().split(".") : currPlacement.toString().toString();
+			let nextPlacement_parsed = nextPlacement.toString().split(".") ? nextPlacement.toString().split(".") : nextPlacement.toString().toString();
 
 		//We should have two arrays such as: 
 			//ex:   1.1.1 => [1,1,1]  and 1.1.2 => [1,1,2]
@@ -136,7 +190,7 @@ export const IndexHTMLGivenDBData = (props) => {
 			      if(currPlacement_parsed[i] == nextPlacement_parsed[i]){
 			        //This digit is the same.  Do nothing and iterate to the next 
 			        //of the bit arrays
-			      }else if(!currPlacement_parsed[j] && nextPlacement_parsed[j]){
+			      }else if(!currPlacement_parsed[i] && nextPlacement_parsed[i]){
 			        // ex: [ ... ,1.2 ,1.2.1 , ...]
 			        //The next index contains a next-level nested element (i.e. children).  Return this
 			        //and recall the function to check the next child.
@@ -146,7 +200,7 @@ export const IndexHTMLGivenDBData = (props) => {
 			        let nextTag = tag_placement + 1;
 
 			        //Part 4: From our database, get the database data  associated with the place
-			        let AssociatedTagData = sortedPagesSnapshot.equalTo(nextTag);
+			        let AssociatedTagData = snapshot.equalTo(nextTag);
 
 			        	let TagName = AssociatedTagData.tag_type;
 						let tag_placement = AssociatedTagData.placement;
@@ -162,7 +216,7 @@ export const IndexHTMLGivenDBData = (props) => {
 			    else if (currPlacement_parsed[i] < nextPlacement_parsed[i]){
 			    	//We have a sibling.  Add this to the branch. 
 			    	//Since this is an increment 
-			    	let AssociatedTagData = sortedPagesSnapshot.equalTo(nextTag);
+			    	let AssociatedTagData = childSnapshot.equalTo(nextTag);
 			    		let TagName = AssociatedTagData.tag_type;
 						let tag_placement = AssociatedTagData.placement;
 						let tag_content = AssociatedTagData.content;
