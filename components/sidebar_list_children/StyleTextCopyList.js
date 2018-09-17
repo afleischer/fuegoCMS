@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Style from 'style-it';
 
 import firebase, {sortedPagesSnapshot} from '../../firebase.js';
-import {HTMLTag} from '../functions/HTMLGenerator';
+//import {HTMLTag} from '../functions/HTMLGenerator';
 
 /*=============
 List for styling text copy
@@ -50,7 +50,7 @@ export const StyleTextCopyList = (props) => {
         let placement = tagValues.placement;
         
         let newTagObj = new HTMLTag(snap.tag_type, snap.content, snap.placement, snap.attributes);
-        let newTagJSX = newTagObj.generateHTMLTag(placementArray);
+        //let newTagJSX = newTagObj.generateHTMLTag(placementArray);
 
         keyArray.push(returnArray);
       }

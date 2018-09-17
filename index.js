@@ -10,6 +10,7 @@ import firebase from './firebase.js';
 
 
 
+
 /*============
 Components
 =============*/
@@ -29,6 +30,9 @@ import StyleContentList from './components/StyleContentList';
 
 //live-edit iFrame population components
 import VisualEditor from './components/VisualEditor';
+
+//EXPERIMENTAL: See if I can get the grand HTML list
+import GrandHTMLList from './components/GrandHTMLList';
 
 /*============
 Firebase initialization
@@ -155,6 +159,10 @@ getCounter(snapshot, path, tag){
           <div className = "style_content">
             <h1>Style Page Content</h1>
             <StyleContentList CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+          </div>
+
+          <div className = "Grand_HTML_list">
+          <GrandHTMLList CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
           </div>
       
       </div>

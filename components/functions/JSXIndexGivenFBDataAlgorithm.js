@@ -1,5 +1,7 @@
 
 import firebase, {sortedPagesSnapshot} from '../../firebase';
+
+import React from 'react';
 // the below will be called from tagSnapshot.forEach(){}
 
 /*============
@@ -8,29 +10,40 @@ placement list.  We will use these to index the HTML tags that we
 pull from the database. 
 =============*/
 
-const IndexHTMLGivenDBData = () => {
+export const IndexHTMLGivenDBData = (props) => {
 
+	let pageURL = props.pageURL;
+	let snapshot = props.PagesSnapshot;
+
+	if(!snapshot){
+		return(<div>Loading HTML</div>)
+	}
 
 	let placementArray = [];
 
-
-	sortedPagesSnapshot.forEach(function(childSnapshot){
-		placementArray.push(childSnapshot.placement);
-	})
+	//Get the placement array to compare stuff to 
+	snapshot.forEach(function(childSnapshot){
+		placementArray.push(childSnapshot.placement)
+	});
 
 	//forEach in tagSnapshot, push the tag values 
 
+	//JSXArray will be the value we will be pushing return values to 
 	let JSXArray = [];
-
+	//setter is the index of the placement array that we'll use
+	//to determine if a child has already been added JSXArray
 	let setter;
 
-	sortedPagesSnapshot.forEach(function(childSnapshot){
+	snapshot.forEach(function(childSnapshot){
 		initializeSetter();
 		GetHTMLFromTagSnapshot(childSnapshot);
 
+		//This value will be returned as the render. 
+		return JSXArray;
+
 	});
 
-	function updateSetter(){
+	function initializeSetter(){
 		if(!setter){
 			if(placementArray){
 				setter = 0;
@@ -67,19 +80,24 @@ const IndexHTMLGivenDBData = () => {
 			//Let's render this and push the setter forward one spot
 			//in the placementArray
 
-			let JSXVar = (<TagName {TagAttributes}>{checkChildren(tag_placement)}<TagName/>);
+			//I can swap the below back to JSX syntax, but I don't want to 
+			//deal with Jest not understanding JSX so *shrug face* 
+			//let JSXVar = (<TagName {...TagAttributes}>{checkChildren(tag_placement)}<TagName/>);
 			
+			let JSXVar = React.createElement(TagName, TagAttributes, checkChildren(tag_placement));
+
 			setter++;
 			JSXArray.push(JSXVar);
 			
 
-		}
-		else if (placementArray[setter]) < tag_placement){
+		} else if (placementArray[setter] < tag_placement){
 			//this shouldn't happen if placementArray is organized and the 
 			//algorithm is working. 
 			throw "Error: the setter value is behind the placement value.  Check if Firebase is \
 			correctly sorting placement and that we don't have garbage values";
 		}
+
+
 
 	}
 
@@ -132,7 +150,10 @@ const IndexHTMLGivenDBData = () => {
 						let tag_content = AssociatedTagData.content;
 						let tag_attributes = AssociatedTagData.attributes;
 
-			        branch_levelJSX.push(<TagName>{tag_content}{checkChildren(tag_placement)}</ TagName>);
+						let JSXChild = React.createElement(TagName, TagAttributes, [tag_content, checkChildren(tag_placement)]);
+
+			        //branch_levelJSX.push(<TagName>{tag_content}{checkChildren(tag_placement)}</ TagName>);
+			        branch_levelJSX.push(JSXChild);
 			    } 
 
 			    else if (currPlacement_parsed[i] < nextPlacement_parsed[i]){
@@ -144,7 +165,11 @@ const IndexHTMLGivenDBData = () => {
 						let tag_content = AssociatedTagData.content;
 						let tag_attributes = AssociatedTagData.attributes;
 
-					branch_levelJSX.push(<TagName {tag_attributes}>{tag_content}</ TagName>);
+						let JSXSibling = React.createElement(TagName, TagAttributes, [tag_content]);
+
+
+					//branch_levelJSX.push(<TagName {tag_attributes}>{tag_content}</ TagName>);
+					branch_levelJSX.push(JSXSibling);
 
 					//Push the setter forward.
 					setter++;
