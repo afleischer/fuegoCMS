@@ -8,9 +8,6 @@ import Iframe from 'react-iframe';
 import firebase from './firebase.js';
 
 
-
-
-
 /*============
 Components
 =============*/
@@ -60,6 +57,13 @@ export default class App extends React.Component{
     //this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
     this.getCounter = this.getCounter.bind(this);
     this.setPage = this.setPage.bind(this);
+
+
+    firebase.database().ref('pages/').on('value', snapshot =>{
+      this.setState({
+        PagesSnapshot : snapshot
+      });
+    });
   }
 
 
@@ -68,7 +72,9 @@ export default class App extends React.Component{
     TextList : null,
     ImageList : null,
     CurrentEditPage : null,
+    PagesSnapshot : null,
     }
+
 
 
 setPage(e){
@@ -162,7 +168,7 @@ getCounter(snapshot, path, tag){
           </div>
 
           <div className = "Grand_HTML_list">
-          <GrandHTMLList CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+          <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
           </div>
       
       </div>

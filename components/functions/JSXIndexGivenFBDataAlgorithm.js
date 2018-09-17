@@ -15,15 +15,18 @@ export const IndexHTMLGivenDBData = (props) => {
 	let pageURL = props.pageURL;
 	let snapshot = props.PagesSnapshot;
 
-	if(!snapshot){
+	if(!snapshot || snapshot.val() == null || !pageURL) {
 		return(<div>Loading HTML</div>)
 	}
 
 	let placementArray = [];
 
+	snapshot = snapshot.child(pageURL).child('tags');
+
 	//Get the placement array to compare stuff to 
 	snapshot.forEach(function(childSnapshot){
-		placementArray.push(childSnapshot.placement)
+		//childSnapshot.
+		placementArray.push(childSnapshot.val().placement)
 	});
 
 	//forEach in tagSnapshot, push the tag values 
@@ -58,10 +61,10 @@ export const IndexHTMLGivenDBData = (props) => {
 		/*=========
 		Fetch Tag snapshot values from Firebase
 		==========*/
-		let TagName = tagSnapshot.tag_type;
-		let tag_placement = tagSnapshot.placement;
-		let tag_content = tagSnapshot.content;
-		let TagAttributes = tagSnapshot.attributes;
+		let TagName = tagSnapshot.val().tag_type;
+		let tag_placement = tagSnapshot.val().placement;
+		let tag_content = tagSnapshot.val().content;
+		let TagAttributes = tagSnapshot.val().attributes;
 
 		/*=========
 		Get 
@@ -120,8 +123,8 @@ export const IndexHTMLGivenDBData = (props) => {
 			let nextPlacement = placementArray[tag_placement + 1];
 
 		//Part 2: Parse these out by '.' separator
-			let currPlacement_parsed = currPlacement.split(".");
-			let nextPlacement_parsed = nextPlacement.split(".");
+			let currPlacement_parsed = currPlacement.split(".") ? currPlacement.split(".") : currPlacement.toString();
+			let nextPlacement_parsed = nextPlacement.split(".") ? nextPlacement.split(".") : nextPlacement.toString();;
 
 		//We should have two arrays such as: 
 			//ex:   1.1.1 => [1,1,1]  and 1.1.2 => [1,1,2]

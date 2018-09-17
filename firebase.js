@@ -44,14 +44,14 @@ const config = {
 };
 firebase.initializeApp(config);
 
-
+/*
 export var sortedPagesSnapshot = (pageURL) =>{
   let snapshot = firebase.database().ref('pages/' + pageURL+'/tags/').orderByChild('placement').on('value', function(childSnapshot){
       return childSnapshot;
   });
 
 }
-
+*/
 export default firebase;
 
 

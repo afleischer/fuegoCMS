@@ -13,22 +13,22 @@ class GrandHTMLList extends React.Component{
 		Initialize database call when constructing component
 		=================*/
 
-		firebase.database().ref('pages/' +this.props.CurrentEditPageHandle+'/tags/').orderByChild('placement').on('value', (snapshot) => {
-			this.setState({
-				page_snapshot : this.props.CurrentEditPageHandle
-			});
+	firebase.database().ref('pages/'+this.props.CurrentEditPageHandle+'/tags/').orderByChild('placement').on('value', snapshot => {
+		this.setState({
+			page_snapshot : this.props.CurrentEditPageHandle
 		});
+	});
 
 	}
 
 	state = {
-
+		page_snapshot : undefined
 	}
 
 
 	render(){
 		return(
-			<IndexHTMLGivenDBData PagesSnapshot = {this.state.page_snapshot} pageURL = {this.props.CurrentEditPageHandle}  />
+			<IndexHTMLGivenDBData PagesSnapshot = {this.props.PagesSnapshot} pageURL = {this.props.CurrentEditPageHandle}  />
 			);
 	}
 

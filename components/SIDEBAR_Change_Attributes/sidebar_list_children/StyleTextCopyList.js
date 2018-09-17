@@ -22,7 +22,7 @@ export const StyleTextCopyList = (props) => {
     var sortedPageSnapshot = new sortedPagesSnapshot(currentPage); 
     var keyArray = Object.keys(sortedPageSnapshot.val());
 
-    var placementArray = []
+    var placementArray = [];
     var returnArray = [];
 
     snapshot.child(currentPage).child("tags").child(keyArray[0]).val()
