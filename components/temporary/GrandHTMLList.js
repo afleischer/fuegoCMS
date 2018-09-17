@@ -2,7 +2,7 @@ import React from 'react'
 import firebase from '../../firebase'
 
 
-import IndexHTMLGivenDBData from './functions/JSXIndexGivenFBDataAlgorithm';
+import IndexHTMLGivenDBData from '../functions/JSXIndexGivenFBDataAlgorithm';
 
 class GrandHTMLList extends React.Component{
 	constructor(props){

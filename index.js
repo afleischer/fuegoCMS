@@ -16,23 +16,23 @@ Components
 =============*/
 
 
-//Content-addition-to-database components
-import CMSContainerTextPost from './components/CMSContainerTextPost';
-import CMSContainerImageUpload from './components/CMSContainerImageUpload';
+//Upload content
+import CMSContainerTextPost from './components/SIDEBAR_Upload_Content/CMSContainerTextPost';
+import CMSContainerImageUpload from './components/SIDEBAR_Upload_Content/CMSContainerImageUpload';
 
-//database-to-sidebar addition components
-import TextAddContainer from './components/TextAddContainer';
-import SidebarImageContainer from './components/SidebarImageContainer';
-import AddPreset from './components/AddPreset';
+//Add content to Page
+import TextAddContainer from './components/SIDEBAR_Add_To_Page/TextAddContainer';
+import SidebarImageContainer from './components/SIDEBAR_Add_To_Page/SidebarImageContainer';
+import AddPreset from './components/SIDEBAR_Add_To_Page/AddPreset';
 
-//Style-addition-to-database components
-import StyleContentList from './components/StyleContentList';
+//Change content Attributes
+import StyleContentList from './components/SIDEBAR_Change_Attributes/StyleContentList';
 
 //live-edit iFrame population components
-import VisualEditor from './components/VisualEditor';
+import VisualEditor from './components/SIDEBAR_Add_To_Page/VisualEditor';
 
 //EXPERIMENTAL: See if I can get the grand HTML list
-import GrandHTMLList from './components/GrandHTMLList';
+import GrandHTMLList from './components/temporary/GrandHTMLList';
 
 /*============
 Firebase initialization

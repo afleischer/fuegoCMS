@@ -5,7 +5,7 @@ import Iframe from 'react-iframe';
 
 import GhostElement from './VisualEditorChildren/GhostElement.js';
 
-import firebase from '../firebase.js';
+import firebase from '../../firebase.js';
 //var firebase = require("firebase/app");
 //import '../db_init';
 

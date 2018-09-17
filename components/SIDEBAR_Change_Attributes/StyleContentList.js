@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import {StyleTextCopyList} from './sidebar_list_children/StyleTextCopyList';
 import {ImageStyleList} from './sidebar_list_children/ImageStyleList'
-import firebase from '../firebase.js';
+import firebase from '../../firebase.js';
 
 
 /*

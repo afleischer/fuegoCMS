@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Style from 'style-it';
 
-import firebase, {sortedPagesSnapshot} from '../../firebase.js';
+import firebase, {sortedPagesSnapshot} from '../../../firebase.js';
 //import {HTMLTag} from '../functions/HTMLGenerator';
 
 /*=============
