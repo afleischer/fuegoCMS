@@ -19,26 +19,6 @@ PlacementSort
 =================*/
 
 
-
-/*
-function sortNumber(a,b) {
-    return a - b;
-}
-
-function superSort(a,b){
-	//if this number and the next are numbers, we want to sort them alphabetically 
-	if(Number.isInteger(a) && Number.isInteger(b)){
-		return sortNumber(a,b);
-	}
-	//if
-	else if(!Number.isInteger(a) && !Number.isInteger(a)){
-	//
-		return null;
-	}
-	else if()
-}
-*/
-
 const simplePlacementSort = (someArray) =>{
 let pArray = [];
 	for (let i = 0; i < someArray.length; i++){
@@ -47,7 +27,6 @@ let pArray = [];
 			let mod = someArray.slice(someArray.indexOf(someArray[i]), someArray.indexOf(someArray[i+1]));
 			let prior = someArray.slice(someArray.indexOf(someArray[i+1]), someArray.indexOf(someArray[i+2]));
 			let post = someArray.slice(someArray.indexOf(someArray[i+2]));
-			//pArray = pre + mod + prior + post;
 			pArray = pArray.concat(pre, prior, mod, post);	
 		}
 	}
@@ -59,14 +38,24 @@ export const IndexHTMLGivenDBData = (props) => {
 
 
 
+
 	let pageURL = props.pageURL;
 	let snapshot = props.PagesSnapshot;
+
 
 	if(!snapshot || snapshot.val() == null || !pageURL) {
 		return(<div>Loading HTML</div>)
 	}
 
 	let placementArray_raw = [];
+	var keysList = Object.keys(snapshot.child(pageURL).child('tags').val());
+	var keysListSetter= 0;
+	var keysSnapshot = snapshot.child(pageURL).child('tags').val();
+	let parentSnap = snapshot.child(pageURL).child('tags').val();
+
+	let theParentTrap = [];
+
+
 
 	snapshot = snapshot.child(pageURL).child('tags');
 
@@ -88,12 +77,15 @@ export const IndexHTMLGivenDBData = (props) => {
 	//to determine if a child has already been added JSXArray
 	let setter;
 
+
 	snapshot.forEach(function(childSnapshot){
+
+		let keysSnapshottest = keysSnapshot;
 		initializeSetter();
-		GetHTMLFromTagSnapshot(childSnapshot);
+		GetHTMLFromTagSnapshot(childSnapshot, keysSnapshot);
 
 		//This value will be returned as the render. 
-		return JSXArray;
+
 
 	});
 
@@ -112,10 +104,11 @@ export const IndexHTMLGivenDBData = (props) => {
 		/*=========
 		Fetch Tag snapshot values from Firebase
 		==========*/
-		let TagName = tagSnapshot.val().tag_type;
-		let tag_placement = tagSnapshot.val().placement;
-		let tag_content = tagSnapshot.val().content;
-		let TagAttributes = tagSnapshot.val().attributes;
+
+		var TagName = tagSnapshot.val().tag_type;
+		var tag_placement = tagSnapshot.val().placement;
+		var tag_content = tagSnapshot.val().content;
+		var TagAttributes = tagSnapshot.val().attributes;
 
 		/*=========
 		Get 
@@ -137,10 +130,15 @@ export const IndexHTMLGivenDBData = (props) => {
 			//I can swap the below back to JSX syntax, but I don't want to 
 			//deal with Jest not understanding JSX so *shrug face* 
 			//let JSXVar = (<TagName {...TagAttributes}>{checkChildren(tag_placement)}<TagName/>);
-			
-			let JSXVar = React.createElement(TagName, TagAttributes, checkChildren(tag_placement, tagSnapshot));
 
 			setter++;
+
+
+			let childTags = checkChildren(tag_placement, tagSnapshot);
+			
+			let JSXVar = React.createElement(TagName, TagAttributes, [tag_content,childTags] );
+
+
 			JSXArray.push(JSXVar);
 			
 
@@ -151,13 +149,10 @@ export const IndexHTMLGivenDBData = (props) => {
 			correctly sorting placement and that we don't have garbage values";
 		}
 
-
-
-	}
-
-
-
 	function checkChildren(tag_placement, childSnapshot){
+
+		let nextTagTest = tag_placement + 1;
+
 
 		let branch_levelJSX = [];
 
@@ -177,16 +172,20 @@ export const IndexHTMLGivenDBData = (props) => {
 			let nextPlacement = placementArray[currIndex + 1];
 
 		//Part 2: Parse these out by '.' separator
-			let currPlacement_parsed = currPlacement.toString().split(".") ? currPlacement.toString().split(".") : currPlacement.toString().toString();
-			let nextPlacement_parsed = nextPlacement.toString().split(".") ? nextPlacement.toString().split(".") : nextPlacement.toString().toString();
+		//or if they're numbers convert them to a string for conversion
+			let currPlacement_parsed = currPlacement.toString().split(".") ? currPlacement.toString().split(".") : currPlacement.toString();
+			let nextPlacement_parsed = nextPlacement.toString().split(".") ? nextPlacement.toString().split(".") : nextPlacement.toString();
 
 		//We should have two arrays such as: 
 			//ex:   1.1.1 => [1,1,1]  and 1.1.2 => [1,1,2]
 
 		//Part 3: Compare the values of the first bit of the index arrays
-			let theLargerArray = (currPlacement_parsed.length > nextPlacement_parsed.length) ? currPlacement_parsed : nextPlacement_parsed.length;
+			let theLargerArray = (currPlacement_parsed.length > nextPlacement_parsed.length) ? currPlacement_parsed : nextPlacement_parsed;
 
-			for(let i = 0; i < theLargerArray; i++){
+			for(let i = 0; i < theLargerArray.length; i++){
+
+				var nextTag = tag_placement + 1;
+				
 			      if(currPlacement_parsed[i] == nextPlacement_parsed[i]){
 			        //This digit is the same.  Do nothing and iterate to the next 
 			        //of the bit arrays
@@ -195,19 +194,25 @@ export const IndexHTMLGivenDBData = (props) => {
 			        //The next index contains a next-level nested element (i.e. children).  Return this
 			        //and recall the function to check the next child.
 			        
-			        setter++;
 
-			        let nextTag = tag_placement + 1;
+			        let nextTagReceived = nextTag;
 
 			        //Part 4: From our database, get the database data  associated with the place
-			        let AssociatedTagData = snapshot.equalTo(nextTag);
+			        //let AssociatedTagData = snapshot.child.().childequalTo(nextTagReceived);
+			    	//let AssociatedTagData = parentSnap.child(keysSnapshot[keysListSetter]).val();
+
+			    	let AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
+
+			        setter++;
 
 			        	let TagName = AssociatedTagData.tag_type;
 						let tag_placement = AssociatedTagData.placement;
 						let tag_content = AssociatedTagData.content;
 						let tag_attributes = AssociatedTagData.attributes;
 
-						let JSXChild = React.createElement(TagName, TagAttributes, [tag_content, checkChildren(tag_placement)]);
+						let childTags = checkChildren(tag_placement);
+
+						let JSXChild = React.createElement(TagName, TagAttributes, [tag_content, childTags]);
 
 			        //branch_levelJSX.push(<TagName>{tag_content}{checkChildren(tag_placement)}</ TagName>);
 			        branch_levelJSX.push(JSXChild);
@@ -216,31 +221,45 @@ export const IndexHTMLGivenDBData = (props) => {
 			    else if (currPlacement_parsed[i] < nextPlacement_parsed[i]){
 			    	//We have a sibling.  Add this to the branch. 
 			    	//Since this is an increment 
-			    	let AssociatedTagData = childSnapshot.equalTo(nextTag);
+			    	//let AssociatedTagData = grandSnapshot.child(keysSnapshot[keysListSetter]).val();
+
+			    	let AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
+
+					keysListSetter++;
+
+			    	//let AssociatedTagData = childSnapshot.equalTo(nextTag);
 			    		let TagName = AssociatedTagData.tag_type;
 						let tag_placement = AssociatedTagData.placement;
 						let tag_content = AssociatedTagData.content;
 						let tag_attributes = AssociatedTagData.attributes;
 
-						let JSXSibling = React.createElement(TagName, TagAttributes, [tag_content]);
+					//Push the setter forward.
+					setter++;
+
+
+					let JSXSibling = React.createElement(TagName, TagAttributes, [tag_content]);
 
 
 					//branch_levelJSX.push(<TagName {tag_attributes}>{tag_content}</ TagName>);
 					branch_levelJSX.push(JSXSibling);
 
-					//Push the setter forward.
-					setter++;
 			    }
 			    else if (currPlacement_parsed[i] > nextPlacement_parsed[i]){
 			    	//This shouldn't happen since this array is sorted in ascending order.
 			    	throw "Error: The next placement bit value is greater than the current value. \
 			    	this shouldn't happen if the values are ordered by placement.";
 			    }
+			}
 
 			return branch_levelJSX;
 			//setter will be returned so that 
 			}
+
 	}
-}
+
+return JSXArray;
+	}
+
+
 
 export default IndexHTMLGivenDBData;
