@@ -3,7 +3,7 @@ import firebase, {sortedPagesSnapshot} from '../../firebase';
 
 import React from 'react';
 
-import naturalCompare from './natural_sort';
+//import naturalCompare from './natural_sort';
 // the below will be called from tagSnapshot.forEach(){}
 
 /*============
@@ -18,6 +18,22 @@ PlacementSort
 
 =================*/
 
+function checkVoid(tag_name){
+
+let tagName = tag_name;
+let voidFlag = false;
+
+//Checks to see if the element is one of the W3 spec's void elements.
+//https://www.w3.org/TR/html5/syntax.html#void-elements
+
+const Voidlist = ["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"];
+  
+  Voidlist.forEach((voidTag) => {
+    if(voidTag === tagName) voidFlag = true;
+  });
+
+return voidFlag; 
+}
 
 const simplePlacementSort = (someArray) =>{
 let pArray = [];
@@ -153,6 +169,9 @@ export const IndexHTMLGivenDBData = (props) => {
 
 		let nextTagTest = tag_placement + 1;
 
+		console.log(TagName);
+		console.log(JSXArray);
+
 
 		let branch_levelJSX = [];
 
@@ -170,6 +189,11 @@ export const IndexHTMLGivenDBData = (props) => {
 
 			let currPlacement = placementArray[currIndex];
 			let nextPlacement = placementArray[currIndex + 1];
+
+			if(!nextPlacement){
+				//We're done here.  Pack it up and return.  
+				return false;
+			}
 
 		//Part 2: Parse these out by '.' separator
 		//or if they're numbers convert them to a string for conversion
@@ -205,6 +229,15 @@ export const IndexHTMLGivenDBData = (props) => {
 
 			        setter++;
 
+			        if(setter >= Object.keys(parentSnap).length){
+			        	//let voidJSX = (<TagName>{tag_content}</TagName>)
+			        	//let returnJSX = checkVoid(TagName)  ? (<TagName src = {tag_content} {...tag_attributes} />) : (<TagName {...tag_attributes}>{tag_content}{checkChildren(tag_placement)}</TagName>);
+
+			        	if(!TagName){debugger;}
+			        	let returnJSX = checkVoid(TagName) ? React.createElement(TagName, [{src : tag_content}]) : React.createElement(TagName, tag_attributes, checkChildren(tag_placement));
+			        	return returnJSX;
+			        }
+
 			        	let TagName = AssociatedTagData.tag_type;
 						let tag_placement = AssociatedTagData.placement;
 						let tag_content = AssociatedTagData.content;
@@ -212,10 +245,18 @@ export const IndexHTMLGivenDBData = (props) => {
 
 						let childTags = checkChildren(tag_placement);
 
-						let JSXChild = React.createElement(TagName, TagAttributes, [tag_content, childTags]);
+						/*=====================
+						First, 
+						=====================*/
 
-			        //branch_levelJSX.push(<TagName>{tag_content}{checkChildren(tag_placement)}</ TagName>);
-			        branch_levelJSX.push(JSXChild);
+						//let JSXChild = React.createElement(TagName, TagAttributes, [tag_content, childTags]);
+
+			        	//let returnJSX = checkVoid(TagName)  ? (<TagName src = {tag_content} {...tag_attributes} />) : (<TagName {...tag_attributes}>{tag_content}{checkChildren(tag_placement)}</TagName>)
+
+			        	if(!TagName){throw "uncaught TagName at line 256";}
+						let returnJSX = checkVoid(TagName) ? React.createElement(TagName, [{src : tag_content}, null]) : React.createElement(TagName, tag_attributes, checkChildren(tag_placement));
+			        	
+			        branch_levelJSX.push(returnJSX);
 			    } 
 
 			    else if (currPlacement_parsed[i] < nextPlacement_parsed[i]){
@@ -223,9 +264,15 @@ export const IndexHTMLGivenDBData = (props) => {
 			    	//Since this is an increment 
 			    	//let AssociatedTagData = grandSnapshot.child(keysSnapshot[keysListSetter]).val();
 
+			    	if ( nextPlacement == 13){
+			    		debugger;
+			    	}
+
 			    	let AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
 
 					keysListSetter++;
+
+					console.log(AssociatedTagData);
 
 			    	//let AssociatedTagData = childSnapshot.equalTo(nextTag);
 			    		let TagName = AssociatedTagData.tag_type;
@@ -236,11 +283,21 @@ export const IndexHTMLGivenDBData = (props) => {
 					//Push the setter forward.
 					setter++;
 
+			        if(setter >= Object.keys(parentSnap).length){
+			        	let voidJSX = (<TagName src = {tag_content} {...tag_attributes} />)
 
-					let JSXSibling = React.createElement(TagName, TagAttributes, [tag_content]);
+			        	if(!TagName){throw "uncaught TagName at line 289";}
+			        	let returnJSX = checkVoid(TagName)  ? voidJSX : (<TagName>{tag_content}{checkChildren(tag_placement)}</TagName>);
 
+			        	return returnJSX;
+			        }
 
-					//branch_levelJSX.push(<TagName {tag_attributes}>{tag_content}</ TagName>);
+			        if(!TagName){throw "uncaught TagName at line 295";}
+					let JSXSibling = checkVoid(TagName) ? React.createElement(TagName, [{src : tag_content}, {tag_attributes}]) : React.createElement(TagName, tag_attributes, checkChildren(tag_placement));
+			        
+			        React.isValidElement(JSXSibling)	
+
+					//let JSXSibling = React.createElement(TagName, TagAttributes, [tag_content]);
 					branch_levelJSX.push(JSXSibling);
 
 			    }
