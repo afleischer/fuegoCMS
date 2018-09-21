@@ -56,9 +56,9 @@ const Index = (left, right) => {
 };
 
 //////////////const list = [6, 6.4, 6.3, 7.8, 6.4, 7, 8, 9, 10, 11, 12, 13];
-const list = [7, "71.1", 1, 2.4, 10.8, 11, "3.1.2.3.4", 2.11];
+//const list = [7, "71.1", 1, 2.4, 10.8, 11, "3.1.2.3.4", 2.11];
 ////const list = [1, 6, 4.3.2, 10.8, 10, 98.3, 9.8.3]
 
-console.log("Sorted index is:" + IndexSort(list));
+//console.log("Sorted index is:" + IndexSort(list));
 
 export default IndexSort;

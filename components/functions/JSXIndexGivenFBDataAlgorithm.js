@@ -3,6 +3,8 @@ import firebase, {sortedPagesSnapshot} from '../../firebase';
 
 import React from 'react';
 
+import IndexSort from './IndexSort';
+
 //import naturalCompare from './natural_sort';
 // the below will be called from tagSnapshot.forEach(){}
 
@@ -49,70 +51,7 @@ let pArray = [];
 return pArray;
 }
 
-const IndexSort = (arr) => {
 
-	//MergeSort, but with extra comparisons so we can compare numbers to our 
-	//version-like strings to numbers
-
-	if(arr.length === 1){
-		//return once we hit an array with a single item
-		return arr;
-	}
-
-	const middle = Math.floor(arr.length / 2) //get middle item of array rounded down
-	const left = arr.slice(0, middle) //left-side
-	const right = arr.slice(middle) //right side
-
-	return Index(
-		IndexSort(left),
-		IndexSort(right)
-	)
-}
-
-const Index = (left, right) => {
-	let result = [];
-	let indexLeft = 0;
-	let indexRight = 0;
-
-	while(indexLeft < left.length && indexRight < right.length){
-		if(typeof(left[indexLeft]) == "number" && typeof(right[indexRight]) == "number"){
-			if(left[indexLeft] < right[indexRight]){
-				result.push(left[indexLeft]);
-				indexLeft++;
-			} else {
-				result.push(right[indexRight]);
-				indexRight++;
-			}			
-		}
-
-		//Case: first string second number  "FSSN"  ex) 1.1.1 and 1.2
-		else if (typeof(left[indexLeft]) == "string" || typeof(right[indexRight]) == "string"){
-			let indexLeftParsed = left[indexLeft].split('.');
-			let indexRightParsed = right[indexRight].split('.');
-			let digit_comparing = 0;
-			let maxLength = (indexLeftParsed.length >= indexRightParsedlength) ? indexLeftParsed.length : indexRightParsedlength;
-			//** while some condition**//
-			while (digit_comparing < maxLength){
-				if(indexLeftParsed[digit_comparing] == indexRightParsed[digit_comparing]){
-					//pass
-					digit_comparing++;
-				}
-				else if(indexLeftParsed[digit_comparing] < indexRightParsed[digit_comparing]){
-					result.push(left[indexLeft]);
-					indexLeft++;
-					break;
-
-				} else {
-					result.push(right[indexRight]);
-					indexRight++;
-					break;
-				}
-			}
-		}
-	}
-
-	return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
-}
 
 
 export const IndexHTMLGivenDBData = (props) => {
@@ -143,16 +82,17 @@ export const IndexHTMLGivenDBData = (props) => {
 		placementArray_raw.push(childSnapshot.val().placement)
 	});
 
-	//let placementArray = placementArray_raw.sort(naturalCompare);
-	let placementArray = simplePlacementSort(placementArray_raw);
-	//let placementArray = Array.prototype.alphanumSort(placementArray_raw);
+	let placementArray = IndexSort(placementArray_raw);
 
 	//forEach in tagSnapshot, push the tag values 
 
 	//JSXArray will be the value we will be pushing return values to 
 	let JSXArray = [];
-	//setter is the index of the placement array that we'll use
-	//to determine if a child has already been added JSXArray
+
+	/*================
+	Setter is the index of the placement array that we'll use
+	================*/
+	
 	let setter;
 
 
@@ -187,10 +127,6 @@ export const IndexHTMLGivenDBData = (props) => {
 		var tag_placement = tagSnapshot.val().placement;
 		var tag_content = tagSnapshot.val().content;
 		var TagAttributes = tagSnapshot.val().attributes;
-
-		/*=========
-		Get 
-		==========*/
 
 		//A "true" returned indicates that the setter is 
 		//ahead of the current tag array.  Do NOT render
@@ -321,7 +257,7 @@ export const IndexHTMLGivenDBData = (props) => {
 			        branch_levelJSX.push(returnJSX);
 			    } 
 
-			    else if (currPlacement_parsed[i] < nextPlacement_parsed[i]){
+			    else if (currPlacement_parsed[i] - nextPlacement_parsed[i] > 0){
 			    	//We have a sibling.  Add this to the branch. 
 			    	//Since this is an increment 
 			    	//let AssociatedTagData = grandSnapshot.child(keysSnapshot[keysListSetter]).val();
@@ -363,7 +299,7 @@ export const IndexHTMLGivenDBData = (props) => {
 					branch_levelJSX.push(JSXSibling);
 
 			    }
-			    else if (currPlacement_parsed[i] > nextPlacement_parsed[i]){
+			    else if (currPlacement_parsed[i] - nextPlacement_parsed[i] > 0){
 			    	//This shouldn't happen since this array is sorted in ascending order.
 			    	throw "Error: The next placement bit value is greater than the current value. \
 			    	this shouldn't happen if the values are ordered by placement.";
