@@ -216,9 +216,6 @@ export const IndexHTMLGivenDBData = (props) => {
 			        //The next index contains a next-level nested element (i.e. children).  Return this
 			        //and recall the function to check the next child.
 			        
-
-			        let nextTagReceived = nextTag;
-
 			        //Part 4: From our database, get the database data  associated with the place
 			        //let AssociatedTagData = snapshot.child.().childequalTo(nextTagReceived);
 			    	//let AssociatedTagData = parentSnap.child(keysSnapshot[keysListSetter]).val();
