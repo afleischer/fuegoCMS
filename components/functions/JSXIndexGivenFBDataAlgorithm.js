@@ -53,8 +53,7 @@ return pArray;
 
 
 
-
-export const IndexHTMLGivenDBData = (props) => {
+const IndexHTMLGivenDBData = (props) => {
 
 	let pageURL = props.pageURL;
 	let snapshot = props.PagesSnapshot;
@@ -72,42 +71,41 @@ export const IndexHTMLGivenDBData = (props) => {
 
 	let theParentTrap = [];
 
-
-
 	snapshot = snapshot.child(pageURL).child('tags');
 
 	//Get the placement array to compare stuff to 
 	snapshot.forEach(function(childSnapshot){
-		//childSnapshot.
 		placementArray_raw.push(childSnapshot.val().placement)
 	});
 
 	let placementArray = IndexSort(placementArray_raw);
 
-	//forEach in tagSnapshot, push the tag values 
+	var setter;
+	initializeSetter();
 
-	//JSXArray will be the value we will be pushing return values to 
-	let JSXArray = [];
+	let JSXArray = GetHTML();
+
+	return JSXArray;
 
 	/*================
 	Setter is the index of the placement array that we'll use
 	================*/
 	
-	let setter;
 
-
+/*
 	snapshot.forEach(function(childSnapshot){
 
 		let keysSnapshottest = keysSnapshot;
 		initializeSetter();
-		GetHTMLFromTagSnapshot(childSnapshot, keysSnapshot);
+		//GetHTMLFromTagSnapshot(childSnapshot, keysSnapshot);
 
 		//This value will be returned as the render. 
 
 
 	});
+*/
 
-	function initializeSetter(){
+function initializeSetter(){
 		if(!setter){
 			if(placementArray){
 				setter = 0;
@@ -117,6 +115,98 @@ export const IndexHTMLGivenDBData = (props) => {
 			}
 		}
 	}
+
+function GetHTML(){
+	let setter = 0;
+	let returnHTML = [];
+
+	while (setter < placementArray.length){
+		function GetNestedHTML(){
+	    	//var AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
+
+    		//Get where our corresponding value is in the setter data
+	    	var SetterData = parentSnap[Object.keys(parentSnap)[setter]];
+
+	    	//var TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
+	    		var TagName;
+				var TagPlacement;
+				var TagContent;
+				var TagAttributes;
+
+	    	for(let j = 0; j < placementArray.length; j++){
+	    		//For this value, find the corresponding 
+	    		let TestTagData = parentSnap[Object.keys(parentSnap)[j]].placement;
+	    		if(TestTagData === SetterData){
+	    			//get the corresponding values 
+		    		TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
+					TagPlacement = parentSnap[Object.keys(parentSnap)[j]].placement;
+					TagContent = parentSnap[Object.keys(parentSnap)[j]].content;
+					TagAttributes = parentSnap[Object.keys(parentSnap)[j]].attributes;
+	    		}
+	    	}
+
+/*
+	    	var AssociatedTagData = parentSnap[Object.keys(parentSnap)[i]].placement;
+	    		var TagName = AssociatedTagData.tag_type;
+				var TagPlacement = AssociatedTagData.placement;
+				var TagContent = AssociatedTagData.content;
+				var TagAttributes = AssociatedTagData.attributes;
+*/
+
+			var first = placementArray[setter].toString().split('.');
+			try {
+			var next = placementArray[setter + 1].toString().split('.');
+			}catch(error){
+				const TagName = TagName;
+				const TagAttributes = TagAttributes;
+				setter++;
+				return React.createElement(TagName, TagAttributes);
+			}
+
+			let max = Math.max(first.length, next.length);
+
+			/*================
+			Begin digit comparison
+			================*/
+
+			for(let i = 0; i <= max; i++){
+				if(first[i] && next[i]) {
+					//pass
+				}
+
+				if(!first[i] && !next[i]){
+					let siblingHTML = React.createElement(TagName, TagAttributes);
+					setter++;
+					if( i === 0){
+						returnHTML.push(siblingHTML);
+					}
+				return siblingHTML;
+				}
+
+				else if(!first[i] && next[i]){
+					const TagName = TagName;
+					const TagAttributes = TagAttributes;
+					//const childHTML = GetNestedHTML();
+					setter++;
+					let parentHTML = React.createElement(TagName, TagAttributes, GetNestedHTML());
+					if ( i === 0){
+						returnHTML.push(parentHTML);
+					}
+				return parentHTML;
+				}
+
+				else if(first[i] && !next[i]){
+					let childHTML = React.createElement(TagName, TagAttributes);
+					setter++;
+				return childHTML;
+				}
+			}
+		}
+		GetNestedHTML();
+	}
+	
+	return returnHTML;
+}
 
 	function GetHTMLFromTagSnapshot(tagSnapshot){
 		/*=========
