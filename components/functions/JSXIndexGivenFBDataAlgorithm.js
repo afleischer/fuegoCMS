@@ -152,6 +152,7 @@ function GetHTML(){
 					//let siblingHTML = React.createElement(TagName, TagAttributes);
 					const TagNameReceived = TagName;
 					setter++;
+					if (!TagName){throw "didn't receive tag name!  There's a scoping issue here..."}
 					let siblingHTML = isVoid(TagName) ? React.createElement(TagNameReceived, {src : TagContent}) : React.createElement(TagNameReceived, null);
 					if( i === 1){
 						returnHTML.push(siblingHTML);
@@ -164,6 +165,7 @@ function GetHTML(){
 					const TagAttributes = TagAttributes;
 					//const childHTML = GetNestedHTML();
 					setter++;
+					if (!TagName){throw "didn't receive tag name!  There's a scoping issue here..."}
 					//let parentHTML = React.createElement(TagName, TagAttributes, GetNestedHTML());
 					let parentHTML = React.createElement(TagName, null, [TagContent, GetNestedHTML()]);
 					if (i === 1){
@@ -174,6 +176,7 @@ function GetHTML(){
 
 				else if(first[i] && !next[i]){
 					//let childHTML = React.createElement(TagName, TagAttributes);
+					if (!TagName){throw "didn't receive tag name!  There's a scoping issue here..."}
 					let childHTML = React.createElement(TagName, null);
 					setter++;
 				return childHTML;
