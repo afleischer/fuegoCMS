@@ -136,7 +136,7 @@ function GetHTML(){
 	    	for(let j = 0; j < placementArray.length; j++){
 	    		//For this value, find the corresponding 
 	    		let TestTagData = parentSnap[Object.keys(parentSnap)[j]].placement;
-	    		if(TestTagData === SetterData){
+	    		if(TestTagData === SetterData.placement){
 	    			//get the corresponding values 
 		    		TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
 					TagPlacement = parentSnap[Object.keys(parentSnap)[j]].placement;
@@ -160,7 +160,8 @@ function GetHTML(){
 				const TagName = TagName;
 				const TagAttributes = TagAttributes;
 				setter++;
-				return React.createElement(TagName, TagAttributes);
+				//return React.createElement(TagName, TagAttributes);
+				return React.createElement(TagName);
 			}
 
 			let max = Math.max(first.length, next.length);
@@ -175,9 +176,11 @@ function GetHTML(){
 				}
 
 				if(!first[i] && !next[i]){
-					let siblingHTML = React.createElement(TagName, TagAttributes);
+					//let siblingHTML = React.createElement(TagName, TagAttributes);
+					const TagNameReceived = TagName;
 					setter++;
-					if( i === 0){
+					let siblingHTML = React.createElement(TagNameReceived);
+					if( i === 1){
 						returnHTML.push(siblingHTML);
 					}
 				return siblingHTML;
@@ -188,15 +191,17 @@ function GetHTML(){
 					const TagAttributes = TagAttributes;
 					//const childHTML = GetNestedHTML();
 					setter++;
-					let parentHTML = React.createElement(TagName, TagAttributes, GetNestedHTML());
-					if ( i === 0){
+					//let parentHTML = React.createElement(TagName, TagAttributes, GetNestedHTML());
+					let parentHTML = React.createElement(TagName, null, GetNestedHTML());
+					if ( i === 1){
 						returnHTML.push(parentHTML);
 					}
 				return parentHTML;
 				}
 
 				else if(first[i] && !next[i]){
-					let childHTML = React.createElement(TagName, TagAttributes);
+					//let childHTML = React.createElement(TagName, TagAttributes);
+					let childHTML = React.createElement(TagName, null);
 					setter++;
 				return childHTML;
 				}
