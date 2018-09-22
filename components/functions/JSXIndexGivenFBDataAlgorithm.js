@@ -20,7 +20,7 @@ PlacementSort
 
 =================*/
 
-function checkVoid(tag_name){
+function isVoid(tag_name){
 
 let tagName = tag_name;
 let voidFlag = false;
@@ -80,30 +80,11 @@ const IndexHTMLGivenDBData = (props) => {
 
 	let placementArray = IndexSort(placementArray_raw);
 
-	var setter;
-	initializeSetter();
-
 	let JSXArray = GetHTML();
 
 	return JSXArray;
 
-	/*================
-	Setter is the index of the placement array that we'll use
-	================*/
-	
-
-/*
-	snapshot.forEach(function(childSnapshot){
-
-		let keysSnapshottest = keysSnapshot;
-		initializeSetter();
-		//GetHTMLFromTagSnapshot(childSnapshot, keysSnapshot);
-
-		//This value will be returned as the render. 
-
-
-	});
-*/
+}
 
 function initializeSetter(){
 		if(!setter){
@@ -117,42 +98,34 @@ function initializeSetter(){
 	}
 
 function GetHTML(){
-	let setter = 0;
+	var setter = 0;
 	let returnHTML = [];
 
 	while (setter < placementArray.length){
 		function GetNestedHTML(){
-	    	//var AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
+			//var AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
 
-    		//Get where our corresponding value is in the setter data
-	    	var SetterData = parentSnap[Object.keys(parentSnap)[setter]];
+			//Get where our corresponding value is in the setter data
+			var SetterData = parentSnap[Object.keys(parentSnap)[setter]];
 
-	    	//var TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
-	    		var TagName;
+			//var TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
+				var TagName;
 				var TagPlacement;
 				var TagContent;
 				var TagAttributes;
 
-	    	for(let j = 0; j < placementArray.length; j++){
-	    		//For this value, find the corresponding 
-	    		let TestTagData = parentSnap[Object.keys(parentSnap)[j]].placement;
-	    		if(TestTagData === SetterData.placement){
-	    			//get the corresponding values 
-		    		TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
+			for(let j = 0; j < placementArray.length; j++){
+				//For this value, find the corresponding 
+				let TestTagData = parentSnap[Object.keys(parentSnap)[j]].placement;
+				if(TestTagData === SetterData.placement){
+					//get the corresponding values 
+					TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
 					TagPlacement = parentSnap[Object.keys(parentSnap)[j]].placement;
 					TagContent = parentSnap[Object.keys(parentSnap)[j]].content;
 					TagAttributes = parentSnap[Object.keys(parentSnap)[j]].attributes;
-	    		}
-	    	}
-
-/*
-	    	var AssociatedTagData = parentSnap[Object.keys(parentSnap)[i]].placement;
-	    		var TagName = AssociatedTagData.tag_type;
-				var TagPlacement = AssociatedTagData.placement;
-				var TagContent = AssociatedTagData.content;
-				var TagAttributes = AssociatedTagData.attributes;
-*/
-
+				}
+			}
+			
 			var first = placementArray[setter].toString().split('.');
 			try {
 			var next = placementArray[setter + 1].toString().split('.');
@@ -179,7 +152,7 @@ function GetHTML(){
 					//let siblingHTML = React.createElement(TagName, TagAttributes);
 					const TagNameReceived = TagName;
 					setter++;
-					let siblingHTML = React.createElement(TagNameReceived);
+					let siblingHTML = isVoid(TagName) ? React.createElement(TagNameReceived, {src : TagContent}) : React.createElement(TagNameReceived, null);
 					if( i === 1){
 						returnHTML.push(siblingHTML);
 					}
@@ -192,8 +165,8 @@ function GetHTML(){
 					//const childHTML = GetNestedHTML();
 					setter++;
 					//let parentHTML = React.createElement(TagName, TagAttributes, GetNestedHTML());
-					let parentHTML = React.createElement(TagName, null, GetNestedHTML());
-					if ( i === 1){
+					let parentHTML = React.createElement(TagName, null, [TagContent, GetNestedHTML()]);
+					if (i === 1){
 						returnHTML.push(parentHTML);
 					}
 				return parentHTML;
@@ -206,206 +179,12 @@ function GetHTML(){
 				return childHTML;
 				}
 			}
-		}
-		GetNestedHTML();
 	}
+	GetNestedHTML();
 	
-	return returnHTML;
+	}
+return returnHTML;
 }
-
-	function GetHTMLFromTagSnapshot(tagSnapshot){
-		/*=========
-		Fetch Tag snapshot values from Firebase
-		==========*/
-
-		var TagName = tagSnapshot.val().tag_type;
-		var tag_placement = tagSnapshot.val().placement;
-		var tag_content = tagSnapshot.val().content;
-		var TagAttributes = tagSnapshot.val().attributes;
-
-		//A "true" returned indicates that the setter is 
-		//ahead of the current tag array.  Do NOT render
-		//The following code in this case!
-		
-		if(placementArray[setter] > tag_placement){
-			//do NOT render this; it's already been rendered!
-			//(the setter is pushed forward when an element is rendered)
-			return false;
-		}
-		else if (placementArray[setter] == tag_placement){
-			//Let's render this and push the setter forward one spot
-			//in the placementArray
-
-			//I can swap the below back to JSX syntax, but I don't want to 
-			//deal with Jest not understanding JSX so *shrug face* 
-			//let JSXVar = (<TagName {...TagAttributes}>{checkChildren(tag_placement)}<TagName/>);
-
-			setter++;
-
-
-			let childTags = checkChildren(tag_placement, tagSnapshot);
-			
-			let JSXVar = React.createElement(TagName, TagAttributes, [tag_content,childTags] );
-
-
-			JSXArray.push(JSXVar);
-			
-
-		} else if (placementArray[setter] < tag_placement){
-			//this shouldn't happen if placementArray is organized and the 
-			//algorithm is working. 
-			throw "Error: the setter value is behind the placement value.  Check if Firebase is \
-			correctly sorting placement and that we don't have garbage values";
-		}
-
-	function checkChildren(tag_placement, childSnapshot){
-
-		let nextTagTest = tag_placement + 1;
-
-		console.log(TagName);
-		console.log(JSXArray);
-
-
-		let branch_levelJSX = [];
-
-		//Part 0: If the setter is on our location or ahead of us, do NOT
-		//render a react child and instead return null. 
-			//Already accounted for from GetHTMLFromTagSnapshot
-
-		//Part 0.5: Initialize the array of children to be returned. 
-
-			let childArray = [];
-
-		//Part 1: Get the current and next entries in the placementArray
-			//let currPlacement = placementArray[tag_placement];
-			let currIndex = placementArray.indexOf(tag_placement);
-
-			let currPlacement = placementArray[currIndex];
-			let nextPlacement = placementArray[currIndex + 1];
-
-			if(!nextPlacement){
-				//We're done here.  Pack it up and return.  
-				return false;
-			}
-
-		//Part 2: Parse these out by '.' separator
-		//or if they're numbers convert them to a string for conversion
-			let currPlacement_parsed = currPlacement.toString().split(".") ? currPlacement.toString().split(".") : currPlacement.toString();
-			let nextPlacement_parsed = nextPlacement.toString().split(".") ? nextPlacement.toString().split(".") : nextPlacement.toString();
-
-		//We should have two arrays such as: 
-			//ex:   1.1.1 => [1,1,1]  and 1.1.2 => [1,1,2]
-
-		//Part 3: Compare the values of the first bit of the index arrays
-			let theLargerArray = (currPlacement_parsed.length > nextPlacement_parsed.length) ? currPlacement_parsed : nextPlacement_parsed;
-
-			for(let i = 0; i < theLargerArray.length; i++){
-
-				var nextTag = tag_placement + 1;
-				
-			      if(currPlacement_parsed[i] == nextPlacement_parsed[i]){
-			        //This digit is the same.  Do nothing and iterate to the next 
-			        //of the bit arrays
-			      }else if(!currPlacement_parsed[i] && nextPlacement_parsed[i]){
-			        // ex: [ ... ,1.2 ,1.2.1 , ...]
-			        //The next index contains a next-level nested element (i.e. children).  Return this
-			        //and recall the function to check the next child.
-			        
-			        //Part 4: From our database, get the database data  associated with the place
-			        //let AssociatedTagData = snapshot.child.().childequalTo(nextTagReceived);
-			    	//let AssociatedTagData = parentSnap.child(keysSnapshot[keysListSetter]).val();
-
-			    	let AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
-
-			        setter++;
-
-			        if(setter >= Object.keys(parentSnap).length){
-			        	//let voidJSX = (<TagName>{tag_content}</TagName>)
-			        	//let returnJSX = checkVoid(TagName)  ? (<TagName src = {tag_content} {...tag_attributes} />) : (<TagName {...tag_attributes}>{tag_content}{checkChildren(tag_placement)}</TagName>);
-
-			        	if(!TagName){debugger;}
-			        	let returnJSX = checkVoid(TagName) ? React.createElement(TagName, [{src : tag_content}]) : React.createElement(TagName, tag_attributes, checkChildren(tag_placement));
-			        	return returnJSX;
-			        }
-
-			        	let TagName = AssociatedTagData.tag_type;
-						let tag_placement = AssociatedTagData.placement;
-						let tag_content = AssociatedTagData.content;
-						let tag_attributes = AssociatedTagData.attributes;
-
-						let childTags = checkChildren(tag_placement);
-
-						/*=====================
-						First, 
-						=====================*/
-
-						//let JSXChild = React.createElement(TagName, TagAttributes, [tag_content, childTags]);
-
-			        	//let returnJSX = checkVoid(TagName)  ? (<TagName src = {tag_content} {...tag_attributes} />) : (<TagName {...tag_attributes}>{tag_content}{checkChildren(tag_placement)}</TagName>)
-
-			        	if(!TagName){throw "uncaught TagName at line 256";}
-						let returnJSX = checkVoid(TagName) ? React.createElement(TagName, [{src : tag_content}, null]) : React.createElement(TagName, tag_attributes, checkChildren(tag_placement));
-			        	
-			        branch_levelJSX.push(returnJSX);
-			    } 
-
-			    else if (currPlacement_parsed[i] - nextPlacement_parsed[i] > 0){
-			    	//We have a sibling.  Add this to the branch. 
-			    	//Since this is an increment 
-			    	//let AssociatedTagData = grandSnapshot.child(keysSnapshot[keysListSetter]).val();
-
-			    	if ( nextPlacement == 13){
-			    		debugger;
-			    	}
-
-			    	let AssociatedTagData = parentSnap[Object.keys(parentSnap)[setter]];
-
-					keysListSetter++;
-
-					console.log(AssociatedTagData);
-
-			    	//let AssociatedTagData = childSnapshot.equalTo(nextTag);
-			    		let TagName = AssociatedTagData.tag_type;
-						let tag_placement = AssociatedTagData.placement;
-						let tag_content = AssociatedTagData.content;
-						let tag_attributes = AssociatedTagData.attributes;
-
-					//Push the setter forward.
-					setter++;
-
-			        if(setter >= Object.keys(parentSnap).length){
-			        	let voidJSX = (<TagName src = {tag_content} {...tag_attributes} />)
-
-			        	if(!TagName){throw "uncaught TagName at line 289";}
-			        	let returnJSX = checkVoid(TagName)  ? voidJSX : (<TagName>{tag_content}{checkChildren(tag_placement)}</TagName>);
-
-			        	return returnJSX;
-			        }
-
-			        if(!TagName){throw "uncaught TagName at line 295";}
-					let JSXSibling = checkVoid(TagName) ? React.createElement(TagName, [{src : tag_content}, {tag_attributes}]) : React.createElement(TagName, tag_attributes, checkChildren(tag_placement));
-			        
-			        React.isValidElement(JSXSibling)	
-
-					//let JSXSibling = React.createElement(TagName, TagAttributes, [tag_content]);
-					branch_levelJSX.push(JSXSibling);
-
-			    }
-			    else if (currPlacement_parsed[i] - nextPlacement_parsed[i] > 0){
-			    	//This shouldn't happen since this array is sorted in ascending order.
-			    	throw "Error: The next placement bit value is greater than the current value. \
-			    	this shouldn't happen if the values are ordered by placement.";
-			    }
-			}
-
-			return branch_levelJSX;
-			//setter will be returned so that 
-			}
-
-	}
-
-return JSXArray;
-	}
 
 
 
