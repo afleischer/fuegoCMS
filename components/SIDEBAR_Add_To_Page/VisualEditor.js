@@ -69,12 +69,6 @@ export default class VisualEditor extends React.Component{
 Begin functions
 ******************/
 
-//Populate the iFrame with the content.  
-
-//Notice!  This logic has been duplicated into "ghostElement" and will be referenced
-//instead in the function setHTML
-  loadIFrame(){ }
-
 
   addPage(pageName){
     //get the value of the newPage name
@@ -220,26 +214,79 @@ try{
 
   indexHTML(){
 
-    const index = [];
-    var depth = 0;
+    const indexArray = [];
 
-    let start = document.documentElement;
+    //I'll probably do this for the body element.  We can worry about the head later.
+    let start = document.body;
 
-      indexHTMLRecurse(start, depth){
+    let depthVal = []
+
+
+    function indexHTMLRecurse(start, 0, null);
+
+      indexHTMLRecurse(start, depth, priorIndex){
+        var prior;
+
+        const update = {
+          TagName : null,
+          TagAttributes : null,
+          TagContent : null,
+          Placement : null
+        }
         for(let i = 0; i < start.childNodes.length; i++){
-          let thisNode = start.childNodes[i];
-          //Set the index to the depth 
-          if(thisNode.) {
-            start = 
-          }
+
+            if(priorIndex === null){
+              let prior = i;
+            }
+
+            let thisNode = start.childNodes[i];
+            let prior = priorIndex;
+
+            if(depth > 0){
+              indexValue = prior+'.'+i;
+            }
+
+            /*=================
+            Get the values!
+            ==================*/
+
+            let thisUpdate = new update;
+
+            thisUpdate.TagName = thisNode.tagName;
+            thisUpdate.TagAttributes = thisNode.attributes;
+            thisUpdate.TagContent = thisNode.textContent;
+            thisUpdate.Placement = indexValue;
+
+            indexArray.push(thisUpdate);
+
+            if(thisNode.hasChildNodes){
+              nextDepth = depth++;
+              nextIndex = nodeIndex;
+              indexHTMLRecurse(thisNode, nextDepth, nextIndex);
+            }
+        }
+
+      }
+
+
+      function logIndex(indexArray){
+        for(element in indexArray){
+          firebase.database().ref('pages'+pageURL+'/tags/').push({
+            tag_type : element.TagName,
+            tag_placement : element.Placement,
+            tag_content : element.TagContent,
+            tag_attributes : element.TagAttributes
+          });
         }
       }
-    //Recurse this:
 
 
+      indexHTMLRecurse(start, 0, 1);
+      logIndex(indexArray);
 
 
-
+      //We will need a separate function to take the values in indexArray and log them to Firebase
+      return indexArray;
   } 
 
   componentDidMount(){
