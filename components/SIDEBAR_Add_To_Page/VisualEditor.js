@@ -220,9 +220,27 @@ try{
 
   indexHTML(){
 
-  }
+    const index = [];
+    var depth = 0;
 
-//Will be hoisted to parent and passed down 
+    let start = document.documentElement;
+
+      indexHTMLRecurse(start, depth){
+        for(let i = 0; i < start.childNodes.length; i++){
+          let thisNode = start.childNodes[i];
+          //Set the index to the depth 
+          if(thisNode.) {
+            start = 
+          }
+        }
+      }
+    //Recurse this:
+
+
+
+
+
+  } 
 
   componentDidMount(){
     this.props.SetPage();
