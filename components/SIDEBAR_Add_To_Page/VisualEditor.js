@@ -6,20 +6,8 @@ import Iframe from 'react-iframe';
 import GhostElement from './VisualEditorChildren/GhostElement.js';
 
 import firebase from '../../firebase.js';
-//var firebase = require("firebase/app");
-//import '../db_init';
 
-/*
- try {
-    let firApp = firebase.app(applicationName);
-    return firApp;
-  } catch (error) {
-    return firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-      databaseURL: firebaseUrl
-    }, applicationName);
-  }
-*/
+
 
 const DropdownOptions = (props) => {
 
@@ -53,6 +41,7 @@ export default class VisualEditor extends React.Component{
     this.loadIFrame = this.loadIFrame.bind(this);
     this.setHTML = this.setHTML.bind(this);
     this.clearPriorHTML = this.clearPriorHTML.bind(this);
+    this.indexHTML = this.indexHTML.bind(this);
 
 
     //set refs
@@ -229,6 +218,10 @@ try{
 
   }
 
+  indexHTML(){
+
+  }
+
 //Will be hoisted to parent and passed down 
 
   componentDidMount(){
@@ -244,6 +237,9 @@ try{
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
         <input type = "submit" value = "submit" onClick = {this.addPage}></input>
+
+        <label for = "HTML upload">Upload Webpage</label>
+        <input type = "file" id = "HTML upload" onChange = {this.indexHTML} />
 
         <h1>Visual editing section</h1>
         <Iframe
