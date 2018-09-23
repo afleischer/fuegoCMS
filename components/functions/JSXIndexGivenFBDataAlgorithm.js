@@ -66,7 +66,6 @@ const IndexHTMLGivenDBData = (props) => {
 	let placementArray_raw = [];
 	var keysList = Object.keys(snapshot.child(pageURL).child('tags').val());
 	var keysListSetter= 0;
-	var keysSnapshot = snapshot.child(pageURL).child('tags').val();
 	let parentSnap = snapshot.child(pageURL).child('tags').val();
 
 	let theParentTrap = [];
@@ -80,7 +79,7 @@ const IndexHTMLGivenDBData = (props) => {
 
 	let placementArray = IndexSort(placementArray_raw);
 
-	let JSXArray = GetHTML();
+	let JSXArray = GetHTML(placementArray, parentSnap);
 
 	return JSXArray;
 
@@ -97,7 +96,7 @@ function initializeSetter(){
 		}
 	}
 
-function GetHTML(){
+function GetHTML(placementArray, parentSnap){
 	var setter = 0;
 	let returnHTML = [];
 
@@ -114,27 +113,38 @@ function GetHTML(){
 				var TagContent;
 				var TagAttributes;
 
-			for(let j = 0; j < placementArray.length; j++){
-				//For this value, find the corresponding 
-				let TestTagData = parentSnap[Object.keys(parentSnap)[j]].placement;
-				if(TestTagData === SetterData.placement){
-					//get the corresponding values 
-					TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
-					TagPlacement = parentSnap[Object.keys(parentSnap)[j]].placement;
-					TagContent = parentSnap[Object.keys(parentSnap)[j]].content;
-					TagAttributes = parentSnap[Object.keys(parentSnap)[j]].attributes;
-				}
-			}
+				var FetchedTagData = function getTagData(){
+					var TagData = {
+						TagName : null,
+						TagPlacement : null,
+						TagContent : null,
+						TagAttributes : null
+					}
+					for(let j = 0; j < placementArray.length; j++){
+					//For this value, find the corresponding 
+					let TestTagData = parentSnap[Object.keys(parentSnap)[j]].placement;
+					if(TestTagData === SetterData.placement){
+						//get the corresponding values 
+						TagData.TagName = parentSnap[Object.keys(parentSnap)[j]].tag_type;
+						TagData.TagPlacement = parentSnap[Object.keys(parentSnap)[j]].placement;
+						TagData.TagContent = parentSnap[Object.keys(parentSnap)[j]].content;
+						TagData.TagAttributes = parentSnap[Object.keys(parentSnap)[j]].attributes;
+						}
+					}
+				return TagData;	
+				};
+
+
 			
 			var first = placementArray[setter].toString().split('.');
 			try {
 			var next = placementArray[setter + 1].toString().split('.');
 			}catch(error){
-				const TagName = TagName;
+				const TagName = FetchedTagData().TagName;
 				const TagAttributes = TagAttributes;
 				setter++;
 				//return React.createElement(TagName, TagAttributes);
-				return React.createElement(TagName);
+				return React.createElement(FetchedTagData().TagName);
 			}
 
 			let max = Math.max(first.length, next.length);
@@ -150,10 +160,13 @@ function GetHTML(){
 
 				if(!first[i] && !next[i]){
 					//let siblingHTML = React.createElement(TagName, TagAttributes);
-					const TagNameReceived = TagName;
+					const TagNameReceived = FetchedTagData().TagName;
 					setter++;
-					if (!TagName){throw "didn't receive tag name!  There's a scoping issue here..."}
-					let siblingHTML = isVoid(TagName) ? React.createElement(TagNameReceived, {src : TagContent}) : React.createElement(TagNameReceived, null);
+					if (!TagNameReceived){
+						console.log("TagName undefined at setter:"+setter);
+						throw "didn't receive tag name!  There's a scoping issue here..."
+					}
+					let siblingHTML = isVoid(TagNameReceived) ? React.createElement(TagNameReceived, {src : FetchedTagData().TagContent}) : React.createElement(TagNameReceived, null);
 					if( i === 1){
 						returnHTML.push(siblingHTML);
 					}
@@ -161,13 +174,16 @@ function GetHTML(){
 				}
 
 				else if(!first[i] && next[i]){
-					const TagName = TagName;
-					const TagAttributes = TagAttributes;
+					const TagName = FetchedTagData().TagName;
+					const TagAttributes = FetchedTagData().TagAttributes;
 					//const childHTML = GetNestedHTML();
 					setter++;
-					if (!TagName){throw "didn't receive tag name!  There's a scoping issue here..."}
+					if (!FetchedTagData().TagName){
+						console.log("TagName undefined at setter:"+setter);
+						throw "didn't receive tag name!  There's a scoping issue here..."
+					}
 					//let parentHTML = React.createElement(TagName, TagAttributes, GetNestedHTML());
-					let parentHTML = React.createElement(TagName, null, [TagContent, GetNestedHTML()]);
+					let parentHTML = React.createElement(FetchedTagData().TagName, null, [FetchedTagData().TagContent, GetNestedHTML()]);
 					if (i === 1){
 						returnHTML.push(parentHTML);
 					}
@@ -176,8 +192,11 @@ function GetHTML(){
 
 				else if(first[i] && !next[i]){
 					//let childHTML = React.createElement(TagName, TagAttributes);
-					if (!TagName){throw "didn't receive tag name!  There's a scoping issue here..."}
-					let childHTML = React.createElement(TagName, null);
+					if (!FetchedTagData().TagName){
+						console.log("TagName undefined at setter:"+setter);
+						throw "didn't receive tag name!  There's a scoping issue here..."
+					}
+					let childHTML = React.createElement(FetchedTagData().TagName, null);
 					setter++;
 				return childHTML;
 				}
