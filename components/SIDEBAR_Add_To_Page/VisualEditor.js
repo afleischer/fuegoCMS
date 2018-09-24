@@ -271,6 +271,11 @@ Begin functions
             let prior = (priorIndex === null) ? i : priorIndex;
             let thisNode = start.childNodes[i];
 
+            if(thisNode.nodeType != 1){
+              //only grab element nodes! 
+              return false;
+            }
+
             if(depth > 0){
               var indexValue = prior+'.'+i;
             } else if (depth === 0){
@@ -281,9 +286,14 @@ Begin functions
             Get the values!
             ==================*/
 
+            function getPlacement(thisNode){
+              return [].reduce.call(thisNode.childNodes, function(a, b) { return a + (b.nodeType === 3 ? b.textContent : ''); }, '');
+            }
+
             let TagName = thisNode.tagName;
             let TagAttributes = thisNode.attributes;
-            let TagContent = thisNode.textContent;
+            //let TagContent = thisNode.textContent;
+            let TagContent = getPlacement(thisNode);
             var Placement;
             if(depth > 0){
             var Placement = indexValue;
@@ -296,7 +306,7 @@ Begin functions
             indexArray.push(thisUpdate);
 
             if(thisNode.hasChildNodes){
-              let nextDepth = depth++;
+              let nextDepth = depth+1;
               let nextIndex = indexValue;
               indexHTMLRecurse(thisNode, nextDepth, nextIndex);
             }
@@ -308,10 +318,10 @@ Begin functions
       function logIndex(indexArray, pageURL){
         for(let i = 0; i < indexArray.length; i++){
           firebase.database().ref('pages/'+pageURL+'/tags/').push({
-            tag_type : indexArray.TagName,
-            tag_placement : indexArray.Placement,
-            tag_content : indexArray.TagContent,
-            tag_attributes : indexArray.TagAttributes
+            tag_type : indexArray[i].TagName,
+            tag_placement : indexArray[i].Placement,
+            tag_content : indexArray[i].TagContent,
+            tag_attributes : indexArray[i].TagAttributes
           });
         }
       }
