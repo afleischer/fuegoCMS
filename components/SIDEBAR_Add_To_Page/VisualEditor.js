@@ -211,74 +211,83 @@ Begin functions
 
   indexHTML(){
 
-    const file = document.getElementById('HTML upload').files[0];
+    function executeIndex(data){
+      let parser = new DOMParser();
+      const rootNode = parser.parseFromString(data, "text/html");
+      indexHTMLRecurse(rootNode, 0, null);
+      logIndex(indexArray);
+      return indexArray;
+    }
+
+
+    function readFile(executeIndex){
+      const file = document.getElementById('HTML upload').files[0];
+
+      const reader = new FileReader();
+
+      var fileData = null;
+      var start = null;
+      var fileName = file.name;
+  
+      reader.onload = function() {
+        executeIndex(reader.result);
+    } 
+      reader.readAsText(file);
+    }
+
+
 
     const indexArray = [];
 
-    const reader = new FileReader;
+    readFile(executeIndex);
 
-    /*============
-    Once the FileReader has processed the data,
-    carry out our tasks with that data. 
-    =============*/
 
-    reader.readAsText(file, (data) => {
-      //Add this to the CurrentEditPageHandle variable
 
-      let start = data.document.body;
-      
-      /*===============
-      Update the current edit page handle to reflect the new file 
-      ================*/
-
-        let fileName = file.name;
-        this.props.updateCurrentEditPageHandle(fileName);
-
-        const root = document.createElement('html');
-
-        indexHTMLRecurse(start, 0, null);
-        logIndex(indexArray);
-        /* GhostElement should automatically update... */
-      });
+    /* GhostElement should automatically update... */
 
     function indexHTMLRecurse(start, depth, priorIndex){
         var prior;
 
-        const update = {
-          TagName : null,
-          TagAttributes : null,
-          TagContent : null,
-          Placement : null
+        class Update {
+          constructor(name, attributes, content, placement){
+            this.TagName = null;
+            this.TagAttributes = null;
+            this.TagContent = null;
+            this.Placement = null;
+          }
+
         }
         for(let i = 0; i < start.childNodes.length; i++){
-
-            if(priorIndex === null){
-              let prior = i;
-            }
-
+            let prior = (priorIndex === null) ? i : priorIndex;
             let thisNode = start.childNodes[i];
-            let prior = priorIndex;
 
             if(depth > 0){
-              indexValue = prior+'.'+i;
+              var indexValue = prior+'.'+i;
+            } else if (depth === 0){
+              var indexValue = '';
             }
 
             /*=================
             Get the values!
             ==================*/
 
-            let thisUpdate = new update;
+            let TagName = thisNode.tagName;
+            let TagAttributes = thisNode.attributes;
+            let TagContent = thisNode.textContent;
+            var Placement;
+            if(depth > 0){
+            let Placement = indexValue;
+            }else if (depth === 0){
+            let Placement = 0; 
+            }     
 
-            thisUpdate.TagName = thisNode.tagName;
-            thisUpdate.TagAttributes = thisNode.attributes;
-            thisUpdate.TagContent = thisNode.textContent;
-            thisUpdate.Placement = indexValue;
+            let thisUpdate = new Update(TagName, TagAttributes, TagContent, Placement);
 
             indexArray.push(thisUpdate);
 
             if(thisNode.hasChildNodes){
-              nextDepth = depth++;
-              nextIndex = nodeIndex;
+              let nextDepth = depth++;
+              let nextIndex = indexValue;
               indexHTMLRecurse(thisNode, nextDepth, nextIndex);
             }
         }
@@ -287,7 +296,7 @@ Begin functions
 
 
       function logIndex(indexArray){
-        for(element in indexArray){
+        for(let i = 0; i < indexArray.length; i++){
           firebase.database().ref('pages'+pageURL+'/tags/').push({
             tag_type : element.TagName,
             tag_placement : element.Placement,
@@ -299,7 +308,8 @@ Begin functions
 
 
       //We will need a separate function to take the values in indexArray and log them to Firebase
-      return indexArray;
+      
+      //return indexArray;
   } 
 
 
