@@ -57,7 +57,7 @@ export default class App extends React.Component{
     //this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
     this.getCounter = this.getCounter.bind(this);
     this.setPage = this.setPage.bind(this);
-
+    this.updateCurrentEditPageHandle = this.updateCurrentEditPageHandle.bind(this)
 
     firebase.database().ref('pages/').on('value', snapshot =>{
       this.setState({
@@ -125,6 +125,17 @@ getCounter(snapshot, path, tag){
    return returnArray.length;
 }
 
+updateCurrentEditPageHandle(toUpdate){
+    //
+
+    this.setState({
+      CurrentEditPageHandle : toUpdate
+    })
+
+    //
+
+}
+
 
 
   setFrameProperties(e, tag, content, style){
@@ -176,7 +187,7 @@ getCounter(snapshot, path, tag){
       <button className = "collapse">X</button>
 
       <div className = "VisualSection">
-        <VisualEditor SetPage = {this.setPage} />
+        <VisualEditor updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
 

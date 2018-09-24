@@ -42,7 +42,6 @@ export default class VisualEditor extends React.Component{
     this.clearPriorHTML = this.clearPriorHTML.bind(this);
     this.indexHTML = this.indexHTML.bind(this);
 
-
     //set refs
     this.ghostRef = React.createRef();
     this.iFrameRef = React.createRef();
@@ -213,18 +212,34 @@ Begin functions
   indexHTML(){
 
     const file = document.getElementById('HTML upload').files[0];
-    const root = document.createElement('html');
-
-    const reader = new FileReader;
-    const fileContents = reader.readAsDataURL(file);
-
 
     const indexArray = [];
 
-    //I'll probably do this for the body element.  We can worry about the head later.
-    let start = fileContents.document.body;
+    const reader = new FileReader;
 
-    let depthVal = []
+    /*============
+    Once the FileReader has processed the data,
+    carry out our tasks with that data. 
+    =============*/
+
+    reader.readAsText(file, (data) => {
+      //Add this to the CurrentEditPageHandle variable
+
+      let start = data.document.body;
+      
+      /*===============
+      Update the current edit page handle to reflect the new file 
+      ================*/
+
+        let fileName = file.name;
+        this.props.updateCurrentEditPageHandle(fileName);
+
+        const root = document.createElement('html');
+
+        indexHTMLRecurse(start, 0, null);
+        logIndex(indexArray);
+        /* GhostElement should automatically update... */
+      });
 
     function indexHTMLRecurse(start, depth, priorIndex){
         var prior;
@@ -283,13 +298,11 @@ Begin functions
       }
 
 
-      indexHTMLRecurse(start, 0, null);
-      logIndex(indexArray);
-
-
       //We will need a separate function to take the values in indexArray and log them to Firebase
       return indexArray;
   } 
+
+
 
   componentDidMount(){
     this.props.SetPage();
