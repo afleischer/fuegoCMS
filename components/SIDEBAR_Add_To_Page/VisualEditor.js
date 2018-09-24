@@ -209,13 +209,19 @@ Begin functions
 
   }
 
+
+
+
+
   indexHTML(){
 
-    function executeIndex(data){
+    var pageURL = this.props.currentPage;
+
+    function executeIndex(data, pageName){
       let parser = new DOMParser();
       const rootNode = parser.parseFromString(data, "text/html");
       indexHTMLRecurse(rootNode, 0, null);
-      logIndex(indexArray);
+      logIndex(indexArray, pageName);
       return indexArray;
     }
 
@@ -227,10 +233,14 @@ Begin functions
 
       var fileData = null;
       var start = null;
-      var fileName = file.name;
+      var pageName = file.name;
+
+      //for any file given, if there is a period present, 
+      //slice off the end and return it 
+      var parsedPageName = pageName.split('.')[0];
   
       reader.onload = function() {
-        executeIndex(reader.result);
+        executeIndex(reader.result, parsedPageName);
     } 
       reader.readAsText(file);
     }
@@ -250,10 +260,10 @@ Begin functions
 
         class Update {
           constructor(name, attributes, content, placement){
-            this.TagName = null;
-            this.TagAttributes = null;
-            this.TagContent = null;
-            this.Placement = null;
+            this.TagName = name;
+            this.TagAttributes = attributes;
+            this.TagContent = content;
+            this.Placement = placement;
           }
 
         }
@@ -276,9 +286,9 @@ Begin functions
             let TagContent = thisNode.textContent;
             var Placement;
             if(depth > 0){
-            let Placement = indexValue;
+            var Placement = indexValue;
             }else if (depth === 0){
-            let Placement = 0; 
+            var Placement = 0; 
             }     
 
             let thisUpdate = new Update(TagName, TagAttributes, TagContent, Placement);
@@ -295,13 +305,13 @@ Begin functions
     }
 
 
-      function logIndex(indexArray){
+      function logIndex(indexArray, pageURL){
         for(let i = 0; i < indexArray.length; i++){
-          firebase.database().ref('pages'+pageURL+'/tags/').push({
-            tag_type : element.TagName,
-            tag_placement : element.Placement,
-            tag_content : element.TagContent,
-            tag_attributes : element.TagAttributes
+          firebase.database().ref('pages/'+pageURL+'/tags/').push({
+            tag_type : indexArray.TagName,
+            tag_placement : indexArray.Placement,
+            tag_content : indexArray.TagContent,
+            tag_attributes : indexArray.TagAttributes
           });
         }
       }
