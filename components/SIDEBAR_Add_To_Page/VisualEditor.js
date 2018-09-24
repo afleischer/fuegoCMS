@@ -38,7 +38,6 @@ export default class VisualEditor extends React.Component{
     this.addPage = this.addPage.bind(this);
     //this.setPage = this.setPage.bind(this);
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
-    this.loadIFrame = this.loadIFrame.bind(this);
     this.setHTML = this.setHTML.bind(this);
     this.clearPriorHTML = this.clearPriorHTML.bind(this);
     this.indexHTML = this.indexHTML.bind(this);
@@ -128,8 +127,7 @@ Begin functions
 
   setHTML(){
     let ghostRef = this.ghostRef.current;
-    let iFrameRef = this.loadIFrame.current;
-try{
+    try{
       let ghostRefTags = ReactDOM.findDOMNode(ghostRef);
 
      if(ghostRefTags.innerText != "Loading Content...") {
@@ -214,17 +212,21 @@ try{
 
   indexHTML(){
 
+    const file = document.getElementById('HTML upload').files[0];
+    const root = document.createElement('html');
+
+    const reader = new FileReader;
+    const fileContents = reader.readAsDataURL(file);
+
+
     const indexArray = [];
 
     //I'll probably do this for the body element.  We can worry about the head later.
-    let start = document.body;
+    let start = fileContents.document.body;
 
     let depthVal = []
 
-
-    function indexHTMLRecurse(start, 0, null);
-
-      indexHTMLRecurse(start, depth, priorIndex){
+    function indexHTMLRecurse(start, depth, priorIndex){
         var prior;
 
         const update = {
@@ -266,7 +268,7 @@ try{
             }
         }
 
-      }
+    }
 
 
       function logIndex(indexArray){
@@ -281,7 +283,7 @@ try{
       }
 
 
-      indexHTMLRecurse(start, 0, 1);
+      indexHTMLRecurse(start, 0, null);
       logIndex(indexArray);
 
 
@@ -291,19 +293,18 @@ try{
 
   componentDidMount(){
     this.props.SetPage();
-    this.loadIFrame();
   }
 
   render(){
     return(
       <div>
-        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame() /*this.setHTML()*/}} onChange = {(e) => {this.clearPriorHTML(), this.props.SetPage(e), this.loadIFrame() /* this.setHTML() */}}> 
+        <select id = "page_selector" onLoad = {() => {this.props.SetPage() /*this.setHTML()*/}} onChange = {(e) => {this.clearPriorHTML(), this.props.SetPage(e) /* this.setHTML() */}}> 
           <DropdownOptions Pages = {this.fetchPagesToEdit()} />
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
         <input type = "submit" value = "submit" onClick = {this.addPage}></input>
 
-        <label for = "HTML upload">Upload Webpage</label>
+        <label name = "HTML upload">Upload Webpage</label>
         <input type = "file" id = "HTML upload" onChange = {this.indexHTML} />
 
         <h1>Visual editing section</h1>
