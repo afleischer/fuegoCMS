@@ -198,6 +198,11 @@ Begin functions
   clearPriorHTML(){
     var ghostRef = this.ghostRef;
     var frame = document.getElementById('VisualEditorWindow');
+    
+    if(frame === null){
+      return false;
+    }
+
     var frameDoc = frame.contentDocument || frame.contentWindow.document;
 
 
