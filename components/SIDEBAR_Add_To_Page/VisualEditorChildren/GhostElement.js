@@ -54,9 +54,9 @@ ghostFunction(){
         let TagName = tag_type.toLowerCase();
 
         if(TagAttributes === undefined){
-          isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes}>{TagContent}</TagName>)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} src={TagContent} />)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}}>{TagContent}</TagName>);  
         }else {
-          isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}}>{TagContent}</TagName>)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} >{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} src={TagContent} />)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes} >{TagContent}</TagName>);  
         }
 
         
