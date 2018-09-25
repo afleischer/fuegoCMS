@@ -8,12 +8,15 @@ class GhostElement extends React.Component{
     super(props);
 
     this.ghostFunction = this.ghostFunction.bind(this);
+    this.isVoid = this.isVoid.bind(this);
   }
 
 /*==============
 Pulls from the database to populate a "ghost function" 
 --Activates automatically 
 ==============*/
+
+
 
 ghostFunction(){
   const snapshot = this.props.Snapshot;
@@ -43,17 +46,17 @@ ghostFunction(){
         //let tag_style = child_base.style;
         
         try{
-           let TagAttributes = child_base.attributes.toLowerCase();
+           var TagAttributes = child_base.attributes.toLowerCase();
         }catch(error){
-          let TagAttributes = null;
+          var TagAttributes = null;
         }
         
         let TagName = tag_type.toLowerCase();
 
-        if(TagAttributes != undefined){
-            pageTags.push(<TagName {...TagAttributes}>{TagContent}</TagName>);  
+        if(TagAttributes === undefined){
+          isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes}>{TagContent}</TagName>)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes}>{TagContent}</TagName>);  
         }else {
-           pageTags.push(<TagName >{TagContent}</TagName>);  
+          isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}}>{TagContent}</TagName>)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} >{TagContent}</TagName>);  
         }
 
         
@@ -77,6 +80,25 @@ ghostFunction(){
 
   return "Loading Content...";
 }
+
+
+isVoid(tag_name){
+
+let tagName = tag_name;
+let voidFlag = false;
+
+//Checks to see if the element is one of the W3 spec's void elements.
+//https://www.w3.org/TR/html5/syntax.html#void-elements
+
+const Voidlist = ["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"];
+  
+  Voidlist.forEach((voidTag) => {
+    if(voidTag === tagName) voidFlag = true;
+  });
+
+return voidFlag; 
+}
+
 
 componentDidUpdate(){
   this.props.setHTML();
