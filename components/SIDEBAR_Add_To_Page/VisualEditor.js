@@ -28,6 +28,20 @@ const DropdownOptions = (props) => {
 }
 
 
+
+
+
+
+
+//This space blank for emphasis 
+
+
+
+
+
+
+
+
 export default class VisualEditor extends React.Component{
   constructor(props){
     super(props);
@@ -165,15 +179,6 @@ Begin functions
     var snapshot = this.state.PagesSnapshot;
      
     var allTag = "tag_type";
-
-    //To the end, add a tag
-
-    /*
-    var tagCount = getCounter(snapshot, pageRef, tag);
-    var newTagKey = pageRef.push().key;
-    var tagCounterAll = getCounter(snapshot, pageRef, allTag);
-  */
-    //send to Firebase
 
     var tagData = {
        tags :  [
@@ -373,7 +378,7 @@ Begin functions
           onLoad = {this.setHTML}
           frameBorder = "10"
           />
-          <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
+          <GhostElement setSelectedElement = {this.props.setSelectedElement} setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );

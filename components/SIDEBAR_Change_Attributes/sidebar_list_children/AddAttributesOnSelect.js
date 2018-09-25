@@ -34,14 +34,14 @@ Begin functions
 			var attribute_array = clicked_element.attributes;
 
 			////
-			//For each attribute, get the attributes 
+			//For each attribute in an array, get the attributes 
 			////
 			for(let i = 0; i < attribute_array.length; i++){
 				returnArray.push(
 					<div>
 						<input type = "name" className = "tag-name-change-attribute">{attributes[i].name}</input> 
 						<input className = "tag-value-change-attribute" type = "value">{attributes[i].value}</input>
-						<div onClick = {(e) => this.RemoveAttribue} className = "remove_attribute"></div> 
+						<div onClick = {(e) => this.RemoveAttribue} className = "remove_attribute">X</div> 
 					</div>
 					);
 			}
@@ -54,12 +54,17 @@ Begin functions
 		var toRemove = event.target.previousSibling.previousSibling.innerHTML;
 
 		for(child in RefToLoop){
-			if(child.tags === ){
+			if(child.attributes != undefined){
+				var childKey = Object.keys(child);
 
-				return childName;
+				if(child.attributes === toRemove){
+				//remove from firebase
+				let removeRef = firebase.database().ref('pages/'+pageURL+"/tags/"+childKey+"/attributes/"+toRemove);
+				remove(removeRef);
+				}
 			}
-		}
 
+		}
 	}
 
 
