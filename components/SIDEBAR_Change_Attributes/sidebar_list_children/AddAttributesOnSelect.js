@@ -5,7 +5,8 @@ class AddAttributesOnSelect extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.AttributeSelectorList = this.AttributeSelectorList.bind(this)
+		this.AttributeSelectorList = this.AttributeSelectorList.bind(this);
+		this.RemoveAttribue = this.RemoveAttribue.bind(this);
 	}
 
 
@@ -18,9 +19,13 @@ Begin functions
 	Given a clicked value, returns the necessary values in a field 
 	=============*/
 
-	AttributeSelectorList(event){
+	AttributeSelectorList(){
 
-		var clicked_element = event.target;
+		if(this.props.SelectedElement === null || this.props.SelectedElement === undefined){
+			return "Click an element to edit its properties."
+		}
+
+		var clicked_element = this.props.SelectedElement;
 		var returnArray = [];
 
 		//When clicked, get the target's attributes
@@ -32,21 +37,32 @@ Begin functions
 			//For each attribute, get the attributes 
 			////
 			for(let i = 0; i < attribute_array.length; i++){
-				returnArray.push(<div>
-					<input type = "name" className = "tag-name-change-attribute">{attributes[i].name}</input> 
-					<input className = "tag-value-change-attribute" type = "value">{attributes[i].value}</input>
+				returnArray.push(
+					<div>
+						<input type = "name" className = "tag-name-change-attribute">{attributes[i].name}</input> 
+						<input className = "tag-value-change-attribute" type = "value">{attributes[i].value}</input>
+						<div onClick = {(e) => this.RemoveAttribue} className = "remove_attribute"></div> 
 					</div>
 					);
 			}
+		}
+		return(returnArray);
+	}	
 
+	RemoveAttribue(event){
+		let RefToLoop = firebase.database().ref('pages/'+pageURL+"/tags/").val();
+		var toRemove = event.target.previousSibling.previousSibling.innerHTML;
+
+		for(child in RefToLoop){
+			if(child.tags === ){
+
+				return childName;
+			}
 		}
 
+	}
 
-		tag_list = []
 
-		return(returnArray);
-
-	}	
 
 	render(){
 		return(

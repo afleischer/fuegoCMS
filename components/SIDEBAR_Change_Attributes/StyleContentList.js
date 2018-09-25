@@ -59,7 +59,9 @@ class StyleContentList extends React.Component{
       <div>
         <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} />
         <ImageStyleList ImageList = {this.state.ImageList} />
-        <AddAttributesOnSelect />
+
+        <h1>Click to Edit Page Element Attributes</h1>
+        <AddAttributesOnSelect SelectedElement = {this.props.SelectedElement} />
       </div>
       );
   }

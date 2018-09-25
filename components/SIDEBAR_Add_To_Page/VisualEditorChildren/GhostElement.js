@@ -51,9 +51,9 @@ ghostFunction(){
         let TagName = tag_type.toLowerCase();
 
         if(TagAttributes != undefined){
-            pageTags.push(<TagName onClick = {this.props.AddAttributes()} {...TagAttributes}>{TagContent}</TagName>);  
+            pageTags.push(<TagName onClick = {this.props.setSelectedElement(e)} {...TagAttributes}>{TagContent}</TagName>);  
         }else {
-           pageTags.push(<TagName >{TagContent}</TagName>);  
+           pageTags.push(<TagName onClick = {this.props.setSelectedElement(e)} >{TagContent}</TagName>);  
         }
 
         
