@@ -5,21 +5,9 @@ import Iframe from 'react-iframe';
 
 import GhostElement from './VisualEditorChildren/GhostElement.js';
 
-import firebase from '../firebase.js';
-//var firebase = require("firebase/app");
-//import '../db_init';
+import firebase from '../../firebase.js';
 
-/*
- try {
-    let firApp = firebase.app(applicationName);
-    return firApp;
-  } catch (error) {
-    return firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-      databaseURL: firebaseUrl
-    }, applicationName);
-  }
-*/
+
 
 const DropdownOptions = (props) => {
 
@@ -50,10 +38,9 @@ export default class VisualEditor extends React.Component{
     this.addPage = this.addPage.bind(this);
     //this.setPage = this.setPage.bind(this);
     this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
-    this.loadIFrame = this.loadIFrame.bind(this);
     this.setHTML = this.setHTML.bind(this);
     this.clearPriorHTML = this.clearPriorHTML.bind(this);
-
+    this.indexHTML = this.indexHTML.bind(this);
 
     //set refs
     this.ghostRef = React.createRef();
@@ -79,12 +66,6 @@ export default class VisualEditor extends React.Component{
 /******************
 Begin functions
 ******************/
-
-//Populate the iFrame with the content.  
-
-//Notice!  This logic has been duplicated into "ghostElement" and will be referenced
-//instead in the function setHTML
-  loadIFrame(){ }
 
 
   addPage(pageName){
@@ -145,8 +126,7 @@ Begin functions
 
   setHTML(){
     let ghostRef = this.ghostRef.current;
-    let iFrameRef = this.loadIFrame.current;
-try{
+    try{
       let ghostRefTags = ReactDOM.findDOMNode(ghostRef);
 
      if(ghostRefTags.innerText != "Loading Content...") {
@@ -218,6 +198,11 @@ try{
   clearPriorHTML(){
     var ghostRef = this.ghostRef;
     var frame = document.getElementById('VisualEditorWindow');
+    
+    if(frame === null){
+      return false;
+    }
+
     var frameDoc = frame.contentDocument || frame.contentWindow.document;
 
 
@@ -229,21 +214,152 @@ try{
 
   }
 
-//Will be hoisted to parent and passed down 
+
+
+
+
+  indexHTML(){
+
+    var updateCurrentEditPageHandle = this.props.updateCurrentEditPageHandle;
+    var pageURL = this.props.currentPage;
+
+    function executeIndex(data, pageName, updateCurrentEditPageHandle){
+
+      var updateCurrentEditPageHandle = updateCurrentEditPageHandle
+      let parser = new DOMParser();
+      const rootNode = parser.parseFromString(data, "text/html");
+      indexHTMLRecurse(rootNode, 0, null);
+      logIndex(indexArray, pageName, updateCurrentEditPageHandle);
+      return indexArray;
+    }
+
+
+    function readFile(executeIndex){
+      const file = document.getElementById('HTML upload').files[0];
+
+      const reader = new FileReader();
+
+      var fileData = null;
+      var start = null;
+      var pageName = file.name;
+
+      //for any file given, if there is a period present, 
+      //slice off the end and return it 
+      var parsedPageName = pageName.split('.')[0];
+  
+      reader.onload = function() {
+        executeIndex(reader.result, parsedPageName, updateCurrentEditPageHandle);
+    } 
+      reader.readAsText(file);
+    }
+
+
+
+    const indexArray = [];
+
+    readFile(executeIndex);
+
+
+
+    /* GhostElement should automatically update... */
+
+    function indexHTMLRecurse(start, depth, priorIndex){
+        var prior;
+
+        class Update {
+          constructor(name, attributes, content, placement){
+            this.TagName = name;
+            this.TagAttributes = attributes;
+            this.TagContent = content;
+            this.Placement = placement;
+          }
+
+        }
+        for(let i = 0; i < start.childNodes.length; i++){
+            let prior = (priorIndex === null) ? i : priorIndex;
+            let thisNode = start.childNodes[i];
+
+            if(thisNode.nodeType != 1){
+              //only grab element nodes! 
+              return false;
+            }
+
+            if(depth > 0){
+              var indexValue = prior+'.'+i;
+            } else if (depth === 0){
+              var indexValue = '';
+            }
+
+            /*=================
+            Get the values!
+            ==================*/
+
+            function getPlacement(thisNode){
+              return [].reduce.call(thisNode.childNodes, function(a, b) { return a + (b.nodeType === 3 ? b.textContent : ''); }, '');
+            }
+
+            let TagName = thisNode.tagName;
+            let TagAttributes = thisNode.attributes;
+            //let TagContent = thisNode.textContent;
+            let TagContent = getPlacement(thisNode);
+            var Placement;
+            if(depth > 0){
+            var Placement = indexValue;
+            }else if (depth === 0){
+            var Placement = 0; 
+            }     
+
+            let thisUpdate = new Update(TagName, TagAttributes, TagContent, Placement);
+
+            indexArray.push(thisUpdate);
+
+            if(thisNode.hasChildNodes){
+              let nextDepth = depth+1;
+              let nextIndex = indexValue;
+              indexHTMLRecurse(thisNode, nextDepth, nextIndex);
+            }
+        }
+
+    }
+
+
+      function logIndex(indexArray, pageURL, updateCurrentEditPageHandle){
+
+        updateCurrentEditPageHandle(pageURL);
+
+        for(let i = 0; i < indexArray.length; i++){
+          firebase.database().ref('pages/'+pageURL+'/tags/').push({
+            tag_type : indexArray[i].TagName,
+            placement : indexArray[i].Placement,
+            content : indexArray[i].TagContent,
+            tag_attributes : indexArray[i].TagAttributes
+          });
+        }
+      }
+
+
+      //We will need a separate function to take the values in indexArray and log them to Firebase
+      
+      //return indexArray;
+  } 
+
+
 
   componentDidMount(){
     this.props.SetPage();
-    this.loadIFrame();
   }
 
   render(){
     return(
       <div>
-        <select id = "page_selector" onLoad = {() => {this.props.SetPage(), this.loadIFrame() /*this.setHTML()*/}} onChange = {(e) => {this.clearPriorHTML(), this.props.SetPage(e), this.loadIFrame() /* this.setHTML() */}}> 
+        <select id = "page_selector" onLoad = {() => {this.props.SetPage() /*this.setHTML()*/}} onChange = {(e) => {this.clearPriorHTML(), this.props.SetPage(e) /* this.setHTML() */}}> 
           <DropdownOptions Pages = {this.fetchPagesToEdit()} />
         </select>
         Add Page: <input type = "text" id = "page_addition" name = "Add Page" refs = "add_page_element"></input>
         <input type = "submit" value = "submit" onClick = {this.addPage}></input>
+
+        <label name = "HTML upload">Upload Webpage</label>
+        <input type = "file" id = "HTML upload" onChange = {this.indexHTML} />
 
         <h1>Visual editing section</h1>
         <Iframe
@@ -257,7 +373,7 @@ try{
           onLoad = {this.setHTML}
           frameBorder = "10"
           />
-          <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
+          <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );

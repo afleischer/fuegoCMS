@@ -13,20 +13,23 @@ Components
 =============*/
 
 
-//Content-addition-to-database components
-import CMSContainerTextPost from './components/CMSContainerTextPost';
-import CMSContainerImageUpload from './components/CMSContainerImageUpload';
+//Upload content
+import CMSContainerTextPost from './components/SIDEBAR_Upload_Content/CMSContainerTextPost';
+import CMSContainerImageUpload from './components/SIDEBAR_Upload_Content/CMSContainerImageUpload';
 
-//database-to-sidebar addition components
-import TextAddContainer from './components/TextAddContainer';
-import SidebarImageContainer from './components/SidebarImageContainer';
-import AddPreset from './components/AddPreset';
+//Add content to Page
+import TextAddContainer from './components/SIDEBAR_Add_To_Page/TextAddContainer';
+import SidebarImageContainer from './components/SIDEBAR_Add_To_Page/SidebarImageContainer';
+import AddPreset from './components/SIDEBAR_Add_To_Page/AddPreset';
 
-//Style-addition-to-database components
-import StyleContentList from './components/StyleContentList';
+//Change content Attributes
+import StyleContentList from './components/SIDEBAR_Change_Attributes/StyleContentList';
 
 //live-edit iFrame population components
-import VisualEditor from './components/VisualEditor';
+import VisualEditor from './components/SIDEBAR_Add_To_Page/VisualEditor';
+
+//EXPERIMENTAL: See if I can get the grand HTML list
+import GrandHTMLList from './components/temporary/GrandHTMLList';
 
 /*============
 Firebase initialization
@@ -54,6 +57,13 @@ export default class App extends React.Component{
     //this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
     this.getCounter = this.getCounter.bind(this);
     this.setPage = this.setPage.bind(this);
+    this.updateCurrentEditPageHandle = this.updateCurrentEditPageHandle.bind(this)
+
+    firebase.database().ref('pages/').on('value', snapshot =>{
+      this.setState({
+        PagesSnapshot : snapshot
+      });
+    });
   }
 
 
@@ -62,7 +72,9 @@ export default class App extends React.Component{
     TextList : null,
     ImageList : null,
     CurrentEditPage : null,
+    PagesSnapshot : null,
     }
+
 
 
 setPage(e){
@@ -113,6 +125,17 @@ getCounter(snapshot, path, tag){
    return returnArray.length;
 }
 
+updateCurrentEditPageHandle(toUpdate){
+    //
+
+    this.setState({
+      CurrentEditPageHandle : toUpdate
+    })
+
+    //
+
+}
+
 
 
   setFrameProperties(e, tag, content, style){
@@ -154,13 +177,17 @@ getCounter(snapshot, path, tag){
             <h1>Style Page Content</h1>
             <StyleContentList CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
           </div>
+
+          <div className = "Grand_HTML_list">
+          <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+          </div>
       
       </div>
 
       <button className = "collapse">X</button>
 
       <div className = "VisualSection">
-        <VisualEditor SetPage = {this.setPage} />
+        <VisualEditor currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
 
