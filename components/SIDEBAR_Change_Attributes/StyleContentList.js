@@ -4,6 +4,8 @@ import {StyleTextCopyList} from './sidebar_list_children/StyleTextCopyList';
 import {ImageStyleList} from './sidebar_list_children/ImageStyleList'
 import firebase from '../../firebase.js';
 
+import AddAttributesOnSelect from './sidebar_list_children/AddAttributesOnSelect';
+
 
 /*
  try {
@@ -57,6 +59,7 @@ class StyleContentList extends React.Component{
       <div>
         <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} />
         <ImageStyleList ImageList = {this.state.ImageList} />
+        <AddAttributesOnSelect />
       </div>
       );
   }
