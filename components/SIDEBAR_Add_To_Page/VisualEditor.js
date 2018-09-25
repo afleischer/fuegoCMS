@@ -220,13 +220,16 @@ Begin functions
 
   indexHTML(){
 
+    var updateCurrentEditPageHandle = this.props.updateCurrentEditPageHandle;
     var pageURL = this.props.currentPage;
 
-    function executeIndex(data, pageName){
+    function executeIndex(data, pageName, updateCurrentEditPageHandle){
+
+      var updateCurrentEditPageHandle = updateCurrentEditPageHandle
       let parser = new DOMParser();
       const rootNode = parser.parseFromString(data, "text/html");
       indexHTMLRecurse(rootNode, 0, null);
-      logIndex(indexArray, pageName);
+      logIndex(indexArray, pageName, updateCurrentEditPageHandle);
       return indexArray;
     }
 
@@ -245,7 +248,7 @@ Begin functions
       var parsedPageName = pageName.split('.')[0];
   
       reader.onload = function() {
-        executeIndex(reader.result, parsedPageName);
+        executeIndex(reader.result, parsedPageName, updateCurrentEditPageHandle);
     } 
       reader.readAsText(file);
     }
@@ -320,12 +323,15 @@ Begin functions
     }
 
 
-      function logIndex(indexArray, pageURL){
+      function logIndex(indexArray, pageURL, updateCurrentEditPageHandle){
+
+        updateCurrentEditPageHandle(pageURL);
+
         for(let i = 0; i < indexArray.length; i++){
           firebase.database().ref('pages/'+pageURL+'/tags/').push({
             tag_type : indexArray[i].TagName,
-            tag_placement : indexArray[i].Placement,
-            tag_content : indexArray[i].TagContent,
+            placement : indexArray[i].Placement,
+            content : indexArray[i].TagContent,
             tag_attributes : indexArray[i].TagAttributes
           });
         }
@@ -367,7 +373,7 @@ Begin functions
           onLoad = {this.setHTML}
           frameBorder = "10"
           />
-          <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageEditing = {this.props.CurrentEditPageHandle} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
+          <GhostElement setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );

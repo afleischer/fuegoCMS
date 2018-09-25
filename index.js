@@ -187,7 +187,7 @@ updateCurrentEditPageHandle(toUpdate){
       <button className = "collapse">X</button>
 
       <div className = "VisualSection">
-        <VisualEditor currentPage = {this.state.CurrentEditPage} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
+        <VisualEditor currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
 

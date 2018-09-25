@@ -20,9 +20,12 @@ ghostFunction(){
 
     if(snapshot){
 
-    const currPage = document.querySelector('#page_selector').value;
+    var currPage = this.props.PageHandle;
+    //const currPage = document.querySelector('#page_selector').value;
 
-      if(currPage != "" && currPage != 'Loading'){
+      if(currPage != "" && currPage != 'Loading' && currPage != null){
+
+        if (snapshot.child(currPage).val() === null){ return "Select Page to Load."}
 
         var pageTags = [];
         var page_tag_pull = Object.keys(snapshot.val());

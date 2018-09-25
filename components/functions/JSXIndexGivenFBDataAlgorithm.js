@@ -59,12 +59,17 @@ const IndexHTMLGivenDBData = (props) => {
 	let snapshot = props.PagesSnapshot;
 
 
-	if(!snapshot || snapshot.val() == null || !pageURL) {
+	if(!snapshot || snapshot.val() == null || pageURL === null || !pageURL) {
 		return(<div>Loading HTML</div>)
 	}
 
 	let placementArray_raw = [];
-	var keysList = Object.keys(snapshot.child(pageURL).child('tags').val());
+
+	try{
+		var keysList = Object.keys(snapshot.child(pageURL).child('tags').val());
+	}catch(error){
+		return (<div>Loading HTML</div>)
+	}
 	var keysListSetter= 0;
 	let parentSnap = snapshot.child(pageURL).child('tags').val();
 
