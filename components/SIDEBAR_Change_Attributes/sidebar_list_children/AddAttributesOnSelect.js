@@ -39,18 +39,19 @@ Begin functions
 			for(let i = 0; i < attribute_array.length; i++){
 				returnArray.push(
 					<div>
-						<input type = "name" className = "tag-name-change-attribute">{attributes[i].name}</input> 
-						<input className = "tag-value-change-attribute" type = "value">{attributes[i].value}</input>
+						<label for={attribute_array[i]}>{attribute_array[i].name}</label>
+						<input onChange ={(e) => this.UpdateAttribute(e)} type = "name" name = {attribute_array[i].value} value = {attribute_array[i].value} className = "tag-name-change-attribute" />
 						<div onClick = {(e) => this.RemoveAttribue} className = "remove_attribute">X</div> 
 					</div>
 					);
 			}
 		}
-		return(returnArray);
+		return(<div className = "attribute-selector-sub-container">{returnArray}</div>);
 	}	
 
 	RemoveAttribue(event){
-		let RefToLoop = firebase.database().ref('pages/'+pageURL+"/tags/").val();
+		var pageURL = this.props.currentPage;
+		let RefToLoop = firebase.database().ref('pages/'+pageURL+"/tags/");
 		var toRemove = event.target.previousSibling.previousSibling.innerHTML;
 
 		for(child in RefToLoop){
@@ -67,6 +68,30 @@ Begin functions
 		}
 	}
 
+	UpdateAttribute(){
+		var pageURL = this.props.currentPage;
+		var toUpdate = event.target.name;
+		var targetData = event.target;
+		const RefToLoop = firebase.database().ref('pages/'+pageURL+"/tags/");
+		var RefBase = firebase.database().ref('pages/'+pageURL+"/tags/")
+
+
+		for(child in RefToLoop){
+			if(child.attributes != undefined){
+				var childKey = Object.keys(child);
+
+				if(child.attributes === toUpdate){
+					//remove from firebase
+					let updateRef = firebase.database().ref('pages/'+pageURL+"/tags/"+childKey+"/attributes/"+toUpdate);
+					var updates = {
+						[toUpdate] : targetData.value
+					}
+					updateRef.update(updates);
+				}
+			}
+		}
+	}
+
 
 	ComponentDidUpdate(){
 		AttributeSelectorList();
@@ -74,7 +99,7 @@ Begin functions
 
 	render(){
 		return(
-			<div>{this.AttributeSelectorList}</div>
+			<div>{this.AttributeSelectorList()}</div>
 		)
 	}
 
