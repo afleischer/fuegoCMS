@@ -139,16 +139,20 @@ Begin functions
 		var attribute_value = event.target.previousSibling.value;
 
 		//unique identifier for the element. 
-		var targetIdentifier = this.props.SelectedElement.dbID;
+		var targetIdentifier = this.props.SelectedElement.getAttribute('dbid');
 
 		const ReferenceToUpdate = firebase.database().ref('pages/'+pageURL+"/tags/"+targetIdentifier);
 
-		if(ReferenceToUpdate.val().attributes != undefined){
-			var updates = {
-				[attribute_name] : attribute_value
-			}
-			ReferenceToUpdate.child('/attributes/').update(updates)
-		}
+		ReferenceToUpdate.once('value', childSnap => {
+			if(childSnap.val().attributes != undefined){
+				var updates = {
+					[attribute_name] : attribute_value
+				}
+				ReferenceToUpdate.child('/attributes/').update(updates)
+			}		
+		})
+
+
 	
 	} 
 
