@@ -176,6 +176,14 @@ updateCurrentEditPageHandle(toUpdate){
 
   }
 
+
+
+/*
+  <div className = "Grand_HTML_list">
+  <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+  </div>
+*/
+
  
     render(){
   return(
@@ -203,9 +211,6 @@ updateCurrentEditPageHandle(toUpdate){
 
 
 
-            <div className = "Grand_HTML_list">
-            <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
-            </div>
 
 
           </div>

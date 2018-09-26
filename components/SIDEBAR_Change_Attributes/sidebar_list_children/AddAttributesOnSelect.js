@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import firebase from '../../../firebase.js';
+
 
 class AddAttributesOnSelect extends React.Component{
 	constructor(props){
@@ -10,6 +12,7 @@ class AddAttributesOnSelect extends React.Component{
 		this.UpdateAttribute = this.UpdateAttribute.bind(this);
 		this.AddAttribute = this.AddAttribute.bind(this);
 		this.AdditionalAttributes = this.AdditionalAttributes.bind(this);
+		this.AddFreshAttributeToDB = this.AddFreshAttributeToDB.bind(this);
 	}
 
 	state = {
@@ -54,7 +57,6 @@ Begin functions
 			}
 		}
 		return(<div className = "attribute-selector-sub-container">{returnArray}
-			<input name="AddAttribute" onClick = {(e) => {this.AddAttribute(e)}} />
 			{this.AdditionalAttributes()}
 			 <button onClick = {(e) => this.setState({attributeLines : this.state.attributeLines + 1}) }>Add new attribute</button> 
 			 <button onClick = {(e) => this.setState({attributeLines : this.state.attributeLines - 1}) }> Remove attribute line</button>
@@ -131,10 +133,66 @@ Begin functions
 		}
 	}
 
+	AddFreshAttributeToDB(event){
+		var pageURL = this.props.currentPage;
+		var attribute_name = event.target.previousSibling.previousSibling.previousSibling.value;
+		var attribute_value = event.target.previousSibling.value;
+		const RefToLoop = firebase.database().ref('pages/'+pageURL+"/tags/");
+
+		RefToLoop.once('value', snapshot => {
+
+			var keysToLoop = Object.keys(snapshot.val());
+
+			for(let i = 0; i < keysToLoop.length; i++){
+				//make sure there is an attributes field
+				if(snapshot.child(keysToLoop[i]).val().attributes){
+					let attributesLoop = snapshot.child(keysToLoop[i]).child('attributes');
+					//for each of these, 
+
+					attributesLoop.forEach( function(attributesSnapshot){
+						
+						
+					}
+
+
+						);
+				} 
+
+
+			}
+
+			if(snapshot.attributes != undefined){
+				var childKey = Object.keys(child);
+
+				if(child.attributes === attribute_name){
+
+					var newLoopRef = RefToLoop.child(attribute_name);
+
+					for(attribute in newLoopRef){
+						if(attribute.value === attribute_value){
+						//remove from firebase
+						let updateLoopRef = firebase.database().ref('pages/'+pageURL+"/tags/"+childKey+"/attributes/"+attribute);
+						var updates = {
+							[attribute_name] : attribute_value
+							}
+						updateRef.update(updates);
+						console.log("Submitted!");
+						}	
+					}
+				}
+			}
+		})
+	}
+
 	AdditionalAttributes(){
 		var returnArray = []
 		for(let i = 0; i < this.state.attributeLines; i++){
-			returnArray.push(<input name="AddAttribute" onClick = {(e) => {this.AddAttribute(e)}} />)
+			returnArray.push(
+				<div>
+				Attribute name:<input name="AddAttribute_name" />
+				Attribute value:<input name="AddAttribute_value"  />
+				<button onClick = {(e) => {this.AddFreshAttributeToDB(e)}}>Submit Attribute</button>
+				</div>)
 		}
 		return returnArray;
 	}
