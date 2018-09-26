@@ -57,7 +57,9 @@ export default class App extends React.Component{
     //this.fetchPagesToEdit = this.fetchPagesToEdit.bind(this);
     this.getCounter = this.getCounter.bind(this);
     this.setPage = this.setPage.bind(this);
-    this.updateCurrentEditPageHandle = this.updateCurrentEditPageHandle.bind(this)
+    this.updateCurrentEditPageHandle = this.updateCurrentEditPageHandle.bind(this);
+    this.setSelectedElement = this.setSelectedElement.bind(this);
+
 
     firebase.database().ref('pages/').on('value', snapshot =>{
       this.setState({
@@ -73,6 +75,7 @@ export default class App extends React.Component{
     ImageList : null,
     CurrentEditPage : null,
     PagesSnapshot : null,
+    selectedElement : null,
     }
 
 
@@ -125,6 +128,19 @@ getCounter(snapshot, path, tag){
    return returnArray.length;
 }
 
+
+setSelectedElement(event){
+
+  element_selected = event;
+  element_selected.className += "highlighted";
+
+  //issues, need an onClickElsewhere to de-highlight when click off. 
+
+  this.setState({selectedElement : element_selected});
+
+}
+
+
 updateCurrentEditPageHandle(toUpdate){
     //
 
@@ -153,6 +169,12 @@ updateCurrentEditPageHandle(toUpdate){
 
 
   }
+
+
+  addAttributes(event){
+
+  }
+
  
     render(){
   return(
@@ -178,16 +200,17 @@ updateCurrentEditPageHandle(toUpdate){
             <StyleContentList CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
           </div>
 
-          <div className = "Grand_HTML_list">
-          <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+
+
+            <div className = "Grand_HTML_list">
+            <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+            </div>
           </div>
-      
-      </div>
 
       <button className = "collapse">X</button>
 
       <div className = "VisualSection">
-        <VisualEditor currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
+        <VisualEditor setSelectedElement = {this.setSelectedElement} currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
 
