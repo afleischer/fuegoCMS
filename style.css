@@ -94,6 +94,7 @@ body{
 
 .sidebar{
 	width: 100%;
+	max-width:500px;
     background-color: #E8D9D1;
 }
 
