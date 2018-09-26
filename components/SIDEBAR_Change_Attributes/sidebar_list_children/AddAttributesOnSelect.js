@@ -137,52 +137,20 @@ Begin functions
 		var pageURL = this.props.currentPage;
 		var attribute_name = event.target.previousSibling.previousSibling.previousSibling.value;
 		var attribute_value = event.target.previousSibling.value;
-		const RefToLoop = firebase.database().ref('pages/'+pageURL+"/tags/");
 
-		RefToLoop.once('value', snapshot => {
+		//unique identifier for the element. 
+		var targetIdentifier = this.props.SelectedElement.dbID;
 
-			var keysToLoop = Object.keys(snapshot.val());
+		const ReferenceToUpdate = firebase.database().ref('pages/'+pageURL+"/tags/"+targetIdentifier);
 
-			for(let i = 0; i < keysToLoop.length; i++){
-				//make sure there is an attributes field
-				if(snapshot.child(keysToLoop[i]).val().attributes){
-					let attributesLoop = snapshot.child(keysToLoop[i]).child('attributes');
-					//for each of these, 
-
-					attributesLoop.forEach( function(attributesSnapshot){
-						
-						
-					}
-
-
-						);
-				} 
-
-
+		if(ReferenceToUpdate.val().attributes != undefined){
+			var updates = {
+				[attribute_name] : attribute_value
 			}
-
-			if(snapshot.attributes != undefined){
-				var childKey = Object.keys(child);
-
-				if(child.attributes === attribute_name){
-
-					var newLoopRef = RefToLoop.child(attribute_name);
-
-					for(attribute in newLoopRef){
-						if(attribute.value === attribute_value){
-						//remove from firebase
-						let updateLoopRef = firebase.database().ref('pages/'+pageURL+"/tags/"+childKey+"/attributes/"+attribute);
-						var updates = {
-							[attribute_name] : attribute_value
-							}
-						updateRef.update(updates);
-						console.log("Submitted!");
-						}	
-					}
-				}
-			}
-		})
-	}
+			ReferenceToUpdate.child('/attributes/').update(updates)
+		}
+	
+	} 
 
 	AdditionalAttributes(){
 		var returnArray = []

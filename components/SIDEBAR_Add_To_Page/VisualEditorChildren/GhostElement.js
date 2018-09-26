@@ -54,9 +54,9 @@ ghostFunction(){
         let TagName = tag_type.toLowerCase();
 
         if(TagAttributes === undefined){
-          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
         }else {
-          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onClick = {(e) => {this.props.setSelectedElement}} {...TagAttributes} >{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => {this.props.setSelectedElement}} {...TagAttributes} >{TagContent}</TagName>);  
         }
 
       }
