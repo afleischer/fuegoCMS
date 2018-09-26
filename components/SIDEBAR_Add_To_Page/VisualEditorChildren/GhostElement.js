@@ -54,26 +54,14 @@ ghostFunction(){
         let TagName = tag_type.toLowerCase();
 
         if(TagAttributes === undefined){
-          this.isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} src={TagContent} />)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
         }else {
-          this.isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} src={TagContent} />)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes} >{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onClick = {(e) => {this.props.setSelectedElement}} {...TagAttributes} >{TagContent}</TagName>);  
         }
-
-        
-
-        /* 
-        if (tag_type == 'p'){
-          pageTags.push(<p styles = {tag_style}>{tag_content}</p>);
-        }else if (tag_type == 'h1'){
-          pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
-        }
-        else if(tag_type == 'img'){
-            pageTags.push(<img styles = {tag_style} src = {tag_content}></img>);
-          } 
-
-        */
 
       }
+
+
         return pageTags;
    }
   }
@@ -102,6 +90,7 @@ return voidFlag;
 
 componentDidUpdate(){
   this.props.setHTML();
+
 }
 
   render(){

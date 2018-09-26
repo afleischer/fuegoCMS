@@ -20,6 +20,7 @@ iframe{
 	border-style: inset;
     border-width: 5px;
     border-color: #c4c4c4;
+    min-height: 800px;
 }
 
 h1{
@@ -92,7 +93,7 @@ body{
 }
 
 .sidebar{
-	width: 500px;
+	width: 100%;
     background-color: #E8D9D1;
 }
 
@@ -174,7 +175,7 @@ body{
 }
 
 .VisualSection{
-
+	background-color: grey;
 	overflow: auto;
 	grid-area: visual;
 }

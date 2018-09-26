@@ -68,6 +68,9 @@ Begin functions
 	}
 
 
+	ComponentDidUpdate(){
+		AttributeSelectorList();
+	}
 
 	render(){
 		return(

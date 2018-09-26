@@ -131,8 +131,9 @@ getCounter(snapshot, path, tag){
 
 setSelectedElement(event){
 
-  element_selected = event;
-  element_selected.className += "highlighted";
+  var element_selected = event.target;
+
+  //element_selected.className += "highlighted";
 
   //issues, need an onClickElsewhere to de-highlight when click off. 
 
@@ -197,7 +198,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "style_content">
             <h1>Style Page Content</h1>
-            <StyleContentList CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+            <StyleContentList SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
           </div>
 
 
@@ -205,13 +206,15 @@ updateCurrentEditPageHandle(toUpdate){
             <div className = "Grand_HTML_list">
             <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
             </div>
-          </div>
 
-      <button className = "collapse">X</button>
+
+          </div>
 
       <div className = "VisualSection">
         <VisualEditor setSelectedElement = {this.setSelectedElement} currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
+
+        <button className = "collapse">X</button>
 
 
       </span>

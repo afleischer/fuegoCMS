@@ -150,6 +150,26 @@ Begin functions
 
       editorFrame.contentDocument.write(outerElements);
     //frameDoc.documentElement.innerHTML = outerElements;
+
+    /*===============
+    Code block that will expose the iFrame elements for modification
+    ===============*/
+
+
+        try{
+          var test = document.getElementById("VisualEditorWindow").contentDocument.querySelectorAll('.frame-tag');
+          if(!test[0]){return false};
+          var nodelist = document.querySelector('.iframe').contentDocument.querySelectorAll('.frame-tag');
+
+          for(let i = 0; i < nodelist.length; i++){
+            nodelist[i].addEventListener('click', this.props.setSelectedElement);
+          }
+        }catch(error){
+          //pass
+        }
+
+
+
      }
      else{
       return false;
@@ -209,13 +229,8 @@ Begin functions
     }
 
     var frameDoc = frame.contentDocument || frame.contentWindow.document;
-
-
-    frameDoc.documentElement.querySelectorAll(".ghost").forEach ( e => e.parentNode.removeChild(e));
     
-    //frameDoc.removeChild(frameDoc.documentElement.querySelectorAll(".ghost"));
-    //frameDoc.documentElement.innerHTML = "";
-
+    frameDoc.documentElement.querySelectorAll(".ghost").forEach ( e => e.parentNode.removeChild(e));
 
   }
 
@@ -347,6 +362,12 @@ Begin functions
       
       //return indexArray;
   } 
+
+
+  highlightSetup(){
+
+  }
+
 
 
 
