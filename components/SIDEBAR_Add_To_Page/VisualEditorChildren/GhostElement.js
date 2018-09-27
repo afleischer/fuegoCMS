@@ -16,9 +16,11 @@ Pulls from the database to populate a "ghost function"
 --Activates automatically 
 ==============*/
 
-
-
 ghostFunction(){
+
+   // this.props.clearHTML();
+
+
   const snapshot = this.props.Snapshot;
 
     if(snapshot){
@@ -46,7 +48,7 @@ ghostFunction(){
         //let tag_style = child_base.style;
         
         try{
-           var TagAttributes = child_base.attributes.toLowerCase();
+           var TagAttributes = child_base.attributes;
         }catch(error){
           var TagAttributes = null;
         }
@@ -54,26 +56,14 @@ ghostFunction(){
         let TagName = tag_type.toLowerCase();
 
         if(TagAttributes === undefined){
-          isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes}>{TagContent}</TagName>)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} {...TagAttributes}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
         }else {
-          isVoid(TagName) === true ? pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}}>{TagContent}</TagName>)  :  pageTags.push(<TagName onClick = {(e) => {this.props.setSelectedElement(e)}} >{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
         }
-
-        
-
-        /* 
-        if (tag_type == 'p'){
-          pageTags.push(<p styles = {tag_style}>{tag_content}</p>);
-        }else if (tag_type == 'h1'){
-          pageTags.push(<h1 styles = {tag_style}>{tag_content}</h1>);
-        }
-        else if(tag_type == 'img'){
-            pageTags.push(<img styles = {tag_style} src = {tag_content}></img>);
-          } 
-
-        */
 
       }
+
+
         return pageTags;
    }
   }
@@ -102,6 +92,7 @@ return voidFlag;
 
 componentDidUpdate(){
   this.props.setHTML();
+
 }
 
   render(){

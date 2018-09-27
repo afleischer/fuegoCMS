@@ -1,6 +1,6 @@
 import firebase from '../../firebase.js'
 
-export const getTopPlacement = (pageEditing) =>{
+const getTopPlacement = (pageEditing) =>{
 
     let placement_counter;
     /*=============
@@ -26,3 +26,5 @@ export const getTopPlacement = (pageEditing) =>{
 	}
 
 }
+
+export default getTopPlacement;
