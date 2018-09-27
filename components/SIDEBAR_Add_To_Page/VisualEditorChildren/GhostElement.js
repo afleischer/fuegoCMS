@@ -16,9 +16,11 @@ Pulls from the database to populate a "ghost function"
 --Activates automatically 
 ==============*/
 
-
-
 ghostFunction(){
+
+   // this.props.clearHTML();
+
+
   const snapshot = this.props.Snapshot;
 
     if(snapshot){
@@ -54,9 +56,9 @@ ghostFunction(){
         let TagName = tag_type.toLowerCase();
 
         if(TagAttributes === undefined){
-          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
         }else {
-          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
         }
 
       }

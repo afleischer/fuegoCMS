@@ -33,12 +33,13 @@ class PresetAddContainer extends React.Component{
 	state = {
 
 	}
+
+
 //Pull up a modal when the user clicks on it
 
 	startModal(input){
 
 		try{
-
 			if(input == "horizontal_scroll"){
 			var modal = document.getElementById('hsModal');
 			modal.style.display = "block";
@@ -61,10 +62,11 @@ class PresetAddContainer extends React.Component{
 	submitModal(snapshot, type, page, subtype){
 		//Append the data to firebase
 
-		if(!snapshot){
+		if(this.props.CurrentEditPageHandle === null || !snapshot){
 			return false;
 		}
-			var pageEditing = page;
+
+			var pageEditing = this.props.CurrentEditPageHandle;
 
 			var newCollections = firebase.database().ref('pages/'+pageEditing+'/collections/').push().key;
 			//now we have a unique key but haven't declared the section type yet

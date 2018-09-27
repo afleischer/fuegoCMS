@@ -20,6 +20,7 @@ import CMSContainerImageUpload from './components/SIDEBAR_Upload_Content/CMSCont
 //Add content to Page
 import TextAddContainer from './components/SIDEBAR_Add_To_Page/TextAddContainer';
 import SidebarImageContainer from './components/SIDEBAR_Add_To_Page/SidebarImageContainer';
+import AddElementsToPage from './components/SIDEBAR_Add_To_Page/AddElementsToPage';
 import AddPreset from './components/SIDEBAR_Add_To_Page/AddPreset';
 
 //Change content Attributes
@@ -59,6 +60,7 @@ export default class App extends React.Component{
     this.setPage = this.setPage.bind(this);
     this.updateCurrentEditPageHandle = this.updateCurrentEditPageHandle.bind(this);
     this.setSelectedElement = this.setSelectedElement.bind(this);
+    this.pageVsSection = this.pageVsSection.bind(this);
 
 
     firebase.database().ref('pages/').on('value', snapshot =>{
@@ -139,6 +141,28 @@ setSelectedElement(event){
 
   this.setState({selectedElement : element_selected});
 
+
+
+  element_selected.addEventListener("dragover", dragover)
+  element_selected.addEventListener("dragenter", dragenter)
+  element_selected.addEventListener("drop", drop)
+
+
+  function dragover(e) {
+    e.preventDefault()
+    console.log("dragover elemement is:"+e);
+  }
+  function dragenter(e) {
+    e.preventDefault()
+    console.log("entered elemement is:"+e);
+  }
+  function drop() {
+    this.append(element_selected);
+    console.log("drop attempt on element:"+e);
+  }
+
+  
+
 }
 
 
@@ -147,9 +171,8 @@ updateCurrentEditPageHandle(toUpdate){
 
     this.setState({
       CurrentEditPageHandle : toUpdate
-    })
+    });
 
-    //
 
 }
 
@@ -171,10 +194,18 @@ updateCurrentEditPageHandle(toUpdate){
 
   }
 
+  pageVsSection(){
+    if(this.state.selectedElement != null){
+      return("Section :"+this.state.selectedElement)
+    }
+  }
+
 
   addAttributes(event){
 
   }
+
+
 
 
 
@@ -198,9 +229,15 @@ updateCurrentEditPageHandle(toUpdate){
           </div>
 
           <div className = "add_content">
-            <h1>Add to Page</h1>
+            <h1>Add to {this.pageVsSection()}</h1>
+            <h2 className="page-add-subheader">Content</h2>
             <TextAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} TextArray = {this.state.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+
+            <h2 className="page-add-subheader">Page Elements</h2>
+            <AddElementsToPage SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+
+            <h2 className="page-add-subheader">Preset Elements</h2>
             <AddPreset CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
           </div>
 

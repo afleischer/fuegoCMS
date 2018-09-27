@@ -44,39 +44,4 @@ const config = {
 };
 firebase.initializeApp(config);
 
-/*
-export var sortedPagesSnapshot = (pageURL) =>{
-  let snapshot = firebase.database().ref('pages/' + pageURL+'/tags/').orderByChild('placement').on('value', function(childSnapshot){
-      return childSnapshot;
-  });
-
-}
-*/
 export default firebase;
-
-
-
-	
-/* 
-import * as firebase from 'firebase';
-
-const config = {
-        apiKey: "AIzaSyDQw0Fa9jY-8uXxMOf-Jr7XA6er3C8pOPA",
-        authDomain: "fuegocms.firebaseapp.com",
-        databaseURL: "https://fuegocms.firebaseio.com",
-        projectId: "fuegocms",
-        storageBucket: "fuegocms.appspot.com",
-        messagingSenderId: "283527892810"
-};
-
-
-//firebase.initializeApp(config);
-
-//}
-
-//export default !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
-
-const db = firebase.database();
-
-export default firebase;
-*/ 

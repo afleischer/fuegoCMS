@@ -399,7 +399,7 @@ Begin functions
           onLoad = {this.setHTML}
           frameBorder = "10"
           />
-          <GhostElement setSelectedElement = {this.props.setSelectedElement} setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
+          <GhostElement clearHTML = {this.clearPriorHTML} setSelectedElement = {this.props.setSelectedElement} setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );
