@@ -10,6 +10,24 @@
 	}
 }
 
+@keyframes sidebar_hidden {
+	from{
+		grid-template-columns: .8fr 1.5fr;
+	}
+	to {
+		grid-template-columns: 0 1.5fr;
+	}
+}
+
+@keyframes sidebar_shown {
+	from{
+
+	}
+	to{
+
+	}
+}
+
 button{
 	border-radius: 20px;
 }
@@ -73,6 +91,7 @@ body{
 }
 
 .hiddenBoxImg{
+	display:none;
 	background-color: aqua;
 	position: absolute;
 	height: 100px;
@@ -96,6 +115,18 @@ body{
 	width: 100%;
 	max-width:500px;
     background-color: #E8D9D1;
+
+}
+
+
+#sb_shown{
+	animation-name: sidebar_shown;
+	animation-duration: 0.5s;
+}
+
+#sb_hidden{
+	animation-name: sidebar_hidden;
+	animation-duration: 0.5s;
 }
 
 .thumbnail{

@@ -78,6 +78,7 @@ export default class App extends React.Component{
     CurrentEditPage : null,
     PagesSnapshot : null,
     selectedElement : null,
+    sidebar_shown: null
     }
 
 
@@ -206,8 +207,14 @@ updateCurrentEditPageHandle(toUpdate){
   }
 
 
+  toggleSidebar(){
+    //if the item is closed 
+    var sidebar_status = this.state.sidebar_shown === "sb_hidden" ? "sb_shown" : "sb_hidden";
 
-
+    this.setState({
+      sidebar_shown : sidebar_status
+    })
+  }
 
 /*
   <div className = "Grand_HTML_list">
@@ -220,7 +227,7 @@ updateCurrentEditPageHandle(toUpdate){
   return(
     <span className = "app-container">
 
-      <div className = "sidebar">
+      <div className={["sidebar", this.state.sidebar_shown].join(' ')}>
 
         <div className = "upload_content">
           <h1>Upload Content </h1>
@@ -253,10 +260,10 @@ updateCurrentEditPageHandle(toUpdate){
           </div>
 
       <div className = "VisualSection">
+        <button className = "collapse" onClick = {(e) => (this.toggleSidebar)}>X</button>
         <VisualEditor setSelectedElement = {this.setSelectedElement} currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
-        <button className = "collapse">X</button>
 
 
       </span>
