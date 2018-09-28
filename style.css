@@ -11,21 +11,22 @@
 }
 
 @keyframes sidebar_hidden {
-	from{
+	/*from{
 		grid-template-columns: .8fr 1.5fr;
 	}
 	to {
 		grid-template-columns: 0 1.5fr;
-	}
+	} */
 }
 
 @keyframes sidebar_shown {
+	/*
 	from{
-
+		grid-template-columns: 0 1.5fr;
 	}
 	to{
-
-	}
+		grid-template-columns: .8fr 1.5fr;
+	} */
 }
 
 button{
@@ -34,7 +35,7 @@ button{
 
 iframe{
 	border: 5px black;
-	background-color: lightgoldenrodyellow;
+	background-color: white;
 	border-style: inset;
     border-width: 5px;
     border-color: #c4c4c4;
@@ -53,6 +54,26 @@ body{
 	margin: 0;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+
 .app-container{
 	display: grid;
 	width: 100vw;
@@ -66,12 +87,17 @@ body{
 	/*grid-template-columns: 33vw 66vw; */
 
 	/* grid-template-rows: auto auto auto; */
-	grid-template-columns: .8fr 1.5fr; 
+	/*grid-template-columns: .8fr 1.5fr; */
+
+}
+
+#sidebar_container{
 
 }
 
 .collapse{
 	background-color: #BDB1AA;
+	padding: 0 5px;
 
 }
 
@@ -113,20 +139,27 @@ body{
 
 .sidebar{
 	width: 100%;
-	max-width:500px;
+	/*max-width:500px;*/
     background-color: #E8D9D1;
+    overflow:hidden;
 
+}
+
+#hide{
+	display: none;
 }
 
 
 #sb_shown{
-	animation-name: sidebar_shown;
-	animation-duration: 0.5s;
+	animation-name: sidebar_hidden;
+	animation-duration: 10s;
+    grid-template-columns: .45fr 1.5fr;
 }
 
 #sb_hidden{
-	animation-name: sidebar_hidden;
-	animation-duration: 0.5s;
+	animation-name: sidebar_shown;
+	animation-duration: 10s;
+	grid-template-columns: 0vw 100vw
 }
 
 .thumbnail{
@@ -140,7 +173,7 @@ body{
     width: 150px;
     height: 200px;
     display: inline-block;
-    overflow: scroll;
+    overflow: hidden;
      background-color: #c8d6e3;
 
 }
@@ -157,7 +190,7 @@ body{
 
 .upload_content{
 	/*width: 350px;*/
-	background-color: #E8D9D1;
+	/* background-color: #E8D9D1; */ 
 	grid-area: upload;
 }
 
@@ -174,6 +207,14 @@ body{
 	grid-area: style;
 }
 
+.page-add-subheader{
+	border-bottom: black;
+    border-style: double;
+    border-right: none;
+    border-left: none;
+    border-top: none;
+}
+
 .image_add_container{
 	height:400px;
 	overflow:scroll;
@@ -181,6 +222,7 @@ body{
 	border-style: inset;
     border-width: 5px;
     border-color: #c4c4c4;
+    margin-right: 10px;
 }
 
 .Preset_container{
@@ -198,6 +240,11 @@ body{
 	border-style: inset;
     border-width: 5px;
     border-color: #c4c4c4;
+    margin-right: 10px;
+}
+
+.sidebar_text_add_frame_container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }
 
 .Sidebar_Text_add_to_frame{

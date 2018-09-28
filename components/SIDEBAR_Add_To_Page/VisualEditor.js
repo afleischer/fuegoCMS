@@ -387,7 +387,7 @@ Begin functions
         <label name = "HTML upload">Upload Webpage</label>
         <input type = "file" id = "HTML upload" onChange = {this.indexHTML} />
 
-        <h1>Visual editing section</h1>
+        <h1>Live Preview</h1>
         <Iframe
           id = "VisualEditorWindow"
           url = {this.props.CurrentEditPageHandle}

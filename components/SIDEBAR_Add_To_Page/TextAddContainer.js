@@ -124,7 +124,6 @@ let placement_counter_new = placement_counter + 1;
   render(){
     return(
       <div className = "sidebar_text_add_frame_container">
-        <h2> Add Stored Text to Page</h2>
         <TextItem snapshot = {this.state.TextList} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} clickFunc = {this.addTagToFrame} TextArray = {this.state.TextList} />
       </div>
       );

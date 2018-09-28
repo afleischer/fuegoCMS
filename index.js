@@ -61,6 +61,7 @@ export default class App extends React.Component{
     this.updateCurrentEditPageHandle = this.updateCurrentEditPageHandle.bind(this);
     this.setSelectedElement = this.setSelectedElement.bind(this);
     this.pageVsSection = this.pageVsSection.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
 
 
     firebase.database().ref('pages/').on('value', snapshot =>{
@@ -78,7 +79,7 @@ export default class App extends React.Component{
     CurrentEditPage : null,
     PagesSnapshot : null,
     selectedElement : null,
-    sidebar_shown: null
+    sidebar_shown: "sb_shown"
     }
 
 
@@ -198,6 +199,8 @@ updateCurrentEditPageHandle(toUpdate){
   pageVsSection(){
     if(this.state.selectedElement != null){
       return("Section :"+this.state.selectedElement)
+    }else if (this.state.selectedElement == null){
+      return("Page")
     }
   }
 
@@ -210,6 +213,7 @@ updateCurrentEditPageHandle(toUpdate){
   toggleSidebar(){
     //if the item is closed 
     var sidebar_status = this.state.sidebar_shown === "sb_hidden" ? "sb_shown" : "sb_hidden";
+    console.log(sidebar_status);
 
     this.setState({
       sidebar_shown : sidebar_status
@@ -225,9 +229,9 @@ updateCurrentEditPageHandle(toUpdate){
  
     render(){
   return(
-    <span className = "app-container">
+    <span className = "app-container" id = {this.state.sidebar_shown}>
 
-      <div className={["sidebar", this.state.sidebar_shown].join(' ')}>
+      <div className="sidebar" >
 
         <div className = "upload_content">
           <h1>Upload Content </h1>
@@ -260,7 +264,7 @@ updateCurrentEditPageHandle(toUpdate){
           </div>
 
       <div className = "VisualSection">
-        <button className = "collapse" onClick = {(e) => (this.toggleSidebar)}>X</button>
+        <button className = "collapse" onClick = {this.toggleSidebar}>HIDE/SHOW SIDEBAR</button>
         <VisualEditor setSelectedElement = {this.setSelectedElement} currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
