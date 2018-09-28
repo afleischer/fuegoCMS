@@ -369,6 +369,171 @@ Begin functions
   }
 
 
+  /*=================
+  Function that will re-index the elements within the frame when 
+  a user changes its position within the live editor
+  =================*/
+
+  reIndex(e){
+    
+    var movedElement = e.target;
+    var priorElement = e.target.previousSibling;
+    var nextElement = e.target.nextSibling;
+    var priorElementUid = priorElement.getAttribute("dbid");
+    var nextElementUid = nextElement.getAttribute("dbid");
+    var thisElementUid = movedElement.getAttribute("dbid");
+    var dbRef = firebase.database().ref("pages/"+this.props.PageHandle+"/tags/");
+    var priorPlacement =  dbRef.child(priorElementUid).val().placement;
+    var nextPlacement =  dbRef.child(nextElementUid).val().placement;
+    var nextFlag = "sibling";
+    var priorFlag = "sibling";
+
+    var uniqueIDs = Object.keys(dbRef.val());
+      //Want: [{uID : placement, uID : placement, ...}]
+
+    var AttrsWithKeys = [];  
+
+    var indexReferences = dbRef.once('value', snapshot => {
+      for(let k = 0; k < uniqueIDs; k++){
+        let placment_update = snapshot.child(uniqueIDs[k]).val().placement;
+        let update = {
+          placement :  placment_update,
+          uID : uniqueIDs[k]
+        }
+        AttrsWithKeys.push(update);
+      }
+
+    })
+
+
+    if(movedElement.hasChildNodes){
+      nextElement = movedElement.children;
+      nextFlag = "child";
+    } 
+
+    //////
+    // 
+    //////
+    if(nextFlag == "sibling" && priorFlag == "sibling"){
+      //if prior is 1.2 and we are a top-level sibling 
+      //let's assume that the drag and drop api will put places appropriately
+
+      var priorString = priorPlacement.split('.');  //ex: [1, 1, 1] assuming prior placement is '1.1.1'
+      var priorLastDigit = priorString[priorString.length-1]; 
+      var priorFirst = priorString[0]; //ex: []
+
+      var nextString = nextPlacement.split('.'); 
+      var nextLastDigit = nextString[priorString.length-1];
+      var nextFirst = nextString[0];
+
+
+      //thisIndex will be the new index that we will assign to the dragged element. 
+      var thisIndex = [priorFirst]; //since the index won't begin with a ".", assign this as the first
+      var thisIndexString;  //This will be the value we'll populate later. 
+      var thisDigit = priorLastDigit + 1;  //
+
+      if(priorString.length = 0){  //ex: 1, 2 <- thisIndexString, 
+        thisIndexString = priorString + 1;
+      }
+
+      if(priorString[1] != undefined){
+        for(let i = 1; i < priorString.length; i++){
+          thisIndex.push("."+priorString[i]);
+        }  
+      }
+
+      ///////
+      //  thisIndexString will be in the form:
+      //   ex)  1.1.1  <- a string of numbers 
+      ///////
+
+      for(let j = 0; j < thisIndex.length; j++){
+        thisIndexString.concat(thisIndex[j]);
+      }
+
+        /*===============
+        Ensure that thisIndex doesn't overlap with an already existing index
+        ===============*/
+
+        var AWKToUpdate = []
+        var nextOrPrior;
+
+        for(let l = 0; l < AttrsWithKeys; l++){
+          if(AttrsWithKeys[l] === thisIndexString){  
+
+            var update_digit = AttrsWithKeys.split('.').length-1;
+              //This will be the digit that we'll be updating on each element of the array 
+
+            //then we have a conflict, as such: 
+
+                //1.1, 1.2, "prior" -> 1.3, 1.4 <- our element , 1.4 <- next 1.4.1, 1.5, ...
+                //1.1, 1.2, "prior" -> 1.3, 1.4 <- our element , 1.5 <- next 1.4.1, 1.5, ...
+                  //then need to have: 1.1, 1.2, "prior" -> 1.3, 1.4 <- our element , 1.5 <- next 1.5.1, 1.6, ...
+                    //get the digit of the value we'll be updating, then update that for the rest 
+            //so we get a slice of the value of next, which 
+            //will equal our value we have now. 
+
+            AWKToUpdate = AttrsWithKeys.slice(l);
+
+
+            //Then we need to update the next so that: 
+
+              //1.1, 1.2, 1.3, 1.4 (ours), 1.5 (next), (the following need to be updated by the "update_digit") 1.5, 1.6
+                  //in another case: 
+                  //1.1, 1.2, 1.3, 1.4 (ours), 1.5 (next), 1.5.1, 1.6
+
+            let updatedIndices = [];
+
+            AWKToUpdate.forEach(function (arrayItem){
+              var thisPlacement = arrayItem.placement;
+              var thisPlacementArray = thisPlacement.split('.');
+              var thisUpdatedPlacementValue = thisPlacementArray[update_digit] + 1;
+              var thisUpdatedPlacement = thisPlacementArray[0].toString; 
+              for(let i = 1; i < thisPlacementArray.length, i++){
+                i === update_digit ? thisUpdatedPlacement.concat('.'+thisUpdatedPlacementValue) : thisUpdatedPlacement.concat('.'+thisPlacementArray[i]);
+              } 
+              let entry = {
+                uID : arrayItem.uID,
+                placement : thisUpdatedPlacement
+              }
+              updatedIndices.push(entry);
+            });
+
+              /*================
+              Update the content within the database
+              ================*/              
+
+            for(let i = 0; i < updatedIndices.length ; i++){
+              dbRef.child(updatedIndices[i].uID).update({
+                placement : updatedIndices[i].placement
+              });
+            }
+          }
+
+        }
+
+        //ex: 
+        // 1.1 1.2 1.3 1.3 <- (plop) 1.4 1.5
+
+        if(AWKToUpdate != []){
+          for(let m = 0; m < AWKToUpdate.length; m++){
+            if(AWKToUpdate[m])
+          }
+        }
+
+      dbRef.child(thisElementUid).update({
+        attributes : thisIndexString
+      });
+
+      //loop through reference to verify this index doesn't clash with any other 
+      //placement indices.  If it does match an index, 
+
+    } else if (next)
+
+
+  }
+
+
 
 
   componentDidMount(){
