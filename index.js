@@ -200,7 +200,8 @@ setSelectedElement(event){
     console.log("entered elemement is:"+e);
   }
   function drop(e, DraggedElement) {
-    this.append(element_selected);
+    debugger;
+    e.srcElement.append(DraggedElement);
     this.reIndex(e, DraggedElement);
     console.log("drop attempt on element:"+e);
   }

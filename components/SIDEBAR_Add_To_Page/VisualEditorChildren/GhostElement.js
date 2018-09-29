@@ -59,10 +59,14 @@ ghostFunction(){
         
         let TagName = tag_type.toLowerCase();
 
+
+
         if(TagAttributes === undefined){
-          this.isVoid(TagName) === true ? pageTags.push(<TagName  onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
+          //this.isVoid(TagName) === true ? pageTags.push(<TagName  onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
         }else {
-          this.isVoid(TagName) === true ? pageTags.push(<TagName  onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
+          //
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
         }
 
       }
