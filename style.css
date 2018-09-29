@@ -73,6 +73,19 @@ body{
     background: #555; 
 }
 
+.ql-editor, .ql-toolbar, .ql-snow{
+	background-color: #faefe0;
+	margin-right: 10px !important;
+}
+
+.ql-editor {
+	height: 200px !important;
+}
+
+.frame-tag{
+	border-style: dotted;
+}
+
 
 .app-container{
 	display: grid;
@@ -109,6 +122,12 @@ body{
 
 .ghost{
 	display: none;
+}
+
+.highlighted {
+	border-style: dotted !important;
+    border-width: 5px !important;
+    border-color: #d13333 !important;
 }
 
 .image_add_container{
@@ -288,5 +307,12 @@ body{
 
 .horizontal_scroll_item{
 	width: 90%;
+}
+
+
+/* Ghost element highlighting and styling */
+
+.frame-tag::after:drop {
+	background-color: #ffff00;
 }
 

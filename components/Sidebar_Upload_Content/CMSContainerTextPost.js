@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import firebase from '../../firebase.js';
 
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
 function NoticeBoxText(props){
@@ -13,10 +15,11 @@ class CMSContainerTextPost extends React.Component{
       super(props);
       this.updateBlogTextState = this.updateBlogTextState.bind(this);
       this.sendBlogTextToDB = this.sendBlogTextToDB.bind(this);
+      this.handleChange = this.handleChange.bind(this)
     }
     state = {
-  blogText : "Enter Text Here",
-  noticeVisible : "hiddenBoxImg"
+  blogText : "Add Text Here",
+  noticeVisible : "hiddenBoxImg",
     }
   
   updateBlogTextState(ev) {
@@ -47,30 +50,21 @@ class CMSContainerTextPost extends React.Component{
     setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
       
 
-      /*****
-      New: Cloud Firestore update
-      *****/
-      /*
-      db.collection("blogs").add({
-        copy : blogEntryCopy
-      })
-      .then(function() {
-    this.setState({noticeVisible : "shownBoxImg"});
-    setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
-
-      })
-
-      */
-
   }
 
-    
+   handleChange(value) {
+    this.setState({ blogText: value })
+  }
+
 
     render(){
+
   return(   
     <div className = "container"> 
-      <h2 className = "header">ADD TEXT</h2>
-      <textarea id = "blog-copy" rows = "4" cols = "50" type = "longtext" placeholder = "Enter Text Here" onBlur = {this.updateBlogTextState} />
+      <h2 className = "page-add-subheader">ADD TEXT</h2>
+      <h4>Text added and submitted here will be uploaded to the database for reuse in your page in the "Add to Page" section.</h4>
+      <ReactQuill value={this.state.blogText} onChange={this.handleChange} />
+      <textarea id = "blog-copy" rows = "4" cols = "50" type = "longtext" placeholder = "Enter Text Here" value = {this.state.blogText} />
       <br />
       <button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT</button>
       <NoticeBoxText class_name = {this.state.noticeVisible} />

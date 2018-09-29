@@ -113,7 +113,8 @@ export default class CMSContainerImageUpload extends React.Component{
   render(){
     return(
     <div className = "container">
-      <h2>UPLOAD IMAGE</h2>
+      <h2 className = "page-add-subheader">UPLOAD IMAGE</h2>
+      <h4>Images and video added and submitted here will be uploaded to the database for reuse in your page in the "Add to Page" section.</h4>
       <input id = "image_field" type="file" refs="image_form" onInput = {this.setFile} />
       <button type = "button" onClick = {this.handleUploadImage} id = "img_submission">SUBMIT</button>
       <NoticeBox class_name = {this.state.noticeVisible} />
