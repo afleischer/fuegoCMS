@@ -7,6 +7,9 @@ import Iframe from 'react-iframe';
 
 import firebase from './firebase.js';
 
+import IndexSort from './components/functions/IndexSort'
+
+import 'CSS.escape';
 
 /*============
 Components
@@ -82,7 +85,8 @@ export default class App extends React.Component{
     PagesSnapshot : null,
     selectedElement : null,
     sidebar_shown: "sb_shown",
-    ghosted: false
+    ghosted: false, 
+    draggedElement: null
     }
 
 
@@ -180,7 +184,7 @@ setSelectedElement(event){
   var DraggedElement = null;
 
 
-  element_selected.addEventListener("drag", setDraggedElement);
+  element_selected.addEventListener("drag", (e)=> {this.setState({draggedElement : e.srcElement})});
   element_selected.addEventListener("dragover", dragover);
   element_selected.addEventListener("dragenter", dragenter);
   element_selected.addEventListener("drop", (e) => this.reIndex(e));
@@ -188,12 +192,13 @@ setSelectedElement(event){
 
   function setDraggedElement(e){
     console.log("dragged element is:"+e);
+    this.setState({draggedElement : e.srcElement});
     DraggedElement = e.srcElement;
   }
 
   function dragover(e) {
     e.preventDefault()
-    console.log("dragover elemement is:"+e);
+    console.log("dragover elemement is:"+e.srcElement);
   }
   function dragenter(e) {
     e.preventDefault()
@@ -219,64 +224,357 @@ setSelectedElement(event){
     e.preventDefault();
     
     //var movedElement = e.target;
-    var movedElement = DraggedElement;
+    var movedElement = this.state.draggedElement;
     var priorElement = e.target.previousSibling;
     var nextElement = e.target.nextSibling;
     var priorElementUid = priorElement.getAttribute("dbid");
     var nextElementUid = nextElement.getAttribute("dbid");
     var thisElementUid = movedElement.getAttribute("dbid");
-    var dbRef = firebase.database().ref("pages/"+this.props.PageHandle+"/tags/").once('value', (snap)=> {return snap.val()});
+    //var dbRef = firebase.database().ref("pages/"+this.props.PageHandle+"/tags/").once('value', (snap)=> { });
+    var dbRef = this.state.PagesSnapshot.child(this.state.CurrentEditPageHandle).child("tags");
     var priorPlacement =  dbRef.child(priorElementUid).val().placement;
     var nextPlacement =  dbRef.child(nextElementUid).val().placement;
     var nextFlag = "sibling";
     var priorFlag = "sibling";
 
+    var movedElementPlacement = dbRef.child(thisElementUid).val().placement;
 
-    priorElement.append(movedElement);
+
+    //priorElement.append(movedElement);
 
     var uniqueIDs = Object.keys(dbRef.val());
       //Want: [{uID : placement, uID : placement, ...}]
 
-    var AttrsWithKeys = [];  
+    //////
+    //We need to array the various placements and keys so that in case there;s 
+    //A clash we bump up the following placement variables 
+    //////
 
-    var indexReferences = dbRef.once('value', snapshot => {
-      for(let k = 0; k < uniqueIDs; k++){
-        let placment_update = snapshot.child(uniqueIDs[k]).val().placement;
-        let update = {
-          placement :  placment_update,
-          uID : uniqueIDs[k]
+    var preAttrsWithKeys = [];  
+    var placementWithoutKeys = [];
+
+
+    for(let i = 0; i< uniqueIDs.length; i++){
+      var unique_key = uniqueIDs[i];
+      var placement = dbRef.child(unique_key).val().placement;
+      var update = {unique_key : unique_key, placement : placement};
+      preAttrsWithKeys.push(update);
+      placementWithoutKeys.push(placement);
+    }
+
+    /*============
+    sort the AttrsWithKeys array by placement value
+    =============*/
+
+    var sortedPlacementWithoutKeys = IndexSort(placementWithoutKeys);
+
+    var AttrsWithKeys = [];
+
+
+    for(let j = 0; j < sortedPlacementWithoutKeys.length; j++){
+      for(let k = 0; k < preAttrsWithKeys.length; k++){
+        if(placementWithoutKeys[j] === preAttrsWithKeys[k].placement){
+          AttrsWithKeys[j] = {
+            unique_key : preAttrsWithKeys[k].unique_key,
+            placement : preAttrsWithKeys[k].placement
+          } 
         }
-        AttrsWithKeys.push(update);
+      }
+    }
+
+
+
+    /*============
+    AttrsWithKeys is now sorted! Now that it's sorted, we can slice up our arrays so that 
+    we can put our updated values in.  
+
+
+    we can set our element's 
+    placement to equal the nextElement
+    ============*/
+
+
+    for(let i = 0; i < AttrsWithKeys.length; i++){
+      if(AttrsWithKeys[i].unique_key === thisElementUid){
+        AttrsWithKeys[i].placement = nextPlacement;
+      }
+    }
+
+
+    /*=============
+    We need to re-sort this array now that we've modified the placement value of 
+    our dropped item.  Then we need to start our bit-shift operations if 
+    there's an overlap. 
+
+    Issue: I'm not sure how the IndexSort will react to 
+    =============*/
+
+    //IndexSort(AttrsWithKeys);
+
+
+
+    var nextNextElement = getNextNextElement(nextElement);
+
+    var foo = "bar";
+
+    var nextIndexGlobal;
+
+
+
+    function updateAttrsWithKeysAndReSort(){
+      for(let i = 0; i < AttrsWithKeys.length; i++){
+        if (AttrsWithKeys[i].unique_key === thisElementUid){
+          AttrsWithKeys[i].placement === nextPlacement;
+        }
+      }
+    }
+
+
+    /*=============
+    If we move around an item to drag and drop it, 
+    we will displace the placement of the "nextElement" element. 
+    The behavior we take next will depend on the element after, or the 
+    "nextNext" element.  We need to find what that is in our sorted AttrsWithKeys array.
+    =============*/
+
+    function getNextNextElement(element) {
+      //get the index of the next element uID
+      for(let i = 0; i < AttrsWithKeys.length; i++){
+
+      try{
+        if(AttrsWithKeys[i].unique_key === element.getAttribute("dbid")){
+          var nextIndex = i;
+          nextIndexGlobal = i;
+          break;
+        }
+      }catch(error){
+        return false;
+      }
       }
 
-    })
+      //let nextIndex = AttrsWithKeys.indexOf(element.getAttribute("dbid"));
+      let nextNextIndex = nextIndex + 1;
+
+      if(nextNextIndex >= AttrsWithKeys.length){
+        return false;
+      }
+
+      let nextNextValues = AttrsWithKeys[nextNextIndex];
+      let nextNextuID = nextNextValues.unique_key;
+
+      //we have the nextNextValues.  From these, let's get the element. 
+
+      //The following line won't work on Safari; TODO:  Get a polyfill for this 
+      let nextNextElement = document.getElementById("VisualEditorWindow").contentDocument.querySelector('[dbid='+CSS.escape(nextNextuID)+']')
+
+      //return AttrsWithKeys[nextNextIndex];
+
+      return nextNextElement;
+    }
 
 
+
+
+    /*============
+    The following function, given a string index (ex: '1.2.2'), will
+    shift the last digit of the index forward 1.  
+    =============*/
+
+
+    function digitShift(indexStr){
+      if(indexStr.toString().length == 1){
+        return indexStr + 1;
+      }
+      let toShift = indexStr;
+      let indexArr = indexStr.split('.');
+      let lastIndex = indexArr[indexArr.length-1];
+      lastIndex++;
+      let shifted;
+      for (let i = 0; i < indexval.split('.').length; i++){
+        if(i = 0){
+          shifted.push(indexArr[0]);
+        }else if (i > 0){
+          shifted.push('.'+indexArr[i]);
+        }
+      }
+      return shifted;
+    }
+
+
+    /*============
+    Prepare the nextPlacement variable for comparison in the 
+    following function.
+
+    "shiftedNext" is what we will update the placement of the "nextPlacement" to.
+    ============*/
+
+    if(nextPlacement.toString().length > 1){
+      var shiftedNext = digitShift(nextPlacement);
+    } else {
+      var shiftedNext = nextPlacement + 1;
+    }
+
+
+
+          (function IndexArrayShift(shiftedNext, nextNextElement){
+            //given nextNextElement, perhaps we can define the nextNextElement 
+
+            var nextNextPlacement = () => {
+              //given the nextNextElement, get the 
+              var theElementDBid = nextNextElement.getAttribute('dbid');
+              for(let i = 0; i < AttrsWithKeys.length; i++){
+                if(AttrsWithKeys[i].unique_key === theElementDBid){
+                  return AttrsWithKeys[i].placement;
+                }
+              }
+            }
+
+            var nextNextIndex = () => {
+              //given the nextNextElement, get the 
+              var theElementDBid = nextNextElement.getAttribute('dbid');
+              for(let i = 0; i < AttrsWithKeys.length; i++){
+                if(AttrsWithKeys[i].unique_key === theElementDBid){
+                  return i;
+                }
+              }
+            }
+
+            /*
+            if the incremented value of nextPlacement clashes with the 
+            value of the next index....
+            */
+
+            if (shiftedNext >= nextNextPlacement()){
+
+            /*=============
+            Then shift the nextNextElement's placement over 1
+            =============*/
+            let nextNextShifted = digitShift(nextNextPlacement());
+            /*------
+            set this as the new value in AttrsWithKeys
+            -------*/
+
+            AttrsWithKeys[nextNextIndex()-1].placement = nextNextShifted;
+            if(nextNextIndex() != AttrsWithKeys.length-1){
+              var nextNextNext = getNextNextElement(nextNextElement)
+            }else{
+              //we're done- we've hit the end of the line.  
+              return false;
+            }
+
+            /*============
+            if the next index is the same, shift it too! 
+            =============*/
+            if (nextNextShifted === nextNextNext){
+              IndexArrayShift(nextNextShifted, nextNextNext, nextIndexGlobal);
+            }
+           }
+          })(shiftedNext, nextNextElement);
+
+
+
+
+    //Actually, I don't need to be resorted since it doesn't matter what order we update in.  
+
+    /*==============
+    Now we have our sorted, updated AttrsWithKeys.  
+
+    Let's update this information in Firebase. 
+    ==============*/
+
+
+    for(let i = 0; i < AttrsWithKeys.length; i++){
+        firebase.database().ref('pages/'+this.state.CurrentEditPageHandle+"/tags/"+AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement})
+        //this.state.PagesSnapshot.child(this.state.CurrentEditPageHandle).child("tags").child(AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement});
+        }
+      
+
+    this.state.PagesSnapshot.child(this.state.CurrentEditPageHandle).forEach(function(childSnap){
+      for(let i = 0; i < AttrsWithKeys.length; i++){
+        if(AttrsWithKeys[i].unique_key === childSnap.val()){
+          childSnap.child(AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement});
+        }
+      }
+    });
+
+
+
+    
+
+
+    ///////////////////
+
+    //This should be the end of the code,
+    //assuming that everything went as planned. 
+
+    //////////////////
+
+
+
+
+
+
+/*
     if(movedElement.hasChildNodes){
       nextElement = movedElement.children;
       nextFlag = "child";
     } 
+*/
 
     //////
-    // 
+    // Since these will be indexed values, we need to cast them into an array 
+    // Which then we can use to compare digit values
     //////
 
       //if prior is 1.2 and we are a top-level sibling 
       //let's assume that the drag and drop api will put places appropriately
 
-      var priorString = priorPlacement.split('.');  //ex: [1, 1, 1] assuming prior placement is '1.1.1'
-      var priorLastDigit = priorString[priorString.length-1]; 
-      var priorFirst = priorString[0]; //ex: []
 
-      var nextString = nextPlacement.split('.'); 
-      var nextLastDigit = nextString[priorString.length-1];
+/*
+
+
+
+    OLD OLD OLD OLD OLD 
+
+
+      if(typeof(priorPlacement) === "number"){
+        var priorString = priorPlacement.toString().split('.');  //ex: [1, 1, 1] assuming prior placement is '1.1.1'
+      } else{
+        var priorString = priorPlacement.split('.'); 
+      }
+
+      //The last digit will be used for comparing
+        //ex : 1.1.2 1.1.3  <- 2 and 3 are the last digits 
+
+        if(priorString.length > 1){
+          var priorLastDigit = priorString[priorString.length-1]; 
+        }
+      var priorFirst = priorString[0]; //ex: 
+
+      if(typeof(nextPlacement) === "number"){
+        var nextString = nextPlacement.toString().split('.');  //ex: [1, 1, 1] assuming prior placement is '1.1.1'
+      } else{
+        var nextString = nextPlacement.split('.'); 
+      }
+
+      if(nextString.length > 1){
+        var nextLastDigit = nextString[priorString.length-1];
+      }
       var nextFirst = nextString[0];
 
-
-      //thisIndex will be the new index that we will assign to the dragged element. 
+      ////
+      //thisIndex will be the new index that we will assign to the dragged element, assuming there is a need to update 
+      ////
       var thisIndex = [priorFirst]; //since the index won't begin with a ".", assign this as the first
       var thisIndexString;  //This will be the value we'll populate later. 
-      var thisDigit = priorLastDigit + 1;  //
+
+      if(!priorLastDigit){
+        thisIndexString = thisIndex[0];
+        var thisDigit = priorLastDigit + 1;
+      } else{
+        var thisDigit = priorLastDigit + 1;
+      }
+
 
       if(priorString.length = 0){  //ex: 1, 2 <- thisIndexString, 
         thisIndexString = priorString + 1;
@@ -301,10 +599,14 @@ setSelectedElement(event){
         Ensure that thisIndex doesn't overlap with an already existing index
         ===============*/
 
+
+
+/*
+
         var AWKToUpdate = []
         var nextOrPrior;
 
-        for(let l = 0; l < AttrsWithKeys; l++){
+        for(let l = 0; l < AttrsWithKeys.length; l++){
           if(AttrsWithKeys[l] === thisIndexString){  
 
             var update_digit = AttrsWithKeys.split('.').length-1;
@@ -349,6 +651,10 @@ setSelectedElement(event){
               Update the content within the database
               ================*/              
 
+/*    OLD OLD OLD
+
+
+
             for(let i = 0; i < updatedIndices.length ; i++){
               dbRef.child(updatedIndices[i].uID).update({
                 placement : updatedIndices[i].placement
@@ -361,13 +667,10 @@ setSelectedElement(event){
         //ex: 
         // 1.1 1.2 1.3 1.3 <- (plop) 1.4 1.5
 
+        firebase.database().ref('pages/'+this.state.CurrentEditPageHandle+"/tags/")
 
-      dbRef.child(thisElementUid).update({
-        attributes : thisIndexString
-      });
 
-      //loop through reference to verify this index doesn't clash with any other 
-      //placement indices.  If it  else if (priorFlag === "child"){
+*/
 
   }
 
