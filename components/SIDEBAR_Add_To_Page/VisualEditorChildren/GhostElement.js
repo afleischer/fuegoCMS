@@ -38,12 +38,53 @@ ghostFunction(){
 
         var pageTags = [];
         var page_tag_pull = Object.keys(snapshot.val());
+
+        /*========
+        We grab every unique que from our database snapshot and render them. 
+        =========*/
         var uniqueKeys = snapshot.child(currPage).val().tags;
+
+        let anArray = [];
+
+
         var uniqueKeysArray = Object.keys(uniqueKeys);
         var current_page_node = snapshot.child(currPage);
 
-      for(let i = 0; i <= uniqueKeysArray.length-1; i++){
-        let uniqueKeyIterator = uniqueKeysArray[i];
+        var orderedSnap = this.props.orderedPagesSnapshot;
+
+        var pageTagsNew = [];
+
+
+        /*===========
+        We need to re-order the keys according to the placement.  
+        So, for each unique key, get the corresponding value.  
+        ============*/
+
+        var keyPlacementArray = []
+        for(let i = 0; i < uniqueKeysArray.length; i++){
+          let placementVal = snapshot.child(this.props.PageHandle).child("tags").child(uniqueKeysArray[i]).val().placement;
+          let keysVal = uniqueKeysArray[i];
+          let update = {uID : keysVal, placement : placementVal}
+          pageTagsNew.push(update);
+        }
+
+        function compare(a,b){
+          if(a.placement < b.placement){
+            return -1;
+          }
+          if(a.placement > b.placement){
+            return 1;
+          }else{
+            return 0;
+          }
+        }
+
+        pageTagsNew.sort(compare);
+
+        console.log(pageTagsNew);
+
+      for(let i = 0; i <= pageTagsNew.length-1; i++){
+        let uniqueKeyIterator = pageTagsNew[i].uID;
         let child_base = snapshot.child(currPage).child("tags").child(uniqueKeyIterator).val()
         let tag_type = child_base.tag_type;
         //let tag_content = child_base.content;
@@ -62,18 +103,28 @@ ghostFunction(){
 
 
         if(TagAttributes === undefined){
-          //this.isVoid(TagName) === true ? pageTags.push(<TagName  onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
-          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
+          //this.isVoid(TagName) === true ? pageTags.push(<TagName  onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.
+          } className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" onDragOver = {this.props.onDragOver} onDragEnter = {this.props.onDragEnter} onDrop = {this.props.reIndex} dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" key = {uniqueKeysArray[i]} dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" key = {uniqueKeysArray[i]} onClick = {(e) => {this.props.setSelectedElement}}>{TagContent}</TagName>);  
         }else {
           //
-          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
+          this.isVoid(TagName) === true ? pageTags.push(<TagName className = "frame-tag" key = {uniqueKeysArray[i]} dbID = {uniqueKeysArray[i]} draggable = "true" style = {TagAttributes} onClick = {(e) => this.props.setSelectedElement(e)} src={TagContent} />)  :  pageTags.push(<TagName className = "frame-tag" dbID = {uniqueKeysArray[i]} key = {uniqueKeysArray[i]} draggable = "true" onClick = {(e) => {this.props.setSelectedElement}} style = {TagAttributes} >{TagContent}</TagName>);  
         }
 
       }
 
+        /*=======
+        getGhosted is the flag that will prevent a re-render.  Otherwise, when you
+        click on the frame the state changes, triggering a re-render of the ghost element. 
+        ========*/
+
+      
         this.props.getGhosted(true);
         return pageTags;
    }
+
+
+
   }
 
   return "Loading Content...";

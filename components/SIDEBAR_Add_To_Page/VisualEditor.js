@@ -71,7 +71,21 @@ export default class VisualEditor extends React.Component{
         PagesSnapshot : snapshot
         });
     });
-  }
+  
+
+
+  //Ordered Listener
+
+  /*
+  firebase.database().ref('pages/'+this.props.CurrentEditPageHandle+"tags").orderByValue("placement").on('value', snapshot =>{
+    this.clearPriorHTML();
+    this.setState({
+      orderedPagesSnapshot : snapshot
+    })
+  })
+  */
+
+}
 
 //Set state
   state = {
@@ -411,7 +425,7 @@ Begin functions
           onLoad = {this.setHTML}
           frameBorder = "10"
           />
-          <GhostElement getGhosted = {this.props.getGhosted} ghosted = {this.props.ghosted} reIndex = {this.props.reIndex} clearHTML = {this.clearPriorHTML} setSelectedElement = {this.props.setSelectedElement} setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
+          <GhostElement orderedPagesSnapshot = {this.state.orderedPagesSnapshot} getGhosted = {this.props.getGhosted} ghosted = {this.props.ghosted} reIndex = {this.props.reIndex} clearHTML = {this.clearPriorHTML} setSelectedElement = {this.props.setSelectedElement} setHTML = {this.setHTML} ref={this.ghostRef} PageHandle = {this.props.pageHandle} PageEditing = {this.props.currentPage} Snapshot = {this.state.PagesSnapshot} style= "display:none;"/>
       </div>
 
       );
