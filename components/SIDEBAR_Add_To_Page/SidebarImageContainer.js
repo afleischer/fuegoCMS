@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import firebase from '../../firebase.js';
 
-import {getTopPlacement} from '../functions/getTopPlacement'
+import getTopPlacement from '../functions/getTopPlacement'
 
 
 const ImageItem = (props) => {

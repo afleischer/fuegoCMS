@@ -97,6 +97,23 @@ ghostFunction(){
         }catch(error){
           var TagAttributes = null;
         }
+
+        /*===========
+        If a;slkdjf;alksdjf
+        ============*/
+
+        var testForTag = /([<->])\w\W*/g ; 
+
+        if(testForTag.test(TagContent) === true){
+          //the inner content is a quill block.  let's 
+           tag_type = "div";
+
+          TagContent = function parseHTML(TagContent){
+            var parser = new DOMParser();
+            var htmlDoc = parser.parseFromString(toParse, "text/html");
+            return htmlDoc;
+          }
+        }
         
         let TagName = tag_type.toLowerCase();
 
