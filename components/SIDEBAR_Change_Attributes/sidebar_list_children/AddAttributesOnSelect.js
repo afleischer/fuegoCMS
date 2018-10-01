@@ -150,8 +150,14 @@ Begin functions
 		//unique identifier for the element. 
 		var targetIdentifier = this.props.SelectedElement.getAttribute('dbid');
 
-		const ReferenceToUpdate = firebase.database().ref('pages/'+pageURL+"/tags/"+targetIdentifier);
+		var updates = {
+			[attribute_name] : attribute_value
+		}
 
+
+		const ReferenceToUpdate = firebase.database().ref('pages/'+pageURL+"/tags/"+targetIdentifier+"/attributes/").update(updates);
+
+/*
 		ReferenceToUpdate.once('value', childSnap => {
 			if(childSnap.val().attributes != undefined){
 				var updates = {
@@ -160,9 +166,8 @@ Begin functions
 				ReferenceToUpdate.child('/attributes/').update(updates)
 			}		
 		})
+*/
 
-
-	
 	} 
 
 	AdditionalAttributes(){
