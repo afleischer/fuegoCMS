@@ -102,16 +102,36 @@ ghostFunction(){
         If a;slkdjf;alksdjf
         ============*/
 
+
+
         var testForTag = /([<->])\w\W*/g ; 
 
-        if(testForTag.test(TagContent) === true){
+
+
+        if(testForTag.test(TagContent) === true && tag_type != "img"){
           //the inner content is a quill block.  let's 
            tag_type = "div";
 
-          TagContent = function parseHTML(TagContent){
+          TagContent = parseHTML(TagContent); 
+
+          function parseHTML(TagContent){
+            var innerTags = [];
             var parser = new DOMParser();
-            var htmlDoc = parser.parseFromString(toParse, "text/html");
-            return htmlDoc;
+            var htmlDoc = parser.parseFromString(TagContent, "text/html");
+            var innerJSX = [];
+
+            for (let i = 0; i < htmlDoc.body.childNodes.length; i++){
+             innerTags.push({type : htmlDoc.body.childNodes[i], 
+              contents : htmlDoc.body.childNodes[i].outerText});
+            } 
+            for(let i = 0; i < innerTags.length; i ++){
+             // var TagType = innerTags[i].type;
+              var TagType = innerTags[i].type.localName;
+              var innerContent = innerTags[i].contents;
+              innerJSX.push(<TagType className = "frame-tag">{innerContent}</TagType>);
+            }
+            
+            return innerJSX;
           }
         }
         

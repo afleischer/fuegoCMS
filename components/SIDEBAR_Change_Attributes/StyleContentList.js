@@ -54,12 +54,15 @@ class StyleContentList extends React.Component{
 
   }
 
+  /* 
+    <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} />
+    <ImageStyleList ImageList = {this.state.ImageList} />
+
+  */
+
   render(){
     return(
       <div>
-        <StyleTextCopyList currentPage = {this.props.CurrentEditPageHandle} snapshot = {this.state.PageSnapshot} />
-        <ImageStyleList ImageList = {this.state.ImageList} />
-
         <h1>Click to Edit Page Element Attributes</h1>
         <AddAttributesOnSelect SelectedElement = {this.props.SelectedElement} currentPage = {this.props.CurrentEditPageHandle} />
       </div>

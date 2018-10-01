@@ -739,6 +739,10 @@ updateCurrentEditPageHandle(toUpdate){
   <div className = "Grand_HTML_list">
   <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
   </div>
+
+
+
+
 */
 
  
@@ -771,9 +775,6 @@ updateCurrentEditPageHandle(toUpdate){
             <h1>Style Page Content</h1>
             <StyleContentList SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
           </div>
-
-
-
 
 
           </div>

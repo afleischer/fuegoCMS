@@ -116,7 +116,7 @@ Begin functions
 
     var snapshot = this.state.PagesSnapshot;
 
-    var pageRef = firebase.database().ref('pages/');
+    var pageRef = firebase.database().ref('pages/'+newPage);
 
 
     

@@ -46,7 +46,14 @@ Begin functions
 			////
 			//For each attribute in an array, get the attributes 
 			////
+
+			var frame_tag_class_test = /("(frame-tag)"+)/gm;
+
+			var regTest = /(^[dbid])\w*/gm;
+
 			for(let i = 0; i < attribute_array.length; i++){
+				if( attribute_array[i].nodeValue != "frame-tag" && attribute_array[i].localName != "dbid"){
+
 				returnArray.push(
 					<div>
 						<label for={attribute_array[i]}>{attribute_array[i].name}</label>
@@ -54,6 +61,8 @@ Begin functions
 						<button onClick = {(e) => this.RemoveAttribue(e)} className = "remove_attribute">Remove Attribute</button> 
 					</div>
 					);
+				}
+
 			}
 		}
 		return(<div className = "attribute-selector-sub-container">{returnArray}
