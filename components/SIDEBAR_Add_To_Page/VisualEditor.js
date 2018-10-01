@@ -319,7 +319,12 @@ Begin functions
 
         }
         for(let i = 0; i < start.childNodes.length; i++){
-            let prior = (priorIndex === null) ? i : priorIndex;
+          if(priorIndex === null){
+            var prior = i;
+          }
+          else{
+            var prior = priorIndex;
+          }
             let thisNode = start.childNodes[i];
 
             if(thisNode.nodeType != 1){
@@ -358,7 +363,7 @@ Begin functions
 
             if(thisNode.hasChildNodes){
               let nextDepth = depth+1;
-              let nextIndex = indexValue;
+              let nextIndex = Placement;
               indexHTMLRecurse(thisNode, nextDepth, nextIndex);
             }
         }
