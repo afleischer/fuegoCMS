@@ -5,11 +5,19 @@ import base from 're-base';
 import Style from 'style-it';
 import Iframe from 'react-iframe';
 
+
 import firebase from './firebase.js';
 
-import IndexSort from './components/functions/IndexSort'
+import IndexSort from './components/functions/IndexSort';
+
+import { Provider } from 'react-redux';
+import { store } from './store/index';
+import { connect } from 'react-redux';
+
+//import an exampleAction 
 
 import 'CSS.escape';
+import { undoAction, redoAction } from './components/functions/setupUndo';
 
 /*============
 Components
@@ -748,6 +756,10 @@ updateCurrentEditPageHandle(toUpdate){
  
     render(){
   return(
+
+    <Provider store = {store}>
+
+
     <span className = "app-container" id = {this.state.sidebar_shown}>
 
       <div className="sidebar" >
@@ -787,6 +799,9 @@ updateCurrentEditPageHandle(toUpdate){
 
 
       </span>
+
+
+      </Provider>
   );
     }
 
@@ -834,9 +849,10 @@ Render the Virtual DOM
 ============*/
 
 ReactDOM.render(
-  <App />,
+  <App onLoad = {setupUndo} />,
     document.getElementById('root')
 );
 
 module.exports = App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
 
