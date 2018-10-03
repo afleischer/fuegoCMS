@@ -217,7 +217,6 @@ Begin functions
   addTagToFrame(event, tag, style, CurrentEditPageHandle){
 
     //Get a reference to the page being edited
-    var pageURL =  this.state.CurrentEditPage;  
     var pageRef = firebase.database().ref('pages/').child(pageURL);
     var snapshot = this.state.PagesSnapshot;
      

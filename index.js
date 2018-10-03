@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 
 import 'CSS.escape';
 import { undoAction, redoAction } from './components/functions/setupUndo';
+import { updateHandle } from "./actions/docActions.js"
 
 /*============
 Components
@@ -78,10 +79,16 @@ export default class App extends React.Component{
     this.toggleMenu = this.toggleMenu.bind(this);
 
     firebase.database().ref('pages/').on('value', snapshot =>{
+
+      fetchData;
+
+    /*
       this.setState({
         PagesSnapshot : snapshot
       });
     });
+
+    */
   }
 
 
@@ -114,9 +121,16 @@ setPage(e){
       //get the first value that we pull from firebase inst
       try{
         let dropdown_first = document.getElementById('#loading_page').value; 
+
+
+        store.dispatch('DROPDOWN-FIRST');
+
+        /*
+
         this.setState({
           CurrentEditPageHandle : dropdown_first
         })
+        */
         }
         catch(error){
           return "loading first value...";
@@ -138,10 +152,22 @@ setPage(e){
 setFirstPage(input){
   let fetchVar = input;
   if(fetchVar){
+
+    setEditPage(){
+      update = {
+        CurrentEditPage : "src/"+fetchVar[0]+".html",
+        CurrentEditPageHandle : fetchVar[0]       
+      }
+      return update;
+    }
+
+
     this.setState({
       CurrentEditPage : "src/"+fetchVar[0]+".html",
       CurrentEditPageHandle : fetchVar[0]
     })
+
+
   }
 }
 
@@ -509,181 +535,6 @@ setSelectedElement(event){
       }
     });
 
-
-
-    
-
-
-    ///////////////////
-
-    //This should be the end of the code,
-    //assuming that everything went as planned. 
-
-    //////////////////
-
-
-
-
-
-
-/*
-    if(movedElement.hasChildNodes){
-      nextElement = movedElement.children;
-      nextFlag = "child";
-    } 
-*/
-
-    //////
-    // Since these will be indexed values, we need to cast them into an array 
-    // Which then we can use to compare digit values
-    //////
-
-      //if prior is 1.2 and we are a top-level sibling 
-      //let's assume that the drag and drop api will put places appropriately
-
-
-/*
-
-
-
-    OLD OLD OLD OLD OLD 
-
-
-      if(typeof(priorPlacement) === "number"){
-        var priorString = priorPlacement.toString().split('.');  //ex: [1, 1, 1] assuming prior placement is '1.1.1'
-      } else{
-        var priorString = priorPlacement.split('.'); 
-      }
-
-      //The last digit will be used for comparing
-        //ex : 1.1.2 1.1.3  <- 2 and 3 are the last digits 
-
-        if(priorString.length > 1){
-          var priorLastDigit = priorString[priorString.length-1]; 
-        }
-      var priorFirst = priorString[0]; //ex: 
-
-      if(typeof(nextPlacement) === "number"){
-        var nextString = nextPlacement.toString().split('.');  //ex: [1, 1, 1] assuming prior placement is '1.1.1'
-      } else{
-        var nextString = nextPlacement.split('.'); 
-      }
-
-      if(nextString.length > 1){
-        var nextLastDigit = nextString[priorString.length-1];
-      }
-      var nextFirst = nextString[0];
-
-      ////
-      //thisIndex will be the new index that we will assign to the dragged element, assuming there is a need to update 
-      ////
-      var thisIndex = [priorFirst]; //since the index won't begin with a ".", assign this as the first
-      var thisIndexString;  //This will be the value we'll populate later. 
-
-      if(!priorLastDigit){
-        thisIndexString = thisIndex[0];
-        var thisDigit = priorLastDigit + 1;
-      } else{
-        var thisDigit = priorLastDigit + 1;
-      }
-
-
-      if(priorString.length = 0){  //ex: 1, 2 <- thisIndexString, 
-        thisIndexString = priorString + 1;
-      }
-
-      if(priorString[1] != undefined){
-        for(let i = 1; i < priorString.length; i++){
-          thisIndex.push("."+priorString[i]);
-        }  
-      }
-
-      ///////
-      //  thisIndexString will be in the form:
-      //   ex)  1.1.1  <- a string of numbers 
-      ///////
-
-      for(let j = 0; j < thisIndex.length; j++){
-        thisIndexString.concat(thisIndex[j]);
-      }
-
-        /*===============
-        Ensure that thisIndex doesn't overlap with an already existing index
-        ===============*/
-
-
-
-/*
-
-        var AWKToUpdate = []
-        var nextOrPrior;
-
-        for(let l = 0; l < AttrsWithKeys.length; l++){
-          if(AttrsWithKeys[l] === thisIndexString){  
-
-            var update_digit = AttrsWithKeys.split('.').length-1;
-              //This will be the digit that we'll be updating on each element of the array 
-
-            //then we have a conflict, as such: 
-
-                //1.1, 1.2, "prior" -> 1.3, 1.4 <- our element , 1.4 <- next 1.4.1, 1.5, ...
-                //1.1, 1.2, "prior" -> 1.3, 1.4 <- our element , 1.5 <- next 1.4.1, 1.5, ...
-                  //then need to have: 1.1, 1.2, "prior" -> 1.3, 1.4 <- our element , 1.5 <- next 1.5.1, 1.6, ...
-                    //get the digit of the value we'll be updating, then update that for the rest 
-            //so we get a slice of the value of next, which 
-            //will equal our value we have now. 
-
-            AWKToUpdate = AttrsWithKeys.slice(l);
-
-
-            //Then we need to update the next so that: 
-
-              //1.1, 1.2, 1.3, 1.4 (ours), 1.5 (next), (the following need to be updated by the "update_digit") 1.5, 1.6
-                  //in another case: 
-                  //1.1, 1.2, 1.3, 1.4 (ours), 1.5 (next), 1.5.1, 1.6
-
-            let updatedIndices = [];
-
-            AWKToUpdate.forEach(function (arrayItem){
-              var thisPlacement = arrayItem.placement;
-              var thisPlacementArray = thisPlacement.split('.');
-              var thisUpdatedPlacementValue = thisPlacementArray[update_digit] + 1;
-              var thisUpdatedPlacement = thisPlacementArray[0].toString; 
-              for(let i = 1; i < thisPlacementArray.length; i++){
-                i === update_digit ? thisUpdatedPlacement.concat('.'+thisUpdatedPlacementValue) : thisUpdatedPlacement.concat('.'+thisPlacementArray[i]);
-              } 
-              let entry = {
-                uID : arrayItem.uID,
-                placement : thisUpdatedPlacement
-              }
-              updatedIndices.push(entry);
-            });
-
-              /*================
-              Update the content within the database
-              ================*/              
-
-/*    OLD OLD OLD
-
-
-
-            for(let i = 0; i < updatedIndices.length ; i++){
-              dbRef.child(updatedIndices[i].uID).update({
-                placement : updatedIndices[i].placement
-              });
-            }
-          }
-
-        }
-
-        //ex: 
-        // 1.1 1.2 1.3 1.3 <- (plop) 1.4 1.5
-
-        firebase.database().ref('pages/'+this.state.CurrentEditPageHandle+"/tags/")
-
-
-*/
-
   }
 
 
@@ -747,29 +598,6 @@ updateCurrentEditPageHandle(toUpdate){
     var section_menu = document.querySelector(section);
     var height = document.querySelector(section).offsetHeight;
 
-/*
-    if (arrowState === "up"){
-      var h = 0;
-      let intval = setInterval(function(){
-        h++;
-        section_menu.style.height = h + 'px';
-        if(h >=height){
-          window.clearInterval(intval);
-        }
-      }, 1);
-    } else if(arrowState ==="down"){
-      var h = height;
-      let intval = setInterval(function(){
-        h--;
-        section_menu.style.height = h + 'px';
-        if(h <=0){
-          window.clearInterval(intval);
-        }
-      }, 1);
-      
-    }
-*/
-
     if (arrowState === "up"){
       var h = 0;
       let intval = setInterval(function(){
@@ -815,9 +643,6 @@ updateCurrentEditPageHandle(toUpdate){
   <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
   </div>
 
-
-
-
 */
 
  
@@ -862,9 +687,6 @@ updateCurrentEditPageHandle(toUpdate){
             <h2 className="page-add-subheader">Preset Elements</h2>
             <AddPreset CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
           </div>
-
-
-
 
           </div>
 
@@ -922,6 +744,30 @@ export class Dropdown_Style extends React.Component{
 }
 
 
+const mapStateToProps = state => {
+  return {
+    selections : state.selections[0],
+    snapshots : {
+      PagesSnapshot : ,
+      BlogsSnapshot : ,
+      ImagesSnapshot : 
+    }
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchData: () => 
+      dispatch({
+        type: 'FETCH-DATA';
+      })
+  }
+
+    updateSelection: (type) =>
+      dispatch(updateSel(type));
+
+    updateHandle: () => dispatch(updateSel(handle));
+}
 
 
 /*============
@@ -933,6 +779,8 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-module.exports = App;
+//module.exports = App;
+
+
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 

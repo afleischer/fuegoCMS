@@ -109,7 +109,6 @@ export default class SidebarImageContainer extends React.Component{
 
     try{
     var pageRef = firebase.database().ref('pages/').child(pageURL);
-    var snapshot = this.state.PagesSnapshot;
     }
 
     catch(error){
