@@ -11,7 +11,37 @@ export default class HSModal extends React.Component{
 
 	state = {
 		selectedScrollOption : null,
-		snapshot : null
+		snapshot : null,
+		LRselectedClass : "deselected",
+		RLselectedClass : "deselected"
+	}
+
+	updateSelection(e){
+		if(e.currentTarget.getAttribute("name") === "Left-Right"){
+			//de-select
+			if(this.state.LRselectedClass === "deselected"){
+				this.setState({
+					LRselectedClass : "selected",
+					RLselectedClass : "deselected"
+				});			
+			}else if(this.state.LRselectedClass === "selected"){
+				this.setState({
+					LRselectedClass : "deselected"
+				});					
+			}
+		}
+		else if (e.currentTarget.getAttribute("name") === "Right-Left"){
+			if(this.state.RLselectedClass === "deselected"){
+				this.setState({
+					LRselectedClass : "deselected",
+					RLselectedClass : "selected"
+				});			
+			}else if(this.state.LRselectedClass === "selected"){
+				this.setState({
+					RLselectedClass : "deselected"
+				});					
+			}
+		}
 	}
 
 
@@ -27,11 +57,8 @@ submitAndClose(){
 				<h4>Scroll direction</h4>
 				<p>As the user scrolls down, the content in the section will display...</p>
 				<div>
-					<div name="Left-Right" onClick = {(e) => {
-						this.setState({selectedScrollOption : e.target.parentElement.getAttribute("name")});
-						console.log(e.target.parentElement.getAttribute("name"));
-					} }><p>Left-to-Right</p></div>
-					<div name="Right-Left" onClick = {(e) => this.setState({selectedScrollOption : e.target.parentElement.getAttribute("name")})}><p>Right-to-Left</p></div>
+					<div className = {this.state.LRselectedClass} name="Left-Right" onClick = {(e) => {this.updateSelection(e)}} ><p>Left-to-Right</p></div>
+					<div className = {this.state.RLselectedClass} name="Right-Left" onClick = {(e) => {this.updateSelection(e)}} ><p>Right-to-Left</p></div>
 				</div>
 				<button onClick = { () => this.submitAndClose()}>SUBMIT</button>
 			</div>

@@ -63,7 +63,7 @@ class StyleContentList extends React.Component{
   render(){
     return(
       <div>
-        <h1>Click to Edit Page Element Attributes</h1>
+        <h1>Add and Edit Element Attributes</h1>
         <AddAttributesOnSelect SelectedElement = {this.props.SelectedElement} currentPage = {this.props.CurrentEditPageHandle} />
       </div>
       );

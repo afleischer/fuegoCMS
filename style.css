@@ -108,6 +108,34 @@ body{
 
 }
 
+
+/* Collapse logic */
+
+.arrow-right {
+  width: 0; 
+  height: 0; 
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  
+  border-left: 5px solid black;
+}
+
+
+.upload_content{
+	background-color: #E8D9D1;
+}
+
+
+.arrow-down {
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  
+  border-top: 5px solid #f00;
+}
+
+
 .collapse{
 	background-color: #BDB1AA;
 	padding: 0 5px;
@@ -119,6 +147,16 @@ body{
 	border-radius: 5px;
 	
 }
+
+
+.selected{
+	background-color: #bebef2;
+}
+
+.deselected{
+	background-color: #E8D9D1;
+}
+
 
 .ghost{
 	display: none;

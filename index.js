@@ -67,7 +67,7 @@ export default class App extends React.Component{
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.reIndex = this.reIndex.bind(this);
     this.getGhosted = this.getGhosted.bind(this);
-
+    this.toggleMenu = this.toggleMenu.bind(this);
 
     firebase.database().ref('pages/').on('value', snapshot =>{
       this.setState({
@@ -86,7 +86,11 @@ export default class App extends React.Component{
     selectedElement : null,
     sidebar_shown: "sb_shown",
     ghosted: false, 
-    draggedElement: null
+    draggedElement: null,
+    upload_arrow: "down",
+    add_arrow_1: "down_arrow",
+    add_arrow_2: "down_arrow",
+    style_arrow: "down_arrow"
     }
 
 
@@ -727,6 +731,69 @@ updateCurrentEditPageHandle(toUpdate){
     })
   }
 
+  toggleMenu(type, section){
+
+    window.clearInterval();
+    var flagTurn = type; 
+    var arrowState = this.state[type];
+    var section_menu = document.querySelector(section);
+    var height = document.querySelector(section).offsetHeight;
+
+/*
+    if (arrowState === "up"){
+      var h = 0;
+      let intval = setInterval(function(){
+        h++;
+        section_menu.style.height = h + 'px';
+        if(h >=height){
+          window.clearInterval(intval);
+        }
+      }, 1);
+    } else if(arrowState ==="down"){
+      var h = height;
+      let intval = setInterval(function(){
+        h--;
+        section_menu.style.height = h + 'px';
+        if(h <=0){
+          window.clearInterval(intval);
+        }
+      }, 1);
+      
+    }
+*/
+
+    if (arrowState === "up"){
+      var h = 0;
+      let intval = setInterval(function(){
+        for(var i = 0; i < 100; i++){
+          h++;
+          section_menu.style.height = h + 'px';
+          if(h >=height){
+            window.clearInterval(intval);
+          }          
+        }
+      }, 10);
+    } else if(arrowState ==="down"){
+      var h = height;
+      let intval = setInterval(function(){
+        for(var i = 0; i < 100; i++){
+          h--;
+          section_menu.style.height = h + 'px';
+          if(h <=0){
+            window.clearInterval(intval);
+          }
+        }
+
+      }, 10);
+    }
+    var updated_arrow_state = arrowState === "down" ? "up" : "down";
+
+    this.setState({
+      [flagTurn] : updated_arrow_state
+    });
+
+  }
+
 
   getGhosted(ghostCall){
     let nowGhost = ghostCall;
@@ -752,29 +819,39 @@ updateCurrentEditPageHandle(toUpdate){
 
       <div className="sidebar" >
 
-        <div className = "upload_content">
           <h1>Upload Content </h1> 
+          <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("upload_arrow",".upload_content")}}></div>
+          <div className = "upload_content"> 
             <CMSContainerTextPost />
             <CMSContainerImageUpload /> 
           </div>
 
-          <div className = "add_content">
-            <h1>Add to {this.pageVsSection()}</h1>
+            <h1>Add to {this.pageVsSection()}</h1> 
+            <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("add_arrow_1",".add_content_1")}}></div>
+
+          <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
             <TextAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} TextArray = {this.state.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+          </div>
 
+            <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("add_arrow_2",".add_content_2")}}></div>
+
+          <div className= "add_content_2">
             <h2 className="page-add-subheader">Page Elements</h2>
             <AddElementsToPage SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+
+          <h1>Style Page Content</h1>
+          <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
+          <div className = "style_content"> 
+            <StyleContentList SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+          </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
             <AddPreset CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
           </div>
 
-          <div className = "style_content">
-            <h1>Style Page Content</h1>
-            <StyleContentList SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
-          </div>
+
 
 
           </div>
@@ -789,6 +866,9 @@ updateCurrentEditPageHandle(toUpdate){
       </span>
   );
     }
+
+
+
 
     
     

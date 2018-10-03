@@ -54,11 +54,12 @@ Begin functions
 			for(let i = 0; i < attribute_array.length; i++){
 				if( attribute_array[i].nodeValue != "frame-tag" && attribute_array[i].localName != "dbid"){
 
+					//<button onClick = {(e) => this.RemoveAttribue(e)} className = "remove_attribute">Remove Attribute</button> 
 				returnArray.push(
 					<div>
 						<label for={attribute_array[i]}>{attribute_array[i].name}</label>
 						<input onChange ={(e) => this.UpdateAttribute(e)} type = "name" name = {attribute_array[i].value} value = {attribute_array[i].value} className = "tag-name-change-attribute" />
-						<button onClick = {(e) => this.RemoveAttribue(e)} className = "remove_attribute">Remove Attribute</button> 
+						
 					</div>
 					);
 				}

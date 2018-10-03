@@ -165,9 +165,9 @@ class PresetAddContainer extends React.Component{
 				<h1>Add Template Section to Page</h1>
 				<div className = "Preset_container">	
 					<div onClick = {this.startModal("horizontal_scroll")}>
-						<h3>Type: Horizontal Scroll</h3>
+						<h3>Type: Horizontal Scroll Down</h3>
 						<p>Description: Section that scrolls horizontally as opposed to vertically when 
-						a wuser scrolls down</p>
+						a user scrolls down</p>
 						<HSModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle} collections_counter_snap = {this.state.collections_counter_snap} CurrentEditPageHandle = {this.props.CurrentEditPageHandle}  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
 
 					</div>
