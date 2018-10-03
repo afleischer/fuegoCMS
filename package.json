@@ -43,6 +43,7 @@
     "react-iframe": "^1.2.0",
     "react-redux": "^5.0.7",
     "react-test-renderer": "^16.5.1",
+    "redux-undo": "^0.6.1",
     "regenerator-runtime": "^0.12.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",

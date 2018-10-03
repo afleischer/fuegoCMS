@@ -26,14 +26,14 @@ export const undoAction = () => {
 
 			if (keymap[90] && event.metaKey === true){
 			//dispatch an undo action
-				dispatch(UNDO_CALL);
+				store.dispatch(UNDO_CALL);
 			}
 		}
 
 		else {
 			//
 			if ( keymap[90] && event.ctrlKey === true){
-				dispatch(UNDO_CALL);			
+				store.dispatch(UNDO_CALL);			
 			}
 		}
 	});
@@ -59,14 +59,14 @@ export const redoAction = () => {
 
 			if (keymap[89] && event.metaKey === true){
 			//dispatch an undo action
-				dispatch(REDO_CALL);
+				store.dispatch(REDO_CALL);
 			}
 		}
 
 		else {
 			//
 			if (keymap[89] && event.ctrlKey === true){
-				dispatch(REDO_CALL);			
+				store.dispatch(REDO_CALL);			
 			}
 		}
 	});
