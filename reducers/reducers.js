@@ -1,7 +1,12 @@
 import undoable, { distinctState } from 'redux-undo';
 
 
-export const rootReducer = ( state = initialState , action) => {
+export const rootReducer = ( state , action) => {
+
+	if(typeof(state) === "undefined"){
+		state = 0;
+	}
+
 	switch (action.type){
 		case 'SELECTED':
 			return Object.assign({}, state, {
@@ -13,17 +18,24 @@ export const rootReducer = ( state = initialState , action) => {
 				
 			})
 		case 'PAGESNAP':
-			return Object.assign({}, state, {
-				PagesSnapshot : action.payload	
-			})
+			if(action.payload){
+				return Object.assign({}, state, {
+					PagesSnapshot : action.payload	
+				})				
+			}else { return state}
+
 		case 'BLOGSNAP':
-			return Object.assign({}, state, {
-				BlogsSnapshot : action.payload
-			})
+			if(action.payload){
+				return Object.assign({}, state, {
+					BlogSnapshot : action.payload	
+				})				
+			}else { return state}
 		case 'IMAGESNAP':
-			return Object.assign({}, state, {
-				ImageSnapshot : action.payload
-			})
+			if(action.payload){
+				return Object.assign({}, state, {
+					ImageSnapshot : action.payload	
+				})				
+			}else { return state}
 
 		default:
 			return state

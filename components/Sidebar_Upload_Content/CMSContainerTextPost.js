@@ -69,7 +69,7 @@ class CMSContainerTextPost extends React.Component{
       <h4>Text added and submitted here will be uploaded to the database for reuse in your page in the "Add to Page" section.</h4>
       <ReactQuill value={this.state.blogText} onChange={this.handleChange} />
       <h4>HTML Preview:</h4>
-      <textarea id = "blog-copy" rows = "4" cols = "50" type = "longtext" placeholder = "Enter Text Here" value = {this.state.blogText} />
+      <textarea id = "blog-copy" rows = "4" cols = "50" type = "longtext" placeholder = "Enter Text Here" readOnly=true value = {this.state.blogText} />
       <br />
       <button type = "button" onClick = {this.sendBlogTextToDB} id = "submission">SUBMIT</button>
       <NoticeBoxText class_name = {this.state.noticeVisible} />

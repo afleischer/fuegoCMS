@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import firebase from '../../firebase.js';
 
-import getTopPlacement from '../functions/getTopPlacement'
+import getTopPlacement from '../functions/getTopPlacement';
 
 import { connect } from 'react-redux';
 
@@ -156,4 +156,15 @@ class SidebarImageContainer extends React.Component{
 
 }
 
-export default connect(SidebarImageContainer)(SidebarImageContainer)
+const mapStateToProps = state => {
+  return state;
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+        addAttribute: () => dispatch(addAttribute(event.target.value))
+  }
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SidebarImageContainer)

@@ -10,10 +10,9 @@ import firebase from './firebase.js';
 
 import IndexSort from './components/functions/IndexSort';
 
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { store } from './store/index';
-import { connect } from 'react-redux';
-import { fetchData } from './actions/docActions';
+import { fetchData, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
 
 //import an exampleAction 
 
