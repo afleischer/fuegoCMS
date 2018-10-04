@@ -634,6 +634,22 @@ updateCurrentEditPageHandle(toUpdate){
 
   }
 
+  listenForSnap(type){
+    var type = type
+    try{
+      var snapVar = this.props.asdfjkl.BlogSnapshot;
+      if(type = "blog"){
+        return this.props.asdfjkl.BlogSnapshot;
+      }else if (type = "page"){
+        return this.props.asdfjkl.PageSnapshot;
+      }else if (type = "image"){
+        return this.props.asdfjkl.ImageSnapshot;
+      }
+    }catch(error){
+      return false;
+    }
+  }
+
 
   getGhosted(ghostCall){
     let nowGhost = ghostCall;
@@ -674,7 +690,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer BlogSnapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <TextAddContainer BlogSnapshot = {this.listenForSnap("blog")} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -749,9 +765,7 @@ export class Dropdown_Style extends React.Component{
 
 
 const mapStateToProps = state => {
-  let NameTest = state;
-  console.log("Tested Name received state is:"+NameTest);
-  return NameTest;
+  return{asdfjkl : state}
 }
 
 const mapDispatchToProps = dispatch => {
