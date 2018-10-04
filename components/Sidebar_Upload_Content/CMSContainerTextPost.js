@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 
 import firebase from '../../firebase.js';
 
+import { connect } from 'react-redux';
+
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+
 
 
 function NoticeBoxText(props){
@@ -75,4 +79,14 @@ class CMSContainerTextPost extends React.Component{
     
 }
 
-export default CMSContainerTextPost; 
+const mapStateToProps = state => {
+  return state;
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CMSContainerTextPost); 

@@ -33,7 +33,7 @@ export default class CMSContainerImageUpload extends React.Component{
     this.setFile = this.setFile.bind(this);
   }
   state = {
-    noticeVisible : "hiddenBoxImg",
+    UploadBoxStyle : "hiddenBoxImg",
     toUpload : "null"
   }
 
@@ -43,12 +43,10 @@ export default class CMSContainerImageUpload extends React.Component{
   setFile(ev){
 
     var file = ev.target.files[0];
-    console.log("File is:" +file);
+
     this.setState({
       toUpload : {file}
-    },
-    function () {console.log("Updated state is:" + this.state.toUpload); } );
-
+    })
   }
 
   /*==========
@@ -75,8 +73,6 @@ export default class CMSContainerImageUpload extends React.Component{
       console.log("file sent is:" + file);
 
     var dateVar = new Date;
-    //const name = (+new Date()) + '-' + file.name;
-    //const name = dateVar.toDateString() + '-' + file.name;
     const name = file.name;
     console.log("file date modified object is:"+ file.lastModifiedDate);
     const metadata = {
@@ -100,13 +96,12 @@ export default class CMSContainerImageUpload extends React.Component{
         image_type : metadata.fileType,
         image_url : url
       })
-      //document.querySelector('#someImageTagID').src = url;
     })
     .catch(console.error);
 
 
-  this.setState({noticeVisible : "shownBoxImg"});
-    setTimeout( () => {this.setState({noticeVisible : "hiddenBoxImg"})} , 3000);
+  this.setState({UploadBoxStyle : "shownBoxImg"});
+    setTimeout( () => {this.setState({UploadBoxStyle : "hiddenBoxImg"})} , 3000);
 //End alternate code
   }
 
@@ -117,7 +112,7 @@ export default class CMSContainerImageUpload extends React.Component{
       <h4>Images and video added and submitted here will be uploaded to the database for reuse in your page in the "Add to Page" section.</h4>
       <input id = "image_field" type="file" refs="image_form" onInput = {this.setFile} />
       <button type = "button" onClick = {this.handleUploadImage} id = "img_submission">SUBMIT</button>
-      <NoticeBox class_name = {this.state.noticeVisible} />
+      <NoticeBox class_name = {this.state.UploadBoxStyle} />
     </div>
 
     );

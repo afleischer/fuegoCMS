@@ -5,6 +5,8 @@ import firebase from '../../firebase.js';
 import isVoid from '../functions/isVoid';
 import getTopPlacement from '../functions/getTopPlacement';
 
+import "../../actions/docActions";
+import { connect } from 'react-redux';
 
 class AddElementsToPage extends React.Component{
 	constructor(props){
@@ -32,8 +34,8 @@ class AddElementsToPage extends React.Component{
 		for(let i = 0; i < sectioning_list.length; i++){
 			returnArray.push(<option value={sectioning_list[i]}>{sectioning_list[i]}</option>)
 		}
-//
-		return(<select onChange = {(event) => this.setState({containingItemsAdd : event.target.value})} name="Container_Tags">{returnArray}</select>)
+		return(<select onChange = {(e) => addAttribute(e.target.value)} name="Container_Tags">{returnArray}</select>)
+		//return(<select onChange = {(event) => this.setState({containingItemsAdd : event.target.value})} name="Container_Tags">{returnArray}</select>)
 
 	}
 
@@ -45,7 +47,8 @@ class AddElementsToPage extends React.Component{
 			returnArray.push(<option value={sectioning_list[i]}>{sectioning_list[i]}</option>)
 		}
 
-		return(<select onChange = {(e) => this.setState({formElementAdded : event.target.value})} name="Container_Tags">{returnArray}</select>)
+		return(<select onChange = {(e) => addAttribute(e.target.value)} name="Container_Tags">{returnArray}</select>)
+		//return(<select onChange = {(e) => this.setState({formElementAdded : event.target.value})} name="Container_Tags">{returnArray}</select>)
 
 	}
 
@@ -91,4 +94,20 @@ class AddElementsToPage extends React.Component{
 	}
 }
 
-export default AddElementsToPage;
+/*===========
+Redux 
+===========*/
+
+const mapStateToProps = state => {
+
+
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		    addAttribute: () => dispatch(addAttribute(event.target.value))
+	}
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddElementsToPage);

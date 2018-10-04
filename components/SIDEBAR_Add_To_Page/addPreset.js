@@ -23,11 +23,17 @@ class PresetAddContainer extends React.Component{
 		/*==============
 		Set db listener
 		==============*/
+
+		//To reduce redundency, pull this in as state!
+
+		/* 
 		firebase.database().ref('pages/').on('value', snapshot => {
 			this.setState({
 				snapshot: snapshot
 			});
 	    });
+
+	    */
 	}
 
 	state = {
@@ -168,14 +174,14 @@ class PresetAddContainer extends React.Component{
 						<h3>Type: Horizontal Scroll Down</h3>
 						<p>Description: Section that scrolls horizontally as opposed to vertically when 
 						a user scrolls down</p>
-						<HSModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle} collections_counter_snap = {this.state.collections_counter_snap} CurrentEditPageHandle = {this.props.CurrentEditPageHandle}  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing}/>
+						<HSModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle} CurrentEditPageHandle = {this.props.CurrentEditPageHandle}  submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.props.snapshot} pageEditing = {this.props.pageEditing}/>
 
 					</div>
 					<div onClick = {this.startModal("blade")}>
 						<h3>Type: Blade</h3>
 						<p>Description: Section of content that sits above fixed-background images</p>
 					</div>
-						<BladeModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle} collections_counter_snap = {this.state.collections_counter_snap} submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.state.snapshot} pageEditing = {this.props.pageEditing} />
+						<BladeModal CurrentEditPageHandle = {this.props.CurrentEditPageHandle} submitModal = {this.submitModal} closeModal = {this.closeModal} snapshot = {this.props.snapshot} pageEditing = {this.props.pageEditing} />
 				</div>
 			</div>
 			);

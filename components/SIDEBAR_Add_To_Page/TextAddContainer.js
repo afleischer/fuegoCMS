@@ -28,7 +28,7 @@ const TextItem = (props) => {
     });
 
     for(let i = 0; i <= counter-1; i++){
-      returnArray.push(<div key = {i} className = "Sidebar_Text_add_to_frame"><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p><button onClick = { (e) => props.clickFunc(event, 'p', 'font-family: helvetica;', CurrentEditPageHandle, snapshot, TextValueDisplayVar[i])}>Add to Page</button></div>);
+      returnArray.push(<div key = {i} className = "Sidebar_Text_add_to_frame"><p className = "CMSTextPreviewMenu">{TextValueDisplayVar[i]}</p><button onClick = { (e) => props.addTagToFrame(event, 'p', 'font-family: helvetica;', CurrentEditPageHandle, snapshot, TextValueDisplayVar[i])}>Add to Page</button></div>);
     }
     
 
@@ -49,19 +49,7 @@ Container for adding text to the page
 export default class TextAddContainer extends React.Component{
   constructor(props){
     super(props);
-
-    /*============
-    Set Firebase listener for text values
-    =============*/
-
-  
-    firebase.database().ref('blogs/').on('value', snapshot => {
-      this.setState({
-        TextList : snapshot
-        });
-    });
-  
-
+    
     this.addTagToFrame = this.addTagToFrame.bind(this);
 
   }
@@ -124,7 +112,7 @@ let placement_counter_new = placement_counter + 1;
   render(){
     return(
       <div className = "sidebar_text_add_frame_container">
-        <TextItem snapshot = {this.state.TextList} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} clickFunc = {this.addTagToFrame} TextArray = {this.state.TextList} />
+        <TextItem snapshot = {this.props.BlogsSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} addTagToFrame = {this.addTagToFrame} TextArray = {this.props.BlogsSnapshot} />
       </div>
       );
   }

@@ -5,14 +5,29 @@ export function updateHandle (handle){
 } 
 
 export function ghostFlag (flag){
-	return {type: 'FLIP-GHOST', !flag}
+	return {type: 'FLIP-GHOST', payload: flag}
 }
 
 export function dropDowned (flagTurn, updated_arrow_state){
-	return { [flagTurn], updated_arrow_state}
+	return { 
+		type: "DROPDOWN",
+		[flagTurn] : updated_arrow_state
+	}
+}
+
+export function fetchData (typeVar, snapshot){
+	var returnVal = {
+		type: typeVar,
+		payload: snapshot
+	}
+	return returnVal;
+}
+
+export function addAttribute (eventValue){
+	return {type: eventValue}
 }
 
 
-export function fetchData (ref){
-	return {type: ref}
+export function setSelectedItem (element_selected){
+	return {type: 'VISUAL-SELECTION', payload: element_selected}
 }

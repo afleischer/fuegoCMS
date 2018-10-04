@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import firebase from '../../../firebase.js';
 
+import { connect } from 'react-redux';
+
+
 
 class AddAttributesOnSelect extends React.Component{
 	constructor(props){
@@ -54,7 +57,6 @@ Begin functions
 			for(let i = 0; i < attribute_array.length; i++){
 				if( attribute_array[i].nodeValue != "frame-tag" && attribute_array[i].localName != "dbid"){
 
-					//<button onClick = {(e) => this.RemoveAttribue(e)} className = "remove_attribute">Remove Attribute</button> 
 				returnArray.push(
 					<div>
 						<label for={attribute_array[i]}>{attribute_array[i].name}</label>
@@ -158,17 +160,6 @@ Begin functions
 
 		const ReferenceToUpdate = firebase.database().ref('pages/'+pageURL+"/tags/"+targetIdentifier+"/attributes/").update(updates);
 
-/*
-		ReferenceToUpdate.once('value', childSnap => {
-			if(childSnap.val().attributes != undefined){
-				var updates = {
-					[attribute_name] : attribute_value
-				}
-				ReferenceToUpdate.child('/attributes/').update(updates)
-			}		
-		})
-*/
-
 	} 
 
 	AdditionalAttributes(){
@@ -197,5 +188,15 @@ Begin functions
 
 }
 
+const mapStateToProps = state => {
+  return state;
+}
 
-export default AddAttributesOnSelect;
+const mapDispatchToProps = dispatch => {
+  return {
+
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddAttributesOnSelect);

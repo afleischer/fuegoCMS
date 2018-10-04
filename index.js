@@ -13,12 +13,13 @@ import IndexSort from './components/functions/IndexSort';
 import { Provider } from 'react-redux';
 import { store } from './store/index';
 import { connect } from 'react-redux';
+import { fetchData } from './actions/docActions';
 
 //import an exampleAction 
 
 import 'CSS.escape';
 import { undoAction, redoAction } from './components/functions/setupUndo';
-import { updateHandle } from "./actions/docActions.js"
+import "./actions/docActions.js";
 
 /*============
 Components
@@ -62,7 +63,7 @@ const dbPageRef = firebase.database().ref('pages/');
 *
 ============*/
 
-export default class App extends React.Component{
+class App extends React.Component{
   constructor(props){
     super(props);
 
@@ -78,19 +79,20 @@ export default class App extends React.Component{
     this.getGhosted = this.getGhosted.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
 
-    firebase.database().ref('pages/').on('value', snapshot =>{
-
-      fetchData;
-
-    /*
-      this.setState({
-        PagesSnapshot : snapshot
-      });
+    firebase.database().ref('pages/').on('value', snapshot => {
+      store.dispatch(fetchData("PAGESNAP"));
     });
 
-    */
-  }
+    firebase.database().ref('blogs/').on('value', snapshot => {
+      store.dispatch(fetchData("BLOGSNAP"));
+    });
 
+    firebase.database().ref('images/').on('value', snapshot => {
+      store.dispatch(fetchData("IMAGESNAP"));
+    });
+
+
+  }
 
 
     state = {
@@ -122,7 +124,6 @@ setPage(e){
       try{
         let dropdown_first = document.getElementById('#loading_page').value; 
 
-
         store.dispatch('DROPDOWN-FIRST');
 
         /*
@@ -151,10 +152,12 @@ setPage(e){
 
 setFirstPage(input){
   let fetchVar = input;
-  if(fetchVar){
 
-    setEditPage(){
-      update = {
+  if(fetchVar){
+    setEditPage();
+
+    function setEditPage(){
+      var update = {
         CurrentEditPage : "src/"+fetchVar[0]+".html",
         CurrentEditPageHandle : fetchVar[0]       
       }
@@ -215,8 +218,9 @@ setSelectedElement(event){
     event.target.style.cssText +="border-style: dotted; border-color: red;";
   }
   
+  store.dispatch(setSelectedItem(element_selected));
 
-  this.setState({selectedElement : element_selected});
+  //this.setState({selectedElement : element_selected});
 
 
   var DraggedElement = null;
@@ -262,14 +266,14 @@ setSelectedElement(event){
     e.preventDefault();
     
     //var movedElement = e.target;
-    var movedElement = this.state.draggedElement;
+    var movedElement = this.props.draggedElement;
     var priorElement = e.target.previousSibling;
     var nextElement = e.target.nextSibling;
     var priorElementUid = priorElement.getAttribute("dbid");
     var nextElementUid = nextElement.getAttribute("dbid");
     var thisElementUid = movedElement.getAttribute("dbid");
     //var dbRef = firebase.database().ref("pages/"+this.props.PageHandle+"/tags/").once('value', (snap)=> { });
-    var dbRef = this.state.PagesSnapshot.child(this.state.CurrentEditPageHandle).child("tags");
+    var dbRef = this.props.PagesSnapshot.child(this.props.CurrentEditPageHandle).child("tags");
     var priorPlacement =  dbRef.child(priorElementUid).val().placement;
     var nextPlacement =  dbRef.child(nextElementUid).val().placement;
     var nextFlag = "sibling";
@@ -411,8 +415,6 @@ setSelectedElement(event){
     }
 
 
-
-
     /*============
     The following function, given a string index (ex: '1.2.2'), will
     shift the last digit of the index forward 1.  
@@ -478,7 +480,7 @@ setSelectedElement(event){
             }
 
             /*
-            if the incremented value of nextPlacement clashes with the 
+            if the inmented value of nextPlacement clashes with the 
             value of the next index....
             */
 
@@ -522,12 +524,12 @@ setSelectedElement(event){
 
 
     for(let i = 0; i < AttrsWithKeys.length; i++){
-        firebase.database().ref('pages/'+this.state.CurrentEditPageHandle+"/tags/"+AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement})
-        //this.state.PagesSnapshot.child(this.state.CurrentEditPageHandle).child("tags").child(AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement});
+        firebase.database().ref('pages/'+this.props.CurrentEditPageHandle+"/tags/"+AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement})
+        //this.props.PagesSnapshot.child(this.props.CurrentEditPageHandle).child("tags").child(AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement});
         }
       
 
-    this.state.PagesSnapshot.child(this.state.CurrentEditPageHandle).forEach(function(childSnap){
+    this.props.PagesSnapshot.child(this.props.CurrentEditPageHandle).forEach(function(childSnap){
       for(let i = 0; i < AttrsWithKeys.length; i++){
         if(AttrsWithKeys[i].unique_key === childSnap.val()){
           childSnap.child(AttrsWithKeys[i].unique_key).update({placement : AttrsWithKeys[i].placement});
@@ -539,7 +541,6 @@ setSelectedElement(event){
 
 
 updateCurrentEditPageHandle(toUpdate){
-    //
 
     this.setState({
       CurrentEditPageHandle : toUpdate
@@ -567,9 +568,9 @@ updateCurrentEditPageHandle(toUpdate){
   }
 
   pageVsSection(){
-    if(this.state.selectedElement != null){
-      return("Section :"+this.state.selectedElement)
-    }else if (this.state.selectedElement == null){
+    if(this.props.selectedElement != null){
+      return("Section :"+this.props.selectedElement)
+    }else if (this.props.selectedElement == null){
       return("Page")
     }
   }
@@ -582,7 +583,7 @@ updateCurrentEditPageHandle(toUpdate){
 
   toggleSidebar(){
     //if the item is closed 
-    var sidebar_status = this.state.sidebar_shown === "sb_hidden" ? "sb_shown" : "sb_hidden";
+    var sidebar_status = this.props.sidebar_shown === "sb_hidden" ? "sb_shown" : "sb_hidden";
     console.log(sidebar_status);
 
     this.setState({
@@ -594,7 +595,7 @@ updateCurrentEditPageHandle(toUpdate){
 
     window.clearInterval();
     var flagTurn = type; 
-    var arrowState = this.state[type];
+    var arrowState = this.props[type];
     var section_menu = document.querySelector(section);
     var height = document.querySelector(section).offsetHeight;
 
@@ -624,6 +625,10 @@ updateCurrentEditPageHandle(toUpdate){
     }
     var updated_arrow_state = arrowState === "down" ? "up" : "down";
 
+
+    //Update state 
+    dropDowned(flagTurn, updated_arrow_state);
+
     this.setState({
       [flagTurn] : updated_arrow_state
     });
@@ -633,14 +638,18 @@ updateCurrentEditPageHandle(toUpdate){
 
   getGhosted(ghostCall){
     let nowGhost = ghostCall;
+
+    store.dispatch(ghostFlag(nowGhost))
+/*
     this.setState({
       ghosted: ghostCall
     });
+*/
   }
 
 /*
   <div className = "Grand_HTML_list">
-  <GrandHTMLList PagesSnapshot = {this.state.PagesSnapshot} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+  <GrandHTMLList PagesSnapshot = {this.props.PagesSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
   </div>
 
 */
@@ -649,10 +658,7 @@ updateCurrentEditPageHandle(toUpdate){
     render(){
   return(
 
-    <Provider store = {store}>
-
-
-    <span className = "app-container" id = {this.state.sidebar_shown}>
+    <span className = "app-container" id = {this.props.sidebar_shown}>
 
       <div className="sidebar" >
 
@@ -668,39 +674,37 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} TextArray = {this.state.TextList} />
-            <SidebarImageContainer CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+            <TextAddContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
             <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("add_arrow_2",".add_content_2")}}></div>
 
           <div className= "add_content_2">
             <h2 className="page-add-subheader">Page Elements</h2>
-            <AddElementsToPage SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+            <AddElementsToPage SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
 
           <h1>Style Page Content</h1>
           <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
           <div className = "style_content"> 
-            <StyleContentList SelectedElement = {this.state.selectedElement} CurrentEditPageHandle = {this.state.CurrentEditPageHandle} />
+            <StyleContentList SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
-            <AddPreset CurrentEditPageHandle = {this.state.CurrentEditPageHandle} ImageArray = {this.state.ImageList} />
+            <AddPreset PagesSnapshot = {this.props.PagesSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} PagesSnapshot = {this.props.PagesSnapshot}/>
           </div>
 
           </div>
 
       <div className = "VisualSection">
         <button className = "collapse" onClick = {this.toggleSidebar}>TOGGLE SIDEBAR</button>
-        <VisualEditor getGhosted = {this.getGhosted} ghosted = {this.state.ghosted} setSelectedElement = {this.setSelectedElement} reIndex = {this.reIndex} currentPage = {this.state.CurrentEditPage} pageHandle = {this.state.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
+        <VisualEditor getGhosted = {this.getGhosted} ghosted = {this.props.ghosted} setSelectedElement = {this.setSelectedElement} reIndex = {this.reIndex} currentPage = {this.props.CurrentEditPage} pageHandle = {this.props.CurrentEditPageHandle} updateCurrentEditPageHandle = {this.updateCurrentEditPageHandle} SetPage = {this.setPage} />
       </div>
 
 
 
       </span>
 
-
-      </Provider>
   );
     }
 
@@ -745,28 +749,25 @@ export class Dropdown_Style extends React.Component{
 
 
 const mapStateToProps = state => {
-  return {
-    selections : state.selections[0],
-    snapshots : {
-      PagesSnapshot : ,
-      BlogsSnapshot : ,
-      ImagesSnapshot : 
-    }
-  }
+  return state;
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => 
-      dispatch({
-        type: 'FETCH-DATA';
-      })
+    fetchData: () => dispatch(fetchData (typeVar, snapshot)),
+
+    updateHandle: () => dispatch(updateHandle(handle)),
+
+    ghostFlag: () => dispatch(ghostFlag(flag)),
+
+    setSelectedItem: () => dispatch(setSelectedItem(element_selected)),
+
+    dropDowned: () => dispatch(dropDowned(flagTurn, updated_arrow_state)),
+
+    addAttribute: () => dispatch(addAttribute(event.target.value))
+
+
   }
-
-    updateSelection: (type) =>
-      dispatch(updateSel(type));
-
-    updateHandle: () => dispatch(updateSel(handle));
 }
 
 
@@ -775,7 +776,10 @@ Render the Virtual DOM
 ============*/
 
 ReactDOM.render(
-  <App onLoad = {setupUndo} />,
+  <Provider store = {store}>
+  <App />
+  </Provider>,
+
     document.getElementById('root')
 );
 
@@ -783,4 +787,3 @@ ReactDOM.render(
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-

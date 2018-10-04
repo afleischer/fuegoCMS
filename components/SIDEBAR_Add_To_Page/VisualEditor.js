@@ -8,6 +8,7 @@ import GhostElement from './VisualEditorChildren/GhostElement.js';
 import firebase from '../../firebase.js';
 
 
+import { connect } from 'react-redux';
 
 const DropdownOptions = (props) => {
 
@@ -42,7 +43,7 @@ const DropdownOptions = (props) => {
 
 
 
-export default class VisualEditor extends React.Component{
+class VisualEditor extends React.Component{
   constructor(props){
     super(props);
 
@@ -67,11 +68,13 @@ export default class VisualEditor extends React.Component{
   firebase.database().ref('pages/').on('value', snapshot => {
     this.clearPriorHTML();
     console.log("this is a breakpiont");
+
+
       this.setState({
         PagesSnapshot : snapshot
         });
     });
-  
+
 
 
   //Ordered Listener
@@ -89,8 +92,6 @@ export default class VisualEditor extends React.Component{
 
 //Set state
   state = {
-    pagesToEdit : null,
-    VisualSnapshot : null,
   }
 
 /******************
@@ -347,7 +348,6 @@ Begin functions
 
             let TagName = thisNode.tagName;
             let TagAttributes = thisNode.attributes;
-            //let TagContent = thisNode.textContent;
             let TagContent = getPlacement(thisNode);
             var Placement;
             if(depth > 0){
@@ -384,10 +384,6 @@ Begin functions
         }
       }
 
-
-      //We will need a separate function to take the values in indexArray and log them to Firebase
-      
-      //return indexArray;
   } 
 
 
@@ -435,3 +431,16 @@ Begin functions
       );
   }
 }
+const mapStateToProps = state => {
+
+
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+        addAttribute: () => dispatch(addAttribute(event.target.value))
+  }
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VisualEditor)

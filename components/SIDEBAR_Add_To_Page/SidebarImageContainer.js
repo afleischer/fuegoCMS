@@ -4,6 +4,8 @@ import firebase from '../../firebase.js';
 
 import getTopPlacement from '../functions/getTopPlacement'
 
+import { connect } from 'react-redux';
+
 
 const ImageItem = (props) => {
 
@@ -35,7 +37,7 @@ Class containing the image container
 =======================*/
 
 
-export default class SidebarImageContainer extends React.Component{
+class SidebarImageContainer extends React.Component{
   constructor(props){
     super(props);
 
@@ -153,3 +155,5 @@ export default class SidebarImageContainer extends React.Component{
   }
 
 }
+
+export default connect(SidebarImageContainer)(SidebarImageContainer)

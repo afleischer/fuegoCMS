@@ -1,10 +1,10 @@
 import React from 'react';
 import { createStore, combineReducers } from 'redux';
-import reducers from '../reducers/reducers';
+import {rootReducer} from '../reducers/reducers';
 
 export const store = createStore(
 	combineReducers({
-		state: reducers
+		state: rootReducer
 	}),
 	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );

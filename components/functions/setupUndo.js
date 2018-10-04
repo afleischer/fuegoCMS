@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { store } from './store/index';
+import { store } from '../../store/index';
 import { connect } from 'react-redux';
 import { UNDO_CALL, REDO_CALL } from '../../actions/docActions';
 
@@ -9,8 +9,6 @@ Action creators for App-level Undo and Redo actions
 ==========*/
 
 export const undoAction = () => {
-
-
 
 	var platform = window.navigator.oscpu;
 
