@@ -112,7 +112,7 @@ let placement_counter_new = placement_counter + 1;
   render(){
     return(
       <div className = "sidebar_text_add_frame_container">
-        <TextItem snapshot = {this.props.BlogsSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} addTagToFrame = {this.addTagToFrame} TextArray = {this.props.BlogsSnapshot} />
+        <TextItem snapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} addTagToFrame = {this.addTagToFrame} TextArray = {this.props.BlogsSnapshot} />
       </div>
       );
   }

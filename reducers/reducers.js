@@ -26,6 +26,9 @@ export const rootReducer = ( state , action) => {
 
 		case 'BLOGSNAP':
 			if(action.payload){
+				var test = Object.assign({}, state, {
+					BlogSnapshot : action.payload
+				});
 				return Object.assign({}, state, {
 					BlogSnapshot : action.payload	
 				})				

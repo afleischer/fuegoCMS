@@ -79,15 +79,15 @@ class App extends React.Component{
     this.toggleMenu = this.toggleMenu.bind(this);
 
     firebase.database().ref('pages/').on('value', snapshot => {
-      store.dispatch(fetchData("PAGESNAP"));
+      store.dispatch(fetchData("PAGESNAP", snapshot));      
     });
 
-    firebase.database().ref('blogs/').on('value', snapshot => {
-      store.dispatch(fetchData("BLOGSNAP"));
+    firebase.database().ref('Ps/').on('value', snapshot => {
+      store.dispatch(fetchData("BLOGSNAP", snapshot));
     });
 
     firebase.database().ref('images/').on('value', snapshot => {
-      store.dispatch(fetchData("IMAGESNAP"));
+      store.dispatch(fetchData("IMAGESNAP", snapshot));
     });
 
 
@@ -655,6 +655,7 @@ updateCurrentEditPageHandle(toUpdate){
 
  
     render(){
+
   return(
 
     <span className = "app-container" id = {this.props.sidebar_shown}>
@@ -673,7 +674,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <TextAddContainer BlogSnapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -748,7 +749,9 @@ export class Dropdown_Style extends React.Component{
 
 
 const mapStateToProps = state => {
-  return state;
+  let NameTest = state;
+  console.log("Tested Name received state is:"+NameTest);
+  return NameTest;
 }
 
 const mapDispatchToProps = dispatch => {
