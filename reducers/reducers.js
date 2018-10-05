@@ -26,9 +26,6 @@ export const rootReducer = ( state , action) => {
 
 		case 'BLOGSNAP':
 			if(action.payload){
-				var test = Object.assign({}, state, {
-					BlogSnapshot : action.payload
-				});
 				return Object.assign({}, state, {
 					BlogSnapshot : action.payload	
 				})				
@@ -39,6 +36,10 @@ export const rootReducer = ( state , action) => {
 					ImageSnapshot : action.payload	
 				})				
 			}else { return state}
+		case 'CURRENTEDITPAGE':
+			return Object.assign( {}, state, {
+				CurrentEditPageHandle : action.payload
+			})
 
 		default:
 			return state

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStore, combineReducers } from 'redux';
+import {applyMiddleware, createStore, combineReducers } from 'redux';
 import {rootReducer} from '../reducers/reducers';
 
 export const store = createStore(
