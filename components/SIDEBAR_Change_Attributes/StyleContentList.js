@@ -23,6 +23,8 @@ class StyleContentList extends React.Component{
   constructor(props){
     super(props);
     //Database listeners
+
+    /*
     
       firebase.database().ref('pages/').on('value', snapshot => {
         this.setState({
@@ -35,6 +37,7 @@ class StyleContentList extends React.Component{
             ImageList : snapshot
           });
         });
+        */
 
   }
 

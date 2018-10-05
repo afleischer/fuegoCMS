@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 
 import App from './app'
 
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import {applyMiddleware, createStore, combineReducers } from 'redux';
 import {rootReducer} from './reducers/reducers';
-//import { store } from './store/index';
+import { store } from './store/index';
 import { fetchData, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
 
 
-const store = createStore(rootReducer);
+//const store = createStore(rootReducer);
 
 /*
 export const store = createStore(
@@ -20,10 +20,13 @@ export const store = createStore(
 );
 */
 
+
 ReactDOM.render(
  <Provider store = {store}>
     <App />
  </Provider>,
 
  document.getElementById('root')
-);
+); 
+
+

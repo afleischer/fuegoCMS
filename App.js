@@ -8,9 +8,14 @@ import firebase from './firebase.js';
 
 import IndexSort from './components/functions/IndexSort';
 
-import { Provider, connect } from 'react-redux';
-import { store } from './store/index';
+import { connect } from 'react-redux';
+//import { store } from './store/index';
+
+
+
 import { fetchData, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
+import { rootReducer } from './reducers/reducers';
+
 
 //import an exampleAction 
 
@@ -44,6 +49,8 @@ import VisualEditor from './components/SIDEBAR_Add_To_Page/VisualEditor';
 //EXPERIMENTAL: See if I can get the grand HTML list
 import GrandHTMLList from './components/temporary/GrandHTMLList';
 
+import { store } from './store/index';
+
 
 /*============
 Firebase initialization
@@ -74,21 +81,27 @@ class App extends React.Component{
     this.toggleMenu = this.toggleMenu.bind(this);
 
 
+    /*================
+    Map Props from mapDispatchToProps/mapStateToProps
+    ================*/
+
+    
+
 
     firebase.database().ref('pages/').on('value', snapshot => {
-      store.dispatch(fetchData("PAGESNAP", snapshot));      
+      //store.dispatch(fetchData("PAGESNAP", snapshot)); 
+      store.dispatch("PAGESNAP", snapshot);      
     });
 
     firebase.database().ref('blogs/').on('value', snapshot => {
-      store.dispatch(fetchData("BLOGSNAP", snapshot));
+      //store.dispatch(fetchData("BLOGSNAP", snapshot));
+      store.dispatch("BLOGSNAP", snapshot); 
     });
 
     firebase.database().ref('image_data/').on('value', snapshot => {
-      store.dispatch(fetchData("IMAGESNAP", snapshot));
+      //store.dispatch(fetchData("IMAGESNAP", snapshot));
+      store.dispatch("IMAGESNAP", snapshot);
     });
-
-    this.test = store.getState();
-
 
   }
 
@@ -96,9 +109,9 @@ class App extends React.Component{
     state = {
     TextList : null,
     ImageList : null,
-    CurrentEditPage : null,
-    PagesSnapshot : null,
-    selectedElement : null,
+    /*CurrentEditPage : null,*/
+    /*PagesSnapshot : null,*/
+    /*selectedElement : null,*/
     sidebar_shown: "sb_shown",
     ghosted: false, 
     draggedElement: null,
@@ -121,6 +134,7 @@ setPage(e){
       //get the first value that we pull from firebase inst
       try{
         let dropdown_first = document.getElementById('#loading_page').value; 
+        
 
         store.dispatch('DROPDOWN-FIRST');
 
@@ -142,7 +156,7 @@ setPage(e){
         let dropdown_selected = e.target.value;
          let DropdownSelection = e.target.value;
 
-         store.dispatch({type : 'CURRENTEDITPAGE', payload: DropdownSelection})
+         store.updateHandle('CURRENTEDITPAGE', DropdownSelection);
 
          /*
         this.setState({
@@ -659,7 +673,8 @@ updateCurrentEditPageHandle(toUpdate){
   getGhosted(ghostCall){
     let nowGhost = ghostCall;
 
-    store.dispatch(ghostFlag(nowGhost))
+    //store.dispatch(ghostFlag(nowGhost))
+    ghostFlag(nowGhost);
 /*
     this.setState({
       ghosted: ghostCall
@@ -704,7 +719,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer BlogSnapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <TextAddContainer BlogSnapshot = {this.props.state.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -717,7 +732,7 @@ updateCurrentEditPageHandle(toUpdate){
           <h1>Style Page Content</h1>
           <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
           <div className = "style_content"> 
-            <StyleContentList SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
+            <StyleContentList PageSnapshot = {this.props.state.PageSnapshot} ImageSnapshot = {this.props.state.ImageSnapshot} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
@@ -779,7 +794,6 @@ export class Dropdown_Style extends React.Component{
 
 
 const mapStateToProps = (state, ownProps)  => {
-  console.log("The state is:"+state);
   return state;
 }
 
