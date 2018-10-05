@@ -16,9 +16,13 @@ export function dropDowned (flagTurn, updated_arrow_state){
 }
 
 export function fetchData (typeVar, snapshot){
+	if(!snapshot){
+		return {type: typeVar, status : 'LOADING'}
+	}
 	var returnVal = {
 		type: typeVar,
-		payload: snapshot
+		payload: snapshot,
+		status: 'RECEIVED'
 	}
 	return returnVal;
 }

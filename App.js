@@ -81,28 +81,6 @@ class App extends React.Component{
     this.toggleMenu = this.toggleMenu.bind(this);
 
 
-    /*================
-    Map Props from mapDispatchToProps/mapStateToProps
-    ================*/
-
-    
-
-
-    firebase.database().ref('pages/').on('value', snapshot => {
-      //store.dispatch(fetchData("PAGESNAP", snapshot)); 
-      store.dispatch("PAGESNAP", snapshot);      
-    });
-
-    firebase.database().ref('blogs/').on('value', snapshot => {
-      //store.dispatch(fetchData("BLOGSNAP", snapshot));
-      store.dispatch("BLOGSNAP", snapshot); 
-    });
-
-    firebase.database().ref('image_data/').on('value', snapshot => {
-      //store.dispatch(fetchData("IMAGESNAP", snapshot));
-      store.dispatch("IMAGESNAP", snapshot);
-    });
-
   }
 
 
@@ -690,12 +668,27 @@ updateCurrentEditPageHandle(toUpdate){
 */
 
 
-  componentWillReceiveProps(){
-
-  }
-
   componentWillMount(){
+    /*================
+    Map Props from mapDispatchToProps/mapStateToProps
+    ================*/
 
+
+    firebase.database().ref('pages/').on('value', snapshot => {
+      //store.dispatch(fetchData("PAGESNAP", snapshot)); 
+      this.props.fetchData("PAGESNAP", snapshot);      
+    });
+
+    firebase.database().ref('blogs/').on('value', snapshot => {
+      //store.dispatch(fetchData("BLOGSNAP", snapshot));
+      this.props.fetchData("BLOGSNAP", snapshot); 
+    });
+
+    firebase.database().ref('image_data/').on('value', snapshot => {
+      //store.dispatch(fetchData("IMAGESNAP", snapshot));
+      this.props.fetchData("IMAGESNAP", snapshot);
+    });
+    
   }
 
  
@@ -719,7 +712,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer BlogSnapshot = {this.props.state.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <TextAddContainer BlogSnapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -732,7 +725,7 @@ updateCurrentEditPageHandle(toUpdate){
           <h1>Style Page Content</h1>
           <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
           <div className = "style_content"> 
-            <StyleContentList PageSnapshot = {this.props.state.PageSnapshot} ImageSnapshot = {this.props.state.ImageSnapshot} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
+            <StyleContentList PageSnapshot = {this.props.PageSnapshot} ImageSnapshot = {this.props.state.ImageSnapshot} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
@@ -794,7 +787,13 @@ export class Dropdown_Style extends React.Component{
 
 
 const mapStateToProps = (state, ownProps)  => {
-  return state;
+  
+  return{
+    PagesSnapshot : state.PagesSnapshot,
+    BlogSnapshot : state.BlogSnapshot,
+    ImageSnapshot : state.ImageSnapshot,
+    CurrentEditPageHandle : state.CurrentEditPageHandle
+  } 
 }
 
 const mapDispatchToProps = dispatch => {
@@ -810,7 +809,6 @@ const mapDispatchToProps = dispatch => {
     dropDowned: () => dispatch(dropDowned(flagTurn, updated_arrow_state)),
 
     addAttribute: () => dispatch(addAttribute(event.target.value))
-
 
   }
 }
