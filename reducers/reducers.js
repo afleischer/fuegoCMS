@@ -2,11 +2,6 @@ import { combineReducers } from 'redux';
 import undoable, { distinctState } from 'redux-undo';
 import { firebaseStateReducer  } from 'react-redux-firebase';
 
-export default combineReducers({
-	firebaseStateReducer,
-	rootReducer
-})
-
 export const rootReducer = ( state = 0, action) => {
 
 
