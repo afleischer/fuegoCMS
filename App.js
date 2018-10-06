@@ -4,7 +4,8 @@ import './style.css';
 import base from 're-base';
 
 
-import firebase from './firebase.js';
+//import firebase from './firebase.js';
+import { firebase, helpers } from 'react-redux-firebase';
 
 import IndexSort from './components/functions/IndexSort';
 
@@ -16,6 +17,7 @@ import { connect } from 'react-redux';
 import { fetchData, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
 import { rootReducer } from './reducers/reducers';
 
+const { isLoaded, isEmpty, pathToJS, dataToJS } = helpers
 
 //import an exampleAction 
 
@@ -79,6 +81,7 @@ class App extends React.Component{
     this.reIndex = this.reIndex.bind(this);
     this.getGhosted = this.getGhosted.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
+    this.retrieveSnapshot = this.retrieveSnapshot.bind(this);
 
 
   }
@@ -631,22 +634,6 @@ updateCurrentEditPageHandle(toUpdate){
 
   }
 
-  listenForSnap(type){
-    var type = type
-    try{
-      var snapVar = this.props.asdfjkl.BlogSnapshot;
-      if(type = "blog"){
-        return this.props.asdfjkl.BlogSnapshot;
-      }else if (type = "page"){
-        return this.props.asdfjkl.PageSnapshot;
-      }else if (type = "image"){
-        return this.props.asdfjkl.ImageSnapshot;
-      }
-    }catch(error){
-      return false;
-    }
-  }
-
 
   getGhosted(ghostCall){
     let nowGhost = ghostCall;
@@ -666,6 +653,28 @@ updateCurrentEditPageHandle(toUpdate){
   </div>
 
 */
+
+
+  retrieveSnapshot(type){
+    if(type == 'blogs'){
+      if(!this.props.BlogSnapshot){
+        return null;
+      }
+    }
+
+    if(type == 'page'){
+      if(!this.props.PageSnapshot){
+        return null;
+      }
+    }
+    
+    if(type == 'image'){
+      if(!this.props.ImageSnapshot){
+        return null;
+      }
+    }
+    
+  }
 
 
   componentWillMount(){
@@ -688,11 +697,14 @@ updateCurrentEditPageHandle(toUpdate){
       //store.dispatch(fetchData("IMAGESNAP", snapshot));
       this.props.fetchData("IMAGESNAP", snapshot);
     });
-    
+
   }
 
  
     render(){
+
+	const {firebase} = this.props;  //why the curly braces?
+	
 
   return(
 
@@ -701,7 +713,7 @@ updateCurrentEditPageHandle(toUpdate){
       <div className="sidebar" >
 
           <h1>Upload Content </h1> 
-          <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("upload_arrow",".upload_content")}}></div>
+          <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("upload_arrow",".pload_content")}}></div>
           <div className = "upload_content"> 
             <CMSContainerTextPost />
             <CMSContainerImageUpload /> 
@@ -712,7 +724,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer BlogSnapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <TextAddContainer BlogSnapshot = {this.retrieveSnapshot('blogs')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -725,11 +737,11 @@ updateCurrentEditPageHandle(toUpdate){
           <h1>Style Page Content</h1>
           <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
           <div className = "style_content"> 
-            <StyleContentList PageSnapshot = {this.props.PageSnapshot} ImageSnapshot = {this.props.state.ImageSnapshot} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
+            <StyleContentList PageSnapshot = {this.retrieveSnapshot('page')} ImageSnapshot = {this.retrieveSnapshot('image')} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
-            <AddPreset PagesSnapshot = {this.props.PagesSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} PagesSnapshot = {this.props.PagesSnapshot}/>
+            <AddPreset PagesSnapshot = {this.retrieveSnapshot('page')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
           </div>
@@ -798,17 +810,17 @@ const mapStateToProps = (state, ownProps)  => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => dispatch(fetchData (typeVar, snapshot)),
+      fetchData: (typeVar, snapshot) => dispatch(fetchData (typeVar, snapshot)),
 
-    updateHandle: () => dispatch(updateHandle(handle)),
+    updateHandle: (handle) => dispatch(updateHandle(handle)),
 
-    ghostFlag: () => dispatch(ghostFlag(flag)),
+    ghostFlag: (flag) => dispatch(ghostFlag(flag)),
 
-    setSelectedItem: () => dispatch(setSelectedItem(element_selected)),
+    setSelectedItem: (element_selected) => dispatch(setSelectedItem(element_selected)),
 
-    dropDowned: () => dispatch(dropDowned(flagTurn, updated_arrow_state)),
+      dropDowned: (flagTurn, updated_arrow_state) => dispatch(dropDowned(flagTurn, updated_arrow_state)),
 
-    addAttribute: () => dispatch(addAttribute(event.target.value))
+    addAttribute: (event) => dispatch(addAttribute(event.target.value))
 
   }
 }

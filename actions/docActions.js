@@ -1,5 +1,6 @@
 
 
+
 export function updateHandle (handle){
 	return { type: 'UPDATE-HANDLE', handle}
 } 
@@ -15,6 +16,21 @@ export function dropDowned (flagTurn, updated_arrow_state){
 	}
 }
 
+//Will now be called from componentWillMount
+export function fetchData (typeVar, snapshot){
+
+    //firebase.getSnapshot().
+    
+    
+	var returnVal = {
+		type: typeVar,
+		payload: snapshot,
+		status: 'RECEIVED'
+	}
+	return returnVal;
+}
+
+/*
 export function fetchData (typeVar, snapshot){
 	if(!snapshot){
 		return {type: typeVar, status : 'LOADING'}
@@ -26,6 +42,7 @@ export function fetchData (typeVar, snapshot){
 	}
 	return returnVal;
 }
+*/
 
 export function addAttribute (eventValue){
 	return {type: eventValue}
@@ -35,3 +52,9 @@ export function addAttribute (eventValue){
 export function setSelectedItem (element_selected){
 	return {type: 'VISUAL-SELECTION', payload: element_selected}
 }
+
+/*
+  
+ */
+
+//Called from App 
