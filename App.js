@@ -4,8 +4,8 @@ import './style.css';
 import base from 're-base';
 
 
-//import firebase from './firebase.js';
-import { firebase, helpers } from 'react-redux-firebase';
+import firebase from './firebase.js';
+//import { firebase, helpers } from 'react-redux-firebase';
 
 import IndexSort from './components/functions/IndexSort';
 
@@ -682,7 +682,32 @@ updateCurrentEditPageHandle(toUpdate){
     Map Props from mapDispatchToProps/mapStateToProps
     ================*/
 
+const pageSnapshotRetrieval = (db, dispatch) => {
+  db.ref('pages/').on('value', snapshot => {
+    if (data.val()){
+    dispatch({ type : 'PAGESNAPSHOT', payload: snapshot})
+    }
+  })
+}
 
+const blogSnapshotRetrieval = (db, dispatch) => {
+  db.ref('blogs/').on('value', snapshot => {
+    if (data.val()){
+    dispatch({ type : 'BLOGNAPSHOT', payload: snapshot})
+    }
+  })
+}
+
+
+const ImageSnapshotRetrieval = (db, dispatch) => {
+  db.ref('image_data/').on('value', snapshot => {
+    if (data.val()){
+    dispatch({ type : 'IMAGESNAPSHOT', payload: snapshot})
+    }
+  })
+}
+
+/*
     firebase.database().ref('pages/').on('value', snapshot => {
       //store.dispatch(fetchData("PAGESNAP", snapshot)); 
       this.props.fetchData("PAGESNAP", snapshot);      
@@ -698,12 +723,15 @@ updateCurrentEditPageHandle(toUpdate){
       this.props.fetchData("IMAGESNAP", snapshot);
     });
 
+*/
+
+
   }
 
  
     render(){
 
-	const {firebase} = this.props;  //why the curly braces?
+	//const {firebase} = this.props;  //why the curly braces?
 	
 
   return(
