@@ -3,7 +3,7 @@ import undoable, { distinctState } from 'redux-undo';
 import { firebaseStateReducer  } from 'react-redux-firebase';
 
 
-export const rootReducer = ( state = initialState, action) => {
+export const rootReducer = ( state = 0, action) => {
 
 
 	if(typeof(state) === "undefined"){

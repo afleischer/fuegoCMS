@@ -49,18 +49,6 @@ export function addAttribute (eventValue){
 }
 
 
-<<<<<<< HEAD
-export function setSelectedItem (element_selected){
-	return {type: 'VISUAL-SELECTION', payload: element_selected}
-}
-
-/*
-  
- */
-
-//Called from App 
-=======
 export function setSelectedItem (flag, element_selected){
 	return {type: 'VISUAL-SELECTION', flag: flag, payload: element_selected}
 }
->>>>>>> 23535e50704cf9d316395eb316243052c72a8925

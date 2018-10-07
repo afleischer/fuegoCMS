@@ -204,14 +204,16 @@ setSelectedElement(event){
 
   var element_selected = event.target;
 
-
   var selected_element = this.props.SelectedElement;
 
   if(element_selected === selected_element){
     //de-select the element
       this.props.setSelectedItem("DESELECT", element_selected);
+          selected_element.classList.remove("selected");
 
   }
+
+ 
 
   var flag = event.target.style == "border-style : dotted" ? "border-style : none" : "border-style : dotted";
 
@@ -220,6 +222,8 @@ setSelectedElement(event){
   //event.target.setAttribute("class", "highlighted");
 
   //event.target.setAttribute("style", "border-style: dotted");
+
+  /*
 
   var textArrayedFlag = 0;
   var returnCssArray = [];
@@ -230,6 +234,7 @@ setSelectedElement(event){
       textArrayedFlag = 1;
     }
   }
+
 
 
 
@@ -244,8 +249,18 @@ setSelectedElement(event){
   if(textArrayedFlag === 0){
     event.target.style.cssText +="border-style: dotted; border-color: red;";
   }
+
+  */
+
+
   
-  this.props.setSelectedItem("SELECT", element_selected);
+  this.props.setSelectedItem("SELECTED", element_selected);
+
+  selected_element = this.props.SelectedElement;
+
+  selected_element.classList.add('selected');
+
+
 
   //this.setState({selectedElement : element_selected});
 
@@ -810,7 +825,7 @@ updateCurrentEditPageHandle(toUpdate){
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
-            <AddPreset PagesSnapshot = {this.retrieveSnapshot('page')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
+            <AddPreset PagesSnapshot = {this.getSnapshot('page')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
           </div>
@@ -892,7 +907,7 @@ const mapDispatchToProps = dispatch => {
     ghostFlag: (flag) => dispatch(ghostFlag(flag)),
 
 
-    setSelectedItem: (element_selected) => dispatch(setSelectedItem(flag, element_selected)),
+    setSelectedItem: (flag, element_selected) => dispatch(setSelectedItem(flag, element_selected)),
 
     dropDowned: (flagTurn, updated_arrow_state) => dispatch(dropDowned(flagTurn, updated_arrow_state)),
 

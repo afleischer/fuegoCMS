@@ -151,6 +151,8 @@ body{
 
 .selected{
 	background-color: #bebef2;
+	border-style: dotted; 
+	border-color: red;
 }
 
 .deselected{
