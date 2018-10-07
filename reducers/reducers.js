@@ -1,10 +1,23 @@
 import undoable, { distinctState } from 'redux-undo';
 
+const initialState = {
+	PageSnapshot : null,
+	BlogSnapshot : null,
+	ImageSnapshot : null,
+	CurrentEditPageHandle : null
+	}
 
-export const rootReducer = ( state = 0, action) => {
+
+export const rootReducer = ( state = initialState, action) => {
 
 	if(typeof(state) === "undefined"){
-		state = 0;
+
+		state = {
+			PageSnapshot : null,
+			BlogSnapshot : null,
+			ImageSnapshot : null
+
+		};
 	}
 
 	switch (action.type){
@@ -31,7 +44,7 @@ export const rootReducer = ( state = 0, action) => {
 			}
 			if(action.payload){
 				return Object.assign({}, state, {
-					PagesSnapshot : action.payload	
+					PageSnapshot : action.payload	
 				})				
 			}else { return state}
 

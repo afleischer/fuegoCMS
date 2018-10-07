@@ -819,15 +819,19 @@ export class Dropdown_Style extends React.Component{
 }
 
 
-const mapStateToProps = (state, ownProps)  => {
+const mapStateToProps = (state, ownProps)  => {  
+
+  var returnvalues  = {};
   
-  return{
-    PageSnapshot : state.PageSnapshot,
-    BlogSnapshot : state.BlogSnapshot,
-    ImageSnapshot : state.ImageSnapshot,
-    CurrentEditPageHandle : state.CurrentEditPageHandle
-  } 
-}
+      return {
+        PageSnapshot : state.state.PageSnapshot,
+      BlogSnapshot : state.state.BlogSnapshot,
+      ImageSnapshot : state.state.ImageSnapshot,
+      CurrentEditPageHandle : state.state.CurrentEditPageHandle    
+      } 
+
+} 
+
 
 const mapDispatchToProps = dispatch => {
   return {
