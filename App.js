@@ -104,6 +104,14 @@ class App extends React.Component{
     add_arrow_2: "down_arrow",
     style_arrow: "down_arrow"
     */
+    upload_arrow: "down_arrow",
+    add_arrow_1: "down_arrow",
+    add_arrow_2: "down_arrow",
+    sidebar_shown: "sb_shown",
+    upload_arrow: "down",
+    add_arrow_1_flag : "down",
+    add_arrow_2_flag : "up",
+    style_arrow_flag : "up"
     }
 
 
@@ -189,9 +197,22 @@ getCounter(snapshot, path, tag){
 
 setSelectedElement(event){
 
+  //first clear the state on the prior element
+
   var element_selected = event.target;
 
+
+  var selected_element = this.props.SelectedElement;
+
+  if(element_selected === selected_element){
+    //de-select the element
+      this.props.setSelectedItem("DESELECT", element_selected);
+
+  }
+
   var flag = event.target.style == "border-style : dotted" ? "border-style : none" : "border-style : dotted";
+
+
 
   //event.target.setAttribute("class", "highlighted");
 
@@ -221,7 +242,7 @@ setSelectedElement(event){
     event.target.style.cssText +="border-style: dotted; border-color: red;";
   }
   
-  store.dispatch(setSelectedItem(element_selected));
+  this.props.setSelectedItem("SELECT", element_selected);
 
   //this.setState({selectedElement : element_selected});
 
@@ -598,7 +619,17 @@ updateCurrentEditPageHandle(toUpdate){
 
     window.clearInterval();
     var flagTurn = type; 
-    var arrowState = this.props[type];
+
+    if(flagTurn === "add_arrow_1"){
+          var arrowState = this.state.add_arrow_1_flag;
+    }else if ( flagTurn === "add_arrow_2"){
+        var arrowState = this.state.add_arrow_2_flag;
+    }else if ( flagTurn === "style_arrow_flag"){
+        var arrowState = this.state.style_arrow_flag;
+    }else if ( flagTurn === "upload_arrow"){
+      var arrowState = this.state.upload_arrow
+    }
+
     var section_menu = document.querySelector(section);
     var height = document.querySelector(section).offsetHeight;
 
@@ -822,12 +853,13 @@ export class Dropdown_Style extends React.Component{
 const mapStateToProps = (state, ownProps)  => {  
 
   var returnvalues  = {};
-  
+
       return {
         PageSnapshot : state.state.PageSnapshot,
       BlogSnapshot : state.state.BlogSnapshot,
       ImageSnapshot : state.state.ImageSnapshot,
-      CurrentEditPageHandle : state.state.CurrentEditPageHandle    
+      CurrentEditPageHandle : state.state.CurrentEditPageHandle,
+      SelectedElement : state.state.SelectedElement
       } 
 
 } 
@@ -841,7 +873,7 @@ const mapDispatchToProps = dispatch => {
 
     ghostFlag: (flag) => dispatch(ghostFlag(flag)),
 
-    setSelectedItem: (element_selected) => dispatch(setSelectedItem(element_selected)),
+    setSelectedItem: (element_selected) => dispatch(setSelectedItem(flag, element_selected)),
 
     dropDowned: (flagTurn, updated_arrow_state) => dispatch(dropDowned(flagTurn, updated_arrow_state)),
 

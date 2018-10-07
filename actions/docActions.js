@@ -32,6 +32,6 @@ export function addAttribute (eventValue){
 }
 
 
-export function setSelectedItem (element_selected){
-	return {type: 'VISUAL-SELECTION', payload: element_selected}
+export function setSelectedItem (flag, element_selected){
+	return {type: 'VISUAL-SELECTION', flag: flag, payload: element_selected}
 }

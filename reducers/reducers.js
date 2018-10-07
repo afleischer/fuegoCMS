@@ -27,10 +27,19 @@ export const rootReducer = ( state = initialState, action) => {
 				CurrentEditPageHandle : action.payload
 			})
 
-		case 'SELECTED':
-			return Object.assign({}, state, {
+		case 'VISUAL-SELECTION':
+			if(action.flag === "DESELECT"){
+				return Object.assign({}, state, {
+					SelectedElement : null
+				})			
+			}
 
-			})
+			if(action.flag === "SELECTED"){
+				return Object.assign({}, state, {
+					SelectedElement : action.payload
+				})				
+			}
+
 
 		case 'DROPDOWN':
 			return Object.assign({}, state, {
