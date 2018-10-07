@@ -1,7 +1,7 @@
 
 
 export function updateHandle (handle){
-	return { type: 'UPDATE-HANDLE', handle}
+	return { type: 'UPDATE-HANDLE', payload: handle}
 } 
 
 export function ghostFlag (flag){

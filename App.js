@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 
 
-import { fetchData, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
+import { fetchData, updateHandle, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
 import { rootReducer } from './reducers/reducers';
 
 
@@ -79,17 +79,23 @@ class App extends React.Component{
     this.reIndex = this.reIndex.bind(this);
     this.getGhosted = this.getGhosted.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
+    this.getSnapshot = this.getSnapshot.bind(this);
 
 
   }
 
 
     state = {
+    /*
     TextList : null,
     ImageList : null,
-    /*CurrentEditPage : null,*/
-    /*PagesSnapshot : null,*/
-    /*selectedElement : null,*/
+
+    */
+    /*CurrentEditPage : null, */
+    
+    /* 
+    PagesSnapshot : null,
+    selectedElement : null,
     sidebar_shown: "sb_shown",
     ghosted: false, 
     draggedElement: null,
@@ -97,6 +103,7 @@ class App extends React.Component{
     add_arrow_1: "down_arrow",
     add_arrow_2: "down_arrow",
     style_arrow: "down_arrow"
+    */
     }
 
 
@@ -114,7 +121,7 @@ setPage(e){
         let dropdown_first = document.getElementById('#loading_page').value; 
         
 
-        store.dispatch('DROPDOWN-FIRST');
+        //store.dispatch('DROPDOWN-FIRST');
 
         /*
 
@@ -134,7 +141,7 @@ setPage(e){
         let dropdown_selected = e.target.value;
          let DropdownSelection = e.target.value;
 
-         store.updateHandle('CURRENTEDITPAGE', DropdownSelection);
+         this.props.updateHandle(DropdownSelection);
 
          /*
         this.setState({
@@ -668,6 +675,32 @@ updateCurrentEditPageHandle(toUpdate){
 */
 
 
+  getSnapshot(type){
+    switch (type){
+
+      case 'blog':
+        if(!this.props.BlogSnapshot){
+          return null;
+        }else{
+          return this.props.BlogSnapshot;
+        }
+      case 'pages':
+        if(!this.props.PageSnapshot){
+          return null;
+        }else {
+          return this.props.PageSnapshot;
+        }
+      case 'image':
+        if(!this.props.ImageSnapshot){
+          return null;
+        }else {
+          return this.props.ImageSnapshot;
+        }
+    }
+
+  }
+
+
   componentWillMount(){
     /*================
     Map Props from mapDispatchToProps/mapStateToProps
@@ -712,7 +745,7 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer BlogSnapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+            <TextAddContainer BlogSnapshot = {this.getSnapshot('blog')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -725,7 +758,7 @@ updateCurrentEditPageHandle(toUpdate){
           <h1>Style Page Content</h1>
           <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
           <div className = "style_content"> 
-            <StyleContentList PageSnapshot = {this.props.PageSnapshot} ImageSnapshot = {this.props.state.ImageSnapshot} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
+            <StyleContentList PageSnapshot = {this.getSnapshot('page')} ImageSnapshot = {this.getSnapshot('image')} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
@@ -789,7 +822,7 @@ export class Dropdown_Style extends React.Component{
 const mapStateToProps = (state, ownProps)  => {
   
   return{
-    PagesSnapshot : state.PagesSnapshot,
+    PageSnapshot : state.PageSnapshot,
     BlogSnapshot : state.BlogSnapshot,
     ImageSnapshot : state.ImageSnapshot,
     CurrentEditPageHandle : state.CurrentEditPageHandle
@@ -798,17 +831,17 @@ const mapStateToProps = (state, ownProps)  => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => dispatch(fetchData (typeVar, snapshot)),
+    fetchData: (typeVar, snapshot) => dispatch(fetchData (typeVar, snapshot)),
 
-    updateHandle: () => dispatch(updateHandle(handle)),
+    updateHandle: (handle) => dispatch(updateHandle(handle)),
 
-    ghostFlag: () => dispatch(ghostFlag(flag)),
+    ghostFlag: (flag) => dispatch(ghostFlag(flag)),
 
-    setSelectedItem: () => dispatch(setSelectedItem(element_selected)),
+    setSelectedItem: (element_selected) => dispatch(setSelectedItem(element_selected)),
 
-    dropDowned: () => dispatch(dropDowned(flagTurn, updated_arrow_state)),
+    dropDowned: (flagTurn, updated_arrow_state) => dispatch(dropDowned(flagTurn, updated_arrow_state)),
 
-    addAttribute: () => dispatch(addAttribute(event.target.value))
+    addAttribute: (event) => dispatch(addAttribute(event.target.value))
 
   }
 }

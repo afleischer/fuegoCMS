@@ -9,6 +9,10 @@ export const rootReducer = ( state = 0, action) => {
 
 	switch (action.type){
 
+		case 'UPDATE-HANDLE':
+			return Object.assign({}, state, {
+				CurrentEditPageHandle : action.payload
+			})
 
 		case 'SELECTED':
 			return Object.assign({}, state, {
