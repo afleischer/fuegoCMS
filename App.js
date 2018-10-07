@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 
 
 
-import { fetchData, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
+import { fetchData, updateHandle, ghostFlag, dropDowned, addAttribute, setSelectedItem } from './actions/docActions';
 import { rootReducer } from './reducers/reducers';
 
 //const { isLoaded, isEmpty, pathToJS, dataToJS } = helpers
@@ -81,18 +81,24 @@ class App extends React.Component{
     this.reIndex = this.reIndex.bind(this);
     this.getGhosted = this.getGhosted.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
-    this.retrieveSnapshot = this.retrieveSnapshot.bind(this);
+
+    this.getSnapshot = this.getSnapshot.bind(this);
 
 
   }
 
 
     state = {
+    /*
     TextList : null,
     ImageList : null,
-    /*CurrentEditPage : null,*/
-    /*PagesSnapshot : null,*/
-    /*selectedElement : null,*/
+
+    */
+    /*CurrentEditPage : null, */
+    
+    /* 
+    PagesSnapshot : null,
+    selectedElement : null,
     sidebar_shown: "sb_shown",
     ghosted: false, 
     draggedElement: null,
@@ -100,6 +106,15 @@ class App extends React.Component{
     add_arrow_1: "down_arrow",
     add_arrow_2: "down_arrow",
     style_arrow: "down_arrow"
+    */
+    upload_arrow: "down_arrow",
+    add_arrow_1: "down_arrow",
+    add_arrow_2: "down_arrow",
+    sidebar_shown: "sb_shown",
+    upload_arrow: "down",
+    add_arrow_1_flag : "down",
+    add_arrow_2_flag : "up",
+    style_arrow_flag : "up"
     }
 
 
@@ -117,7 +132,7 @@ setPage(e){
         let dropdown_first = document.getElementById('#loading_page').value; 
         
 
-        store.dispatch('DROPDOWN-FIRST');
+        //store.dispatch('DROPDOWN-FIRST');
 
         /*
 
@@ -137,7 +152,7 @@ setPage(e){
         let dropdown_selected = e.target.value;
          let DropdownSelection = e.target.value;
 
-         store.updateHandle('CURRENTEDITPAGE', DropdownSelection);
+         this.props.updateHandle(DropdownSelection);
 
          /*
         this.setState({
@@ -185,9 +200,22 @@ getCounter(snapshot, path, tag){
 
 setSelectedElement(event){
 
+  //first clear the state on the prior element
+
   var element_selected = event.target;
 
+
+  var selected_element = this.props.SelectedElement;
+
+  if(element_selected === selected_element){
+    //de-select the element
+      this.props.setSelectedItem("DESELECT", element_selected);
+
+  }
+
   var flag = event.target.style == "border-style : dotted" ? "border-style : none" : "border-style : dotted";
+
+
 
   //event.target.setAttribute("class", "highlighted");
 
@@ -217,7 +245,7 @@ setSelectedElement(event){
     event.target.style.cssText +="border-style: dotted; border-color: red;";
   }
   
-  store.dispatch(setSelectedItem(element_selected));
+  this.props.setSelectedItem("SELECT", element_selected);
 
   //this.setState({selectedElement : element_selected});
 
@@ -594,7 +622,17 @@ updateCurrentEditPageHandle(toUpdate){
 
     window.clearInterval();
     var flagTurn = type; 
-    var arrowState = this.props[type];
+
+    if(flagTurn === "add_arrow_1"){
+          var arrowState = this.state.add_arrow_1_flag;
+    }else if ( flagTurn === "add_arrow_2"){
+        var arrowState = this.state.add_arrow_2_flag;
+    }else if ( flagTurn === "style_arrow_flag"){
+        var arrowState = this.state.style_arrow_flag;
+    }else if ( flagTurn === "upload_arrow"){
+      var arrowState = this.state.upload_arrow
+    }
+
     var section_menu = document.querySelector(section);
     var height = document.querySelector(section).offsetHeight;
 
@@ -655,34 +693,28 @@ updateCurrentEditPageHandle(toUpdate){
 */
 
 
-  retrieveSnapshot(type){
-    if(type == 'blogs'){
-      if(!this.props.BlogSnapshot){
-        return null;
-      }
-      else{
-        return this.props.BlogSnapshot;
-      }
-    }
+  getSnapshot(type){
+    switch (type){
 
-    if(type == 'page'){
-      if(!this.props.PagesSnapshot){
-        return null;
-      } 
-      else{
-        return this.props.PagesSnapshot;
-      }
+      case 'blog':
+        if(!this.props.BlogSnapshot){
+          return null;
+        }else{
+          return this.props.BlogSnapshot;
+        }
+      case 'pages':
+        if(!this.props.PageSnapshot){
+          return null;
+        }else {
+          return this.props.PageSnapshot;
+        }
+      case 'image':
+        if(!this.props.ImageSnapshot){
+          return null;
+        }else {
+          return this.props.ImageSnapshot;
+        }
     }
-    
-    if(type == 'image'){
-      if(!this.props.ImageSnapshot){
-        return null;
-      }
-      else{
-        return this.props.ImageSnapshot;
-      }
-    }
-    
   }
 
 
@@ -758,7 +790,9 @@ updateCurrentEditPageHandle(toUpdate){
 
           <div className = "add_content_1"> 
             <h2 className="page-add-subheader">Content</h2>
-            <TextAddContainer BlogSnapshot = {this.retrieveSnapshot('blogs')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+
+            <TextAddContainer BlogSnapshot = {this.getSnapshot('blog')} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} TextArray = {this.props.TextList} />
+
             <SidebarImageContainer CurrentEditPageHandle = {this.props.CurrentEditPageHandle} ImageArray = {this.props.ImageList} />
           </div>
 
@@ -771,7 +805,8 @@ updateCurrentEditPageHandle(toUpdate){
           <h1>Style Page Content</h1>
           <div className = "arrow-down" onClick = {(e) => {this.toggleMenu("style_arrow",".style_content")}}></div>
           <div className = "style_content"> 
-            <StyleContentList PageSnapshot = {this.retrieveSnapshot('page')} ImageSnapshot = {this.retrieveSnapshot('image')} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
+
+            <StyleContentList PageSnapshot = {this.getSnapshot('page')} ImageSnapshot = {this.getSnapshot('image')} SelectedElement = {this.props.selectedElement} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} />
           </div>
 
             <h2 className="page-add-subheader">Preset Elements</h2>
@@ -832,27 +867,34 @@ export class Dropdown_Style extends React.Component{
 }
 
 
-const mapStateToProps = (state, ownProps)  => {
-  
-  return{
-    PagesSnapshot : state.PagesSnapshot,
-    BlogSnapshot : state.BlogSnapshot,
-    ImageSnapshot : state.ImageSnapshot,
-    CurrentEditPageHandle : state.CurrentEditPageHandle
-  } 
-}
+const mapStateToProps = (state, ownProps)  => {  
+
+  var returnvalues  = {};
+
+      return {
+        PageSnapshot : state.state.PageSnapshot,
+      BlogSnapshot : state.state.BlogSnapshot,
+      ImageSnapshot : state.state.ImageSnapshot,
+      CurrentEditPageHandle : state.state.CurrentEditPageHandle,
+      SelectedElement : state.state.SelectedElement
+      } 
+
+} 
+
 
 const mapDispatchToProps = dispatch => {
   return {
-      fetchData: (typeVar, snapshot) => dispatch(fetchData (typeVar, snapshot)),
+
+    fetchData: (typeVar, snapshot) => dispatch(fetchData (typeVar, snapshot)),
 
     updateHandle: (handle) => dispatch(updateHandle(handle)),
 
     ghostFlag: (flag) => dispatch(ghostFlag(flag)),
 
-    setSelectedItem: (element_selected) => dispatch(setSelectedItem(element_selected)),
 
-      dropDowned: (flagTurn, updated_arrow_state) => dispatch(dropDowned(flagTurn, updated_arrow_state)),
+    setSelectedItem: (element_selected) => dispatch(setSelectedItem(flag, element_selected)),
+
+    dropDowned: (flagTurn, updated_arrow_state) => dispatch(dropDowned(flagTurn, updated_arrow_state)),
 
     addAttribute: (event) => dispatch(addAttribute(event.target.value))
 

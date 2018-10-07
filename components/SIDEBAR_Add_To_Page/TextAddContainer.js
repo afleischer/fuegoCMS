@@ -6,9 +6,7 @@ import firebase from '../../firebase.js';
 const TextItem = (props) => {
   console.log("Prop received in individual item is:" + props.TextArray);
 
-  const TextArray = props.TextArray;
-
-  const snapshot = props.snapshot;
+  const TextArray = props.BlogSnapshot;
 
   var CurrentEditPageHandle = props.CurrentEditPageHandle;
   //If Firebase hasn't yet responded by the time this function calls, we need to be 
@@ -112,7 +110,7 @@ let placement_counter_new = placement_counter + 1;
   render(){
     return(
       <div className = "sidebar_text_add_frame_container">
-        <TextItem snapshot = {this.props.BlogSnapshot} CurrentEditPageHandle = {this.props.CurrentEditPageHandle} addTagToFrame = {this.addTagToFrame} TextArray = {this.props.BlogsSnapshot} />
+        <TextItem CurrentEditPageHandle = {this.props.CurrentEditPageHandle} addTagToFrame = {this.addTagToFrame} BlogSnapshot = {this.props.BlogSnapshot} />
       </div>
       );
   }

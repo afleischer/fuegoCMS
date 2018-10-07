@@ -2,20 +2,40 @@ import { combineReducers } from 'redux';
 import undoable, { distinctState } from 'redux-undo';
 import { firebaseStateReducer  } from 'react-redux-firebase';
 
-export const rootReducer = ( state = 0, action) => {
+
+export const rootReducer = ( state = initialState, action) => {
 
 
 	if(typeof(state) === "undefined"){
-		state = 0;
+
+		state = {
+			PageSnapshot : null,
+			BlogSnapshot : null,
+			ImageSnapshot : null
+
+		};
 	}
 
 	switch (action.type){
 
-
-		case 'SELECTED':
+		case 'UPDATE-HANDLE':
 			return Object.assign({}, state, {
-
+				CurrentEditPageHandle : action.payload
 			})
+
+		case 'VISUAL-SELECTION':
+			if(action.flag === "DESELECT"){
+				return Object.assign({}, state, {
+					SelectedElement : null
+				})			
+			}
+
+			if(action.flag === "SELECTED"){
+				return Object.assign({}, state, {
+					SelectedElement : action.payload
+				})				
+			}
+
 
 		case 'DROPDOWN':
 			return Object.assign({}, state, {
@@ -29,7 +49,7 @@ export const rootReducer = ( state = 0, action) => {
 			}
 			if(action.payload){
 				return Object.assign({}, state, {
-					PagesSnapshot : action.payload	
+					PageSnapshot : action.payload	
 				})				
 			}else { return state}
 

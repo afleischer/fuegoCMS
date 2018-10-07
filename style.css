@@ -196,7 +196,7 @@ body{
 
 .sidebar{
 	width: 100%;
-	/*max-width:500px;*/
+	max-width:500px;
     background-color: #E8D9D1;
     overflow:hidden;
 
@@ -247,12 +247,12 @@ body{
 
 .upload_content{
 	/*width: 350px;*/
-	/* background-color: #E8D9D1; */ 
+	background-color: #E8D9D1; 
 	grid-area: upload;
 }
 
 .add_content{
-
+	background-color: #E8D9D1; 
 	grid-area: add;
 }
 
