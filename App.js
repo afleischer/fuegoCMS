@@ -213,46 +213,6 @@ setSelectedElement(event){
 
   }
 
- 
-
-  var flag = event.target.style == "border-style : dotted" ? "border-style : none" : "border-style : dotted";
-
-
-
-  //event.target.setAttribute("class", "highlighted");
-
-  //event.target.setAttribute("style", "border-style: dotted");
-
-  /*
-
-  var textArrayedFlag = 0;
-  var returnCssArray = [];
-  var CssTextArrayed = event.target.style.cssText.split(';');
-  for (let i = 0; i < CssTextArrayed.length; i++){
-    if (CssTextArrayed[i] === " border-style: dotted"){
-      CssTextArrayed[i] = "border-style: none;";
-      textArrayedFlag = 1;
-    }
-  }
-
-
-
-
-  if(textArrayedFlag === 1){
-    for(let j = 0; j < CssTextArrayed.length; j++){
-      returnCssArray.push(CssTextArrayed[j]);
-    }
-    event.target.style.cssText = returnCssArray.toString();
-  }
-
-
-  if(textArrayedFlag === 0){
-    event.target.style.cssText +="border-style: dotted; border-color: red;";
-  }
-
-  */
-
-
   
   this.props.setSelectedItem("SELECTED", element_selected);
 
